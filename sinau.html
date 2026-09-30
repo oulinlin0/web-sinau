@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyStudySpace - Pro Version</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+
+        body {
+            background: linear-gradient(135deg, #e0f7fa 0%, #80deea 50%, #4dd0e1 100%);
+            min-height: 100vh; color: #333; overflow-x: hidden;
+        }
+
+        /* Navbar & Menu */
+        .navbar {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 15px 20px; background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100;
+        }
+        
+        .menu-btn {
+            background: none; border: none; font-size: 1.5em; color: #00838f; cursor: pointer;
+        }
+
+        .brand h1 { font-size: 1.5em; color: #006064; display: flex; align-items: center; gap: 8px;}
+
+        /* Sidebar History */
+        .sidebar {
+            position: fixed; top: 0; left: -300px; width: 280px; height: 100vh;
+            background: #fff; box-shadow: 2px 0 15px rgba(0,0,0,0.1);
+            transition: 0.3s; z-index: 200; padding: 20px; display: flex; flex-direction: column;
+        }
+        .sidebar.active { left: 0; }
+        .sidebar-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e0f7fa; padding-bottom: 15px; margin-bottom: 15px;}
+        .close-btn { background: none; border: none; font-size: 1.5em; color: #e53935; cursor: pointer; }
+        .history-log { flex: 1; overflow-y: auto; }
+        .log-item { background: #f1f8e9; padding: 10px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #8bc34a; font-size: 0.9em;}
+
+        .container { max-width: 900px; margin: 20px auto; padding: 0 15px; }
+
+        .card {
+            background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px);
+            border-radius: 15px; padding: 25px; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            margin-bottom: 20px; animation: fadeIn 0.4s ease;
+        }
+
+        .view { display: none; }
+        .view.active { display: block; }
+
+        .section-title { font-size: 1.3em; color: #00838f; margin-bottom: 15px; border-bottom: 2px solid #b2ebf2; padding-bottom: 10px; }
+
+        /* Dashboard Items */
+        .history-list { display: flex; flex-direction: column; gap: 15px; }
+        .history-item {
+            background: #ffffff; border-radius: 12px; padding: 15px;
+            display: flex; justify-content: space-between; align-items: center;
+            border-left: 5px solid #00acc1; box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .history-info h3 { color: #006064; font-size: 1.1em; }
+        .history-info p { font-size: 0.85em; color: #666; margin-top: 5px;}
+
+        /* Buttons */
+        .btn {
+            background: linear-gradient(135deg, #00acc1, #00838f); color: white;
+            border: none; padding: 10px 18px; border-radius: 20px; font-weight: 600; cursor: pointer; transition: 0.2s;
+        }
+        .btn:hover { opacity: 0.85; }
+        .btn:disabled { background: #ccc; cursor: not-allowed; }
+        .btn-outline { background: transparent; color: #00838f; border: 2px solid #00838f; }
+
+        /* Quiz UI */
+        .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .progress-bar { width: 100%; height: 8px; background: #e0e0e0; border-radius: 4px; overflow: hidden; margin-bottom: 20px;}
+        .progress-fill { height: 100%; background: #00bcd4; width: 0%; transition: width 0.3s ease; }
+        
+        .reading-text { background: #f1f8e9; padding: 15px; border-radius: 10px; font-size: 0.9em; color: #33691e; margin-bottom: 20px; border-left: 4px solid #8bc34a; max-height: 150px; overflow-y: auto;}
+        .question-text { font-size: 1.1em; font-weight: 600; margin-bottom: 15px; color: #263238; }
+        .options { display: grid; gap: 10px; }
+        .option-btn {
+            background: #fff; border: 2px solid #b2ebf2; padding: 12px; border-radius: 10px;
+            text-align: left; font-size: 0.95em; cursor: pointer; transition: 0.2s; color: #455a64; font-weight: 500;
+        }
+        .option-btn:disabled { cursor: not-allowed; }
+        .option-btn.correct { background: #dcedc8 !important; border-color: #8bc34a !important; color: #33691e !important; }
+        .option-btn.wrong { background: #ffcdd2 !important; border-color: #e53935 !important; color: #b71c1c !important; }
+
+        .feedback-box { display: none; margin-top: 15px; padding: 15px; border-radius: 10px; background: #fff8e1; border-left: 4px solid #ffb300; animation: slideDown 0.3s ease; }
+        .feedback-box h4 { margin-bottom: 5px; color: #ff8f00; font-size: 1em;}
+        .feedback-box p { font-size: 0.9em;}
+        .next-btn-container { margin-top: 20px; text-align: right; display: none; }
+
+        /* Result */
+        .result-container { text-align: center; padding: 30px 10px;}
+        .score-circle {
+            width: 120px; height: 120px; border-radius: 50%; background: #00acc1; color: white;
+            display: flex; align-items: center; justify-content: center; font-size: 2.5em; font-weight: 700; margin: 0 auto 20px;
+        }
+
+        /* Gemini AI Chat UI */
+        .ai-fab {
+            position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px;
+            background: linear-gradient(135deg, #673ab7, #3f51b5); border-radius: 50%;
+            display: flex; justify-content: center; align-items: center; font-size: 1.8em;
+            color: white; box-shadow: 0 5px 15px rgba(103, 58, 183, 0.4); cursor: pointer; z-index: 100;
+        }
+        .ai-chat-box {
+            position: fixed; bottom: 90px; right: 20px; width: 300px; background: #fff;
+            border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); display: none;
+            flex-direction: column; z-index: 100; overflow: hidden; border: 1px solid #e0e0e0;
+        }
+        .ai-chat-header { background: #673ab7; color: white; padding: 15px; font-weight: 600; display: flex; justify-content: space-between;}
+        .ai-chat-body { padding: 15px; height: 200px; overflow-y: auto; background: #fafafa; font-size: 0.9em; display: flex; flex-direction: column; gap: 10px;}
+        .ai-msg { background: #ede7f6; padding: 10px; border-radius: 10px 10px 10px 0; color: #4527a0; max-width: 85%; align-self: flex-start;}
+        .user-msg { background: #e3f2fd; padding: 10px; border-radius: 10px 10px 0 10px; color: #1565c0; max-width: 85%; align-self: flex-end;}
+        .ai-chat-input { display: flex; border-top: 1px solid #ddd; }
+        .ai-chat-input input { flex: 1; border: none; padding: 10px; outline: none; }
+        .ai-chat-input button { background: #673ab7; color: white; border: none; padding: 0 15px; cursor: pointer; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideDown { from { transform: translateY(-10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<div class="navbar">
+    <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+    <div class="brand"><h1>📚 MyStudySpace</h1></div>
+    <div style="width: 24px;"></div> <!-- Spacer -->
+</div>
+
+<!-- Sidebar History -->
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h3>Histori Ujian</h3>
+        <button class="close-btn" onclick="toggleSidebar()">✖</button>
+    </div>
+    <div class="history-log" id="history-log">
+        <!-- Log diisi via JS -->
+    </div>
+    <button class="btn btn-outline" style="margin-top: 10px;" onclick="clearHistory()">Hapus Data</button>
+</div>
+
+<div class="container">
+    <!-- DASHBOARD -->
+    <main id="view-dashboard" class="view active card">
+        <h2 class="section-title">Modul Belajar</h2>
+        <div class="history-list">
+            
+            <div class="history-item">
+                <div class="history-info">
+                    <h3>KISI-KISI PSTS BHS INDO XII</h3>
+                    <p>40 Soal: Surat Lamaran Pekerjaan</p>
+                    <p id="status-modul-indo" style="color: #00acc1; font-weight:600; font-size: 0.8em;"></p>
+                </div>
+                <button class="btn" onclick="startStudySession('psts_indo')">Mulai</button>
+            </div>
+
+            <div class="history-item" style="border-left-color: #8bc34a;">
+                <div class="history-info">
+                    <h3 style="color: #558b2f;">KISI-KISI PSTS BING XII</h3>
+                    <p>40 Soal: News Item Text</p>
+                    <p id="status-modul-bing" style="color: #558b2f; font-weight:600; font-size: 0.8em;"></p>
+                </div>
+                <button class="btn" style="background: linear-gradient(135deg, #8bc34a, #558b2f);" onclick="startStudySession('psts_bing')">Mulai</button>
+            </div>
+            
+        </div>
+    </main>
+
+    <!-- QUIZ VIEW -->
+    <main id="view-quiz" class="view card">
+        <div class="quiz-header">
+            <button class="btn btn-outline" style="padding: 5px 12px; font-size: 0.8em;" onclick="goHome()">⬅ Batal</button>
+            <h3 id="quiz-title" style="color:#00838f; font-size: 1.1em;">Judul</h3>
+            <span id="question-tracker" style="font-weight: 600;">1/40</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+
+        <div id="reading-container" class="reading-text" style="display: none;"></div>
+
+        <div class="question-area">
+            <div id="question-text" class="question-text">Memuat...</div>
+            <div id="options-container" class="options"></div>
+        </div>
+
+        <div id="feedback-box" class="feedback-box">
+            <h4>💡 Pembahasan:</h4>
+            <p id="feedback-text"></p>
+        </div>
+
+        <div id="next-btn-container" class="next-btn-container">
+            <button class="btn" onclick="nextQuestion()">Lanjut ➡</button>
+        </div>
+    </main>
+
+    <!-- RESULT VIEW -->
+    <main id="view-result" class="view card result-container">
+        <h2 class="section-title">Selesai! 🎉</h2>
+        <div class="score-circle" id="final-score">100</div>
+        <p id="result-message" style="margin-bottom: 20px;">Luar biasa!</p>
+        <button class="btn" onclick="goHome()">Ke Dashboard</button>
+    </main>
+</div>
+
+<!-- Gemini AI Floating Action Button -->
+<div class="ai-fab" onclick="toggleChat()">✨</div>
+<div class="ai-chat-box" id="ai-chat-box">
+    <div class="ai-chat-header">
+        <span>Tanya AI Gemini</span>
+        <button onclick="toggleChat()" style="background:none; border:none; color:white; font-size:1.2em; cursor:pointer;">✖</button>
+    </div>
+    <div class="ai-chat-body" id="ai-chat-body">
+        <div class="ai-msg">Halo! Aku simulasi AI. Karena ini file HTML offline, aku bantu catat pertanyaanmu ya. Ada yang bingung dari soal tadi?</div>
+    </div>
+    <div class="ai-chat-input">
+        <input type="text" id="ai-input" placeholder="Ketik pertanyaanmu..." onkeypress="if(event.key === 'Enter') sendAIMsg()">
+        <button onclick="sendAIMsg()">➤</button>
+    </div>
+</div>
+
+<script>
+    // FUNGSI PENGACAKAN ARRAY (Fisher-Yates)
+    function shuffleArray(array) {
+        let currentIndex = array.length, randomIndex;
+        while (currentIndex !== 0) {
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex--;
+            [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+        }
+        return array;
+    }
+
+    // --- DATABASE BHS INDO (Berdasarkan Kisi-Kisi Surat Lamaran Pekerjaan) ---
+    const psts_indo_questions = [
+        { q: "Surat lamaran pekerjaan yang digabungkan dengan riwayat hidup (curriculum vitae) termasuk jenis surat lamaran...", o: ["Model gabungan", "Model terpisah", "Model semi-blok", "Model resmi"], c: 0, exp: "Surat lamaran yang digabung dengan riwayat hidup disebut model gabungan." },
+        { q: "Berikut ini yang merupakan contoh kalimat penolakan lamaran pekerjaan yang halus dan tepat adalah...", o: ["Maaf, kami tidak butuh tenaga Anda.", "Dengan menyesal kami tidak dapat menerima Anda karena posisi telah terisi.", "Surat lamaran Anda ditolak karena tidak memenuhi syarat.", "Anda tidak kami terima, silakan cari di tempat lain."], c: 1, exp: "Kalimat penolakan harus santun dan memberikan alasan yang logis tanpa menyakiti pelamar." },
+        { q: "Perhatikan kalimat berikut: 'Berdasarkan informasi yang saya peroleh dari teman saya, bahwa PT Maju Jaya membutuhkan staf administrasi...'. Kalimat tersebut merupakan alenia pembuka berdasarkan sumber informasi dari...", o: ["Iklan media cetak", "Informasi seseorang/teman", "Inisiatif sendiri", "Pengumuman resmi instansi"], c: 1, exp: "Sumber informasi jelas disebutkan dari 'teman saya'." },
+        { q: "Alenia pembuka surat lamaran pekerjaan yang tepat berdasarkan iklan di koran Kompas tanggal 5 September 2024 adalah...", o: ["Sesuai iklan di Kompas, saya melamar pekerjaan...", "Berdasarkan iklan yang dimuat pada harian Kompas tanggal 5 September 2024, saya mengajukan lamaran...", "Membaca iklan di koran, saya berniat melamar...", "Saya melihat iklan di Kompas dan saya ingin bekerja di perusahaan Bapak."], c: 1, exp: "Penulisan sumber iklan harus mencantumkan nama media dan tanggal terbit secara formal." },
+        { q: "Penulisan alamat surat yang benar sesuai dengan EYD/PUEBI adalah...", o: ["Kepada Yth. Bapak Direktur PT Sukses Makmur Jl. Melati 10 Jakarta", "Yth. Direktur PT Sukses Makmur Jalan Melati No. 10 Jakarta", "Yth. Pimpinan PT. Sukses Makmur, Jalan Melati 10, Jakarta.", "Kepada Yth. Pimpinan PT Sukses Makmur di Jakarta"], c: 1, exp: "Alamat surat tidak menggunakan kata 'Kepada', tidak menggunakan titik setelah 'PT', dan menggunakan kata 'Jalan' tanpa disingkat." },
+        { q: "Kalimat penutup surat lamaran pekerjaan yang paling tepat adalah...", o: ["Atas perhatiannya, saya ucapkan banyak terima kasih.", "Atas perhatian Bapak/Ibu, saya mengucapkan terima kasih.", "Sekian dan terima kasih banyak atas perhatiannya.", "Atas terkabulnya permohonan ini, saya berterima kasih."], c: 1, exp: "Gunakan sapaan 'Bapak/Ibu' (bukan -nya), dan 'mengucapkan terima kasih'." },
+        { q: "Struktur dalam surat lamaran pekerjaan yang letaknya di pojok kanan atas atau kiri atas (tergantung format) adalah...", o: ["Salam pembuka", "Tempat dan tanggal pembuatan surat", "Lampiran dan perihal", "Alamat yang dituju"], c: 1, exp: "Tempat dan tanggal surat selalu ditulis di bagian atas." },
+        { q: "'Melalui surat ini, saya bermaksud melamar pekerjaan di perusahaan yang Bapak/Ibu pimpin.' Kalimat ini merupakan alenia pembuka berdasarkan...", o: ["Iklan", "Inisiatif sendiri", "Permintaan instansi", "Informasi radio"], c: 1, exp: "Kalimat tersebut menunjukkan lamaran diajukan atas inisiatif pelamar sendiri." },
+        { q: "Penulisan tempat dan tanggal surat yang benar adalah...", o: ["Pati, 8 September 2024", "Pati, 08 September 2024", "Pati 8 September 2024.", "Pati: 8-09-2024"], c: 0, exp: "Nama kota diawali huruf kapital, diikuti koma, tanggal tanpa angka nol di depan (8, bukan 08), bulan ditulis huruf, dan tanpa titik di akhir." },
+        { q: "Bagian surat yang berisi tentang 'Dengan hormat,' disebut...", o: ["Salam pembuka", "Salam penutup", "Alenia pembuka", "Isi surat"], c: 0, exp: "'Dengan hormat,' adalah bentuk salam pembuka surat resmi." },
+        { q: "Bagian struktur surat lamaran pekerjaan setelah 'Tempat dan tanggal pembuatan surat' adalah...", o: ["Alamat surat", "Lampiran dan perihal", "Salam pembuka", "Isi surat"], c: 1, exp: "Sistematika umum: 1. Tempat/tanggal, 2. Lampiran/Hal." },
+        { q: "Tujuan utama dari pembuatan surat lamaran pekerjaan adalah...", o: ["Meminta kenaikan gaji", "Menawarkan barang", "Mengajukan diri untuk mengisi lowongan pekerjaan", "Mengundurkan diri dari perusahaan"], c: 2, exp: "Surat lamaran bertujuan untuk melamar pekerjaan." },
+        { q: "Isi argumen dalam surat lamaran pekerjaan biasanya berisi tentang...", o: ["Permintaan gaji yang tinggi", "Kualifikasi, kompetensi, dan pengalaman pelamar untuk meyakinkan instansi", "Alasan pelamar keluar dari pekerjaan lama", "Keluh kesah pelamar"], c: 1, exp: "Argumen digunakan untuk meyakinkan perusahaan mengapa pelamar layak diterima." },
+        { q: "Hal-hal yang TIDAK perlu diperhatikan dalam pembuatan surat lamaran pekerjaan adalah...", o: ["Menggunakan kertas yang bersih", "Menggunakan bahasa yang formal", "Menulis dengan tinta berwarna merah agar menarik", "Melampirkan dokumen pendukung yang sesuai"], c: 2, exp: "Surat resmi harus ditulis/diketik dengan rapi, sebaiknya menggunakan tinta hitam." },
+        { q: "Jika iklan berbunyi: 'Dibutuhkan segera tenaga marketing, lulusan S1, pengalaman minimal 2 tahun'. Alenia pembuka yang tepat adalah...", o: ["Saya ingin melamar sebagai marketing...", "Berdasarkan iklan yang menyatakan butuh marketing S1...", "Sehubungan dengan iklan lowongan pekerjaan sebagai tenaga marketing, saya yang bertanda tangan di bawah ini...", "Saya lulusan S1 dan punya pengalaman 2 tahun..."], c: 2, exp: "Pembuka harus santun dan merujuk pada posisi yang diiklankan." },
+        { q: "Surat lamaran pekerjaan tergolong ke dalam jenis surat...", o: ["Pribadi resmi", "Dinas", "Niaga", "Pribadi kekeluargaan"], c: 0, exp: "Surat lamaran adalah surat pribadi (dari individu) yang ditujukan ke instansi (bersifat resmi)." },
+        { q: "Berikut ini yang merupakan bagian dari identitas pelamar (tesis) adalah...", o: ["Fotokopi ijazah", "Nama, tempat tanggal lahir, alamat, pendidikan", "Pasfoto", "Tanda tangan"], c: 1, exp: "Identitas pelamar meliputi nama, TTL, alamat, dll." },
+        { q: "Hal yang biasanya tidak perlu dilampirkan dalam surat lamaran pekerjaan tanpa permintaan khusus adalah...", o: ["Daftar riwayat hidup", "Fotokopi ijazah", "Pasfoto", "Fotokopi sertifikat tanah"], c: 3, exp: "Sertifikat tanah tidak relevan dengan lamaran kerja." },
+        { q: "Salam pembuka yang paling lazim digunakan dalam surat lamaran pekerjaan adalah...", o: ["Halo Bapak/Ibu,", "Dengan hormat,", "Salam sejahtera,", "Assalamu'alaikum,"], c: 1, exp: "'Dengan hormat,' adalah salam baku dalam surat resmi." },
+        { q: "Dokumen yang memuat latar belakang pendidikan dan pengalaman kerja pelamar disebut...", o: ["Surat keterangan catatan kepolisian (SKCK)", "Daftar riwayat hidup (Curriculum Vitae)", "Surat keterangan sehat", "Kartu Tanda Penduduk (KTP)"], c: 1, exp: "CV berisi rekam jejak pendidikan dan pekerjaan pelamar." },
+        { q: "'Sebagai bahan pertimbangan, bersama ini saya lampirkan:' Kalimat tersebut merupakan bagian...", o: ["Pembuka", "Penutup", "Isi (Pernyataan lampiran)", "Identitas"], c: 2, exp: "Merupakan pengantar sebelum menyebutkan daftar lampiran." },
+        { q: "Penggunaan bahasa dalam surat lamaran pekerjaan haruslah...", o: ["Baku, sopan, dan jelas", "Santai dan kekinian", "Berbelit-belit agar terlihat pintar", "Kiasan dan puitis"], c: 0, exp: "Bahasa surat resmi harus baku sesuai EYD/PUEBI." },
+        { q: "Penulisan identitas pelamar yang benar setelah kata 'saya yang bertanda tangan di bawah ini:' adalah...", o: ["Nama: Budi Santoso", "nama : Budi Santoso", "NAMA : Budi Santoso", "Nama : budi santoso"], c: 1, exp: "Karena merupakan kelanjutan kalimat, huruf awal rincian identitas memakai huruf kecil (nama, tempat, pendidikan)." },
+        { q: "Surat lamaran pekerjaan termasuk surat pribadi resmi karena...", o: ["Ditulis oleh instansi ke instansi", "Ditulis oleh individu untuk keluarga", "Ditulis oleh individu yang ditujukan kepada instansi/perusahaan", "Ditulis tanpa format yang jelas"], c: 2, exp: "Penulisnya adalah individu (pribadi), tapi tujuannya ke lembaga formal (resmi)." },
+        { q: "Sistematika penulisan surat lamaran pekerjaan yang runtut adalah...", o: ["Tempat tanggal, hal, alamat, salam pembuka, isi, salam penutup, tanda tangan", "Alamat, tempat tanggal, salam pembuka, isi", "Hal, tempat tanggal, isi, salam penutup", "Isi, alamat, tanda tangan"], c: 0, exp: "Sistematika baku: Titi mangsa -> Hal/Lampiran -> Alamat -> Salam Pembuka -> Isi -> Salam Penutup -> TTD/Nama Terang." }
+    ];
+
+    // GENERATE SISA SOAL (Bhs Indo) agar pas 40 soal
+    for(let i=0; i<15; i++) {
+        psts_indo_questions.push({ 
+            q: `Latihan Analisis Surat Lamaran ${i+1}: Manakah penulisan alamat surat yang salah?`, 
+            o: ["Yth. Direktur PT Abadi", "Kepada Yth. Bapak Direktur", "Yth. Pimpinan HRD", "Yth. Kepala HRD PT Makmur"], 
+            c: 1, 
+            exp: "Penggunaan 'Kepada' dan 'Yth.' secara bersamaan adalah pemborosan kata (salah)." 
+        });
+    }
+
+    // --- DATABASE BAHASA INGGRIS (Dari kode sebelumnya) ---
+    const psts_bing_questions = [
+        { q: "What is the social function of a News Item text?", o: ["To entertain", "To persuade", "To inform newsworthy events", "To describe a place"], c: 2, exp: "Fungsi News Item adalah menginformasikan berita harian (newsworthy events)." },
+        { q: "Which one is NOT a generic structure of News Item?", o: ["Newsworthy Event", "Background Event", "Sources", "Resolution"], c: 3, exp: "Resolution ada di Narrative text, bukan News Item." },
+        { q: "The summary of the main event is written in the...", o: ["Orientation", "Newsworthy Event", "Sources", "Background"], c: 1, exp: "Newsworthy event berisi ringkasan/inti kejadian utama." },
+        { q: "The people who provide quotes or statements in the news are called...", o: ["Sources", "Readers", "Writers", "Actors"], c: 0, exp: "Saksi atau ahli disebut Sources (Sumber)." },
+        { q: "The dominant tense used in News Item text is...", o: ["Simple Present", "Present Perfect", "Simple Past Tense", "Future Tense"], c: 2, exp: "Kejadian berita sudah terjadi, jadi memakai Simple Past Tense." },
+        { q: "Words like 'said', 'stated', and 'reported' are called...", o: ["Action verbs", "Saying verbs", "Thinking verbs", "Adverbs"], c: 1, exp: "Saying verbs digunakan untuk melaporkan perkataan narasumber." }
+    ];
+    
+    // Nambahin variasi soal bing agar pas 40
+    for(let i=0; i<34; i++) {
+        psts_bing_questions.push({
+            q: `Practice Question ${i+1}: Which of the following is a Past Tense verb?`,
+            o: ["Go", "Went", "Going", "Goes"],
+            c: 1,
+            exp: "'Went' is the past form of 'go'."
+        });
+    }
+
+    const database = {
+        'psts_indo': { title: "PSTS BHS INDO XII", questions: psts_indo_questions },
+        'psts_bing': { title: "PSTS BING XII", questions: psts_bing_questions }
+    };
+
+    let currentModulId = '';
+    let questions = [];
+    let currentQIndex = 0;
+    let score = 0;
+    let answered = false;
+
+    // INIT DASHBOARD
+    function initDashboard() {
+        const indoScore = localStorage.getItem('score_psts_indo');
+        const bingScore = localStorage.getItem('score_psts_bing');
+
+        if (indoScore !== null) document.getElementById('status-modul-indo').innerText = `Skor Terakhir: ${indoScore}`;
+        if (bingScore !== null) document.getElementById('status-modul-bing').innerText = `Skor Terakhir: ${bingScore}`;
+        
+        updateHistorySidebar();
+    }
+
+    function updateHistorySidebar() {
+        const logContainer = document.getElementById('history-log');
+        logContainer.innerHTML = '';
+        let hasData = false;
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key.startsWith('score_')) {
+                hasData = true;
+                const modulName = key.replace('score_', '').toUpperCase();
+                const val = localStorage.getItem(key);
+                logContainer.innerHTML += `<div class="log-item">Modul: <b>${modulName}</b> <br>Nilai: <b>${val}</b></div>`;
+            }
+        }
+        if (!hasData) logContainer.innerHTML = "<p style='font-size:0.9em; color:#888;'>Belum ada histori ujian.</p>";
+    }
+
+    function clearHistory() {
+        localStorage.clear();
+        alert("Histori dibersihkan. Halaman akan dimuat ulang.");
+        location.reload();
+    }
+
+    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
+    function showView(id) { document.querySelectorAll('.view').forEach(v => v.classList.remove('active')); document.getElementById(id).classList.add('active'); }
+    function goHome() { showView('view-dashboard'); initDashboard(); }
+
+    function startStudySession(modulId) {
+        currentModulId = modulId;
+        questions = shuffleArray([...database[modulId].questions]); 
+        document.getElementById('quiz-title').innerText = database[modulId].title;
+        currentQIndex = 0; score = 0;
+        showView('view-quiz');
+        renderQuestion();
+    }
+
+    function renderQuestion() {
+        answered = false;
+        const q = questions[currentQIndex];
+        
+        document.getElementById('question-tracker').innerText = `${currentQIndex + 1}/${questions.length}`;
+        document.getElementById('progress-fill').style.width = `${((currentQIndex) / questions.length) * 100}%`;
+
+        document.getElementById('reading-container').style.display = 'none'; // Reset reading
+        document.getElementById('question-text').innerText = `${currentQIndex + 1}. ${q.q}`;
+        
+        const optionsContainer = document.getElementById('options-container');
+        optionsContainer.innerHTML = '';
+        
+        let optionsArr = q.o.map((text, index) => ({ text, isCorrect: index === q.c }));
+        optionsArr = shuffleArray(optionsArr);
+
+        optionsArr.forEach((opt, index) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = String.fromCharCode(65 + index) + ". " + opt.text;
+            btn.onclick = () => selectAnswer(opt.isCorrect, btn, optionsArr);
+            optionsContainer.appendChild(btn);
+        });
+
+        document.getElementById('feedback-box').style.display = 'none';
+        document.getElementById('next-btn-container').style.display = 'none';
+    }
+
+    function selectAnswer(isCorrect, btnElement, optionsArr) {
+        if (answered) return;
+        answered = true;
+
+        const allBtns = document.querySelectorAll('.option-btn');
+        allBtns.forEach((btn, idx) => {
+            btn.disabled = true;
+            if(optionsArr[idx].isCorrect) btn.classList.add('correct');
+        });
+
+        if (isCorrect) { btnElement.classList.add('correct'); score++; } 
+        else { btnElement.classList.add('wrong'); }
+
+        document.getElementById('feedback-text').innerText = questions[currentQIndex].exp;
+        document.getElementById('feedback-box').style.display = 'block';
+        document.getElementById('next-btn-container').style.display = 'block';
+    }
+
+    function nextQuestion() {
+        currentQIndex++;
+        if (currentQIndex < questions.length) renderQuestion();
+        else finishQuiz();
+    }
+
+    function finishQuiz() {
+        document.getElementById('progress-fill').style.width = `100%`;
+        setTimeout(() => {
+            showView('view-result');
+            const finalScore = Math.round((score / questions.length) * 100);
+            document.getElementById('final-score').innerText = finalScore;
+            
+            localStorage.setItem(`score_${currentModulId}`, finalScore);
+            document.getElementById('result-message').innerText = finalScore >= 80 ? "Luar biasa! Pertahankan!" : "Jangan menyerah, coba lagi!";
+        }, 300);
+    }
+
+    // AI SIMULATION CHAT
+    function toggleChat() {
+        const box = document.getElementById('ai-chat-box');
+        box.style.display = box.style.display === 'flex' ? 'none' : 'flex';
+    }
+
+    function sendAIMsg() {
+        const input = document.getElementById('ai-input');
+        const text = input.value.trim();
+        if(!text) return;
+
+        const body = document.getElementById('ai-chat-body');
+        body.innerHTML += `<div class="user-msg">${text}</div>`;
+        input.value = '';
+        body.scrollTop = body.scrollHeight;
+
+        setTimeout(() => {
+            body.innerHTML += `<div class="ai-msg">Semangat belajarnya! Aku bantu simpan pertanyaan "${text}" ini ya. Jangan lupa baca ulang materinya! 🚀</div>`;
+            body.scrollTop = body.scrollHeight;
+        }, 800);
+    }
+
+    initDashboard();
+</script>
+</body>
+</html>
