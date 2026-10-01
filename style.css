@@ -78,21 +78,15 @@ body {
 .nav-floating-icon {  
     position: absolute; width: 52px; height: 52px; left: 50%; top: -40px; transform: translateX(-50%);  
     display: flex; align-items: center; justify-content: center; border-radius: 50%;  
-    
-    /* Efek Kaca Tembus Pandang Berwarna Tema */
     background: linear-gradient(135deg, rgba(14, 165, 233, 0.4), rgba(14, 165, 233, 0.05));  
     backdrop-filter: blur(15px) saturate(150%);  
     -webkit-backdrop-filter: blur(15px) saturate(150%);  
-    
     color: #ffffff; font-size: 1.25em;  
     border: 1px solid rgba(255, 255, 255, 0.3);  
     border-top: 1px solid rgba(255, 255, 255, 0.6);  
-    
-    /* Mengganti inset shadow yang memblokir kaca dengan efek glow luar */
     box-shadow:   
         0 8px 20px rgba(0, 0, 0, 0.3),
         0 0 15px rgba(14, 165, 233, 0.3);  
-        
     transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s ease, background 0.3s ease;  
 }  
 
@@ -107,7 +101,6 @@ body {
     transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), color 0.3s ease, opacity 0.3s ease;  
 }  
 
-/* TEKS MENU DITENGAHKAN SECARA VERTIKAL & HORISONTAL */  
 .nav-text {  
     position: absolute;   
     top: 50%;   
@@ -151,7 +144,6 @@ body {
 .folder-header { padding: 15px 20px; border-radius: 16px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 600; margin-bottom: 12px; transition: 0.3s; }  
 .folder-header:hover { transform: translateY(-2px); background: rgba(255,255,255,0.08); }  
 
-/* FOLDER CONTENT WADAH SUB-ITEM */  
 .folder-content {   
     display: none;   
     padding: 6px 0 12px 0;  
@@ -160,7 +152,6 @@ body {
 .folder-content.active { display: flex; flex-direction: column; gap: 10px; }  
 .chevron { transition: transform 0.3s ease; font-size: 1.1em; } .chevron.active { transform: rotate(180deg); }  
 
-/* KARTU KISI-KISI / SUB-ITEM DI DALAM FOLDER */  
 .folder-content .history-item {  
     margin-left: 24px !important;  
     width: calc(100% - 24px) !important;  
@@ -176,23 +167,10 @@ body {
     border-top: 1px solid rgba(255, 255, 255, 0.28);  
     box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.15), 0 6px 16px rgba(0, 0, 0, 0.2);  
 }  
-.folder-content .history-info h3 {   
-    font-size: 0.9em;   
-    margin-bottom: 3px;   
-    font-weight: 700;  
-    color: #ffffff;  
-}  
-.folder-content .history-info p {   
-    font-size: 0.75em;   
-    color: rgba(255,255,255,0.65);   
-}  
-.folder-content .btn {  
-    padding: 8px 18px;  
-    font-size: 0.82em;  
-    border-radius: 22px;  
-}  
+.folder-content .history-info h3 { font-size: 0.9em; margin-bottom: 3px; font-weight: 700; color: #ffffff; }  
+.folder-content .history-info p { font-size: 0.75em; color: rgba(255,255,255,0.65); }  
+.folder-content .btn { padding: 8px 18px; font-size: 0.82em; border-radius: 22px; }  
 
-/* KARTU ITEM UMUM (DI LUAR FOLDER) */  
 .history-item {  
     border-radius: 20px;  
     padding: 15px 20px;  
@@ -209,7 +187,6 @@ body {
 .history-info h3 { font-size: 1em; margin-bottom: 3px; color: #ffffff; }  
 .history-info p { font-size: 0.8em; color: rgba(255,255,255,0.7); }  
 
-/* TOMBOL MURNI EFEK GLASSMORPHISM */  
 .btn {  
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05));  
     color: #ffffff;  
@@ -239,9 +216,7 @@ body {
     -webkit-backdrop-filter: blur(15px);  
     box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.2);  
 }  
-.btn-outline:hover {  
-    background: rgba(255, 255, 255, 0.15);  
-}  
+.btn-outline:hover { background: rgba(255, 255, 255, 0.15); }  
 
 /* CHAT STYLES */  
 .chat-container { display: flex; flex-direction: column; height: 500px; gap: 12px; }  
@@ -258,70 +233,40 @@ body {
 .chat-search { display: flex; align-items: center; background: rgba(0,0,0,0.3); border-radius: 20px; padding: 12px 15px; margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.1);}
 .chat-search input { background: transparent; border: none; color: white; outline: none; margin-left: 10px; width: 100%; font-size: 0.9em; }
 
-/* Horizontal Scroll Users */
 .chat-active-users { display: flex; overflow-x: auto; gap: 15px; padding-bottom: 10px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
 .chat-active-users::-webkit-scrollbar { display: none; }
 .active-user-item { display: flex; flex-direction: column; align-items: center; min-width: 65px; font-size: 0.75em; cursor: pointer; transition: 0.2s;}
 .active-user-item:hover { transform: scale(1.05); }
 
-/* Avatar Styling */
 .avatar-wrapper { position: relative; width: 55px; height: 55px; border-radius: 50%; background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.02)); display:flex; align-items:center; justify-content:center; margin-bottom:8px; border: 2px solid transparent;}
 .avatar-wrapper img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
 .avatar-wrapper.new-chat { background: var(--theme-1); color: white; font-size: 1.5em; }
 .avatar-wrapper.online { border: 2px solid #22c55e; }
 .online-dot { position: absolute; bottom: 0; right: 0; width: 14px; height: 14px; background: #22c55e; border-radius: 50%; border: 3px solid #080c14; }
 
-/* Vertical Chat List */
 .chat-list-item { display: flex; align-items: center; padding: 12px 10px; cursor: pointer; transition: 0.2s; border-radius: 16px; margin-bottom: 5px;}
 .chat-list-item:hover { background: rgba(255,255,255,0.08); }
 .chat-list-info { flex: 1; margin-left: 15px; overflow: hidden; }
 .chat-list-name { font-weight: 600; font-size: 1em; margin-bottom: 3px; }
 .chat-list-msg { font-size: 0.85em; color: rgba(255,255,255,0.6); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.chat-list-meta { display: flex; flex-direction: column; align-items: flex-end; justify-content: center; font-size: 0.75em; color: rgba(255,255,255,0.5); }
-
+.chat-list-meta { display: flex; flex-direction: column; align-items: flex-end; justify-content: center; font-size: 0.75em; color: rgba(255,255,255,0.5); gap: 4px; }
+.unread-badge { background: var(--theme-1); color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.8em; font-weight: bold;}
 
 /* MODAL & HISTORI ITEMS */  
 .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(10px); z-index: 3000; justify-content: center; align-items: center; padding: 15px; }  
 .modal-content { width: 100%; max-width: 500px; max-height: 80vh; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; }  
 .modal-body { flex: 1; overflow-y: auto; margin-top: 15px; }  
 
-.detail-soal-card {   
-    padding: 15px;   
-    border-radius: 16px;   
-    margin-bottom: 10px;   
-    font-size: 0.85em;   
-    background: rgba(255, 255, 255, 0.05);  
-    border: 1px solid rgba(255, 255, 255, 0.15);   
-}  
-
-.log-item {   
-    padding: 15px;   
-    border-radius: 16px;   
-    margin-bottom: 12px;   
-    cursor: pointer;   
-    transition: 0.2s;   
-    background: rgba(255, 255, 255, 0.05);  
-    border: 1px solid rgba(255, 255, 255, 0.15);   
-}  
-.log-item:hover {   
-    transform: scale(1.02);   
-    background: rgba(255, 255, 255, 0.1);  
-}  
+.detail-soal-card { padding: 15px; border-radius: 16px; margin-bottom: 10px; font-size: 0.85em; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.15); }  
+.log-item { padding: 15px; border-radius: 16px; margin-bottom: 12px; cursor: pointer; transition: 0.2s; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.15); }  
+.log-item:hover { transform: scale(1.02); background: rgba(255, 255, 255, 0.1); }  
 
 /* QUIZ */  
 .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }  
 .progress-bar { width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; margin-bottom: 20px;}  
 .progress-fill { height: 100%; background: var(--theme-1); width: 0%; transition: width 0.3s ease; }  
 
-.reading-box {   
-    padding: 15px;   
-    margin-bottom: 15px;   
-    border-radius: 12px;   
-    font-size: 0.85em;   
-    display: none;   
-    background: rgba(255,255,255,0.05);   
-    border: 1px solid rgba(255,255,255,0.15);   
-}  
+.reading-box { padding: 15px; margin-bottom: 15px; border-radius: 12px; font-size: 0.85em; display: none; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); }  
 .question-text { font-size: 1.1em; font-weight: 600; margin-bottom: 15px; color: #ffffff; }  
 .options { display: grid; gap: 10px; }  
 .option-btn { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); padding: 12px 16px; border-radius: 14px; text-align: left; font-size: 0.9em; cursor: pointer; transition: 0.2s; color: #ffffff; font-weight: 500;}  
@@ -364,14 +309,8 @@ body.light-theme .question-text {
 
 body.light-theme .history-info p,
 body.light-theme .nav-icon,
-body.light-theme .nav-text {
-    color: #64748b;
-}
-
-body.light-theme .nav-item.active .nav-text {
-    color: var(--theme-1);
-    text-shadow: none;
-}
+body.light-theme .nav-text { color: #64748b; }
+body.light-theme .nav-item.active .nav-text { color: var(--theme-1); text-shadow: none; }
 
 body.light-theme .auth-input,
 body.light-theme .chat-input {
@@ -380,9 +319,7 @@ body.light-theme .chat-input {
     border: 1px solid rgba(0, 0, 0, 0.1);
 }
 body.light-theme .auth-input::placeholder,
-body.light-theme .chat-input::placeholder {
-    color: #94a3b8;
-}
+body.light-theme .chat-input::placeholder { color: #94a3b8; }
 
 body.light-theme .chat-bubble-other,
 body.light-theme .option-btn {
@@ -390,10 +327,7 @@ body.light-theme .option-btn {
     border: 1px solid rgba(0, 0, 0, 0.05);
     color: #1e293b;
 }
-
-body.light-theme .option-btn:hover:not(:disabled) { 
-    background: rgba(255, 255, 255, 1); 
-}
+body.light-theme .option-btn:hover:not(:disabled) { background: rgba(255, 255, 255, 1); }
 
 body.light-theme .btn {
     background: linear-gradient(135deg, rgba(14, 165, 233, 0.9), rgba(14, 165, 233, 0.7));
@@ -408,7 +342,6 @@ body.light-theme .btn-outline {
     border: 1px solid var(--theme-1);
 }
 
-/* Light Theme Overrides untuk UI Chat Baru */
 body.light-theme .chat-search { background: rgba(255,255,255,0.6); border: 1px solid rgba(0,0,0,0.1); }
 body.light-theme .chat-search input { color: #1e293b; }
 body.light-theme .chat-search i { color: #94a3b8 !important; }
