@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>sinau bang - Folder UI</title>
+    <title>sinau bang - Full Complete</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
 
@@ -18,13 +18,12 @@
         body.dark-theme {
             background: linear-gradient(135deg, #121212 0%, #1e1e2f 50%, #1a1a2e 100%); color: #e0e0e0;
         }
-        body.dark-theme .navbar, body.dark-theme .card, body.dark-theme .sidebar, body.dark-theme .ai-chat-box, body.dark-theme .history-item, body.dark-theme .modal-content {
+        body.dark-theme .navbar, body.dark-theme .card, body.dark-theme .sidebar, body.dark-theme .ai-chat-box, body.dark-theme .history-item, body.dark-theme .modal-content, body.dark-theme .auth-card {
             background: rgba(30, 30, 42, 0.95); border-color: #333; color: #e0e0e0; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
         body.dark-theme .brand h1, body.dark-theme .section-title, body.dark-theme .history-info h3, body.dark-theme .question-text { color: #4dd0e1; }
         body.dark-theme .menu-btn { color: #4dd0e1; }
         body.dark-theme .music-widget { background: #2c2c3e; border: 1px solid #4dd0e1; color: #4dd0e1; }
-        body.dark-theme .music-widget:hover { background: #3d3d5c; }
         body.dark-theme .sidebar-header { border-bottom: 2px solid #444; }
         body.dark-theme .log-item { background: #2c2c3e; border-left: 4px solid #4dd0e1; color: #e0e0e0; }
         body.dark-theme .option-btn { background: #1e1e2f; border: 2px solid #555; color: #e0e0e0; }
@@ -32,7 +31,32 @@
         body.dark-theme .option-btn.wrong { background: #b71c1c !important; color: #fff !important; border-color: #f44336 !important; }
         body.dark-theme .feedback-box { background: #332b1a; border-left: 4px solid #ffb300; color: #eee; }
         body.dark-theme input { background: #2c2c3e; color: #fff; border: 1px solid #555; }
-        
+
+        /* AUTH / LOGIN SCREEN */
+        #view-auth {
+            display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px;
+            background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1350&q=80') no-repeat center center fixed;
+            background-size: cover; position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
+        }
+        .auth-card {
+            background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(15px); border-radius: 20px;
+            padding: 35px 30px; width: 100%; max-width: 400px; box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            text-align: center; border: 1px solid rgba(255,255,255,0.4); animation: fadeIn 0.5s ease;
+        }
+        .auth-card h2 { color: #006064; margin-bottom: 20px; font-size: 1.8em; font-weight: 700; }
+        .auth-input {
+            width: 100%; padding: 12px 15px; margin-bottom: 15px; border-radius: 10px; border: 2px solid #b2ebf2;
+            outline: none; font-size: 1em; background: rgba(255,255,255,0.9); transition: 0.3s;
+        }
+        .auth-input:focus { border-color: #00838f; box-shadow: 0 0 8px rgba(0,131,143,0.3); }
+        .auth-btn {
+            width: 100%; padding: 12px; border-radius: 10px; border: none; background: linear-gradient(135deg, #00acc1, #00838f);
+            color: white; font-weight: 600; font-size: 1em; cursor: pointer; transition: 0.2s; margin-top: 5px;
+        }
+        .auth-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+        .auth-switch { margin-top: 15px; font-size: 0.9em; color: #555; }
+        .auth-switch span { color: #00838f; font-weight: 600; cursor: pointer; text-decoration: underline; }
+
         /* FOLDER UI (Accordion) CSS */
         .folder-header {
             background: #ffffff; padding: 15px 20px; border-radius: 12px; cursor: pointer;
@@ -48,8 +72,6 @@
         .folder-content.active { display: flex; flex-direction: column; gap: 12px; }
         .chevron { transition: transform 0.3s ease; font-size: 1.2em; }
         .chevron.active { transform: rotate(180deg); }
-        
-        /* Dark Mode Folder */
         body.dark-theme .folder-header { background: #2c2c3e; color: #4dd0e1; border-color: #4dd0e1; }
         body.dark-theme .folder-content { border-left-color: #4dd0e1; }
 
@@ -102,8 +124,6 @@
         .view { display: none; } .view.active { display: block; }
         .section-title { font-size: 1.3em; color: #00838f; margin-bottom: 20px; border-bottom: 2px solid #b2ebf2; padding-bottom: 10px; }
 
-        input.custom-input { width: 100%; max-width: 300px; padding: 12px; border-radius: 8px; border: 2px solid #b2ebf2; outline: none; font-size: 1em; margin-bottom: 15px; transition: 0.3s; }
-        
         .history-item {
             background: #ffffff; border-radius: 12px; padding: 15px;
             display: flex; justify-content: space-between; align-items: center;
@@ -144,6 +164,19 @@
     <source src="DJ TEMANKU SEMUA PADA JAHAT TANTE __ DJ TANTE CULIK AKU DONG VIRAL TIKTOK TERBARU 2024.mp3" type="audio/mpeg">
 </audio>
 
+<!-- SCREEN 1: LOGIN & REGISTER AUTHENTICATION -->
+<div id="view-auth">
+    <div class="auth-card" id="auth-box">
+        <h2 id="auth-title">Masuk Akun</h2>
+        <input type="text" id="auth-user" class="auth-input" placeholder="Username unik kamu...">
+        <input type="password" id="auth-pass" class="auth-input" placeholder="Password rahasia...">
+        <button class="auth-btn" id="auth-main-btn" onclick="handleAuth()">Masuk</button>
+        <div class="auth-switch" id="auth-switch-text">
+            Belum punya akun? <span onclick="switchAuthMode('register')">Daftar sekarang</span>
+        </div>
+    </div>
+</div>
+
 <!-- Modal Detail Histori -->
 <div class="modal" id="history-modal">
     <div class="modal-content">
@@ -161,16 +194,18 @@
         <div class="brand"><h1>📚 sinau bang</h1></div>
     </div>
     <div class="right-nav">
+        <span id="nav-user-badge" style="font-size: 0.85em; font-weight: 600; color: #006064; background: #b2ebf2; padding: 4px 10px; border-radius: 12px;">Halo, User</span>
         <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">🌙</button>
         <div class="music-widget" onclick="toggleMusic()" id="music-btn-box">
             🎵 <span id="music-text">Putar</span>
         </div>
+        <button class="btn btn-outline" style="padding: 5px 10px; font-size: 0.8em; border-color:#e53935; color:#e53935;" onclick="logoutUser()">Keluar</button>
     </div>
 </div>
 
 <div class="sidebar" id="sidebar">
     <div class="sidebar-header">
-        <h3>Histori Ujian</h3>
+        <h3>Histori Akun Saya</h3>
         <button class="close-btn" onclick="toggleSidebar()">✖</button>
     </div>
     <div class="history-log" id="history-log"></div>
@@ -269,16 +304,71 @@
         <p id="result-message" style="margin-bottom: 15px;">Luar biasa!</p>
         
         <div style="background: rgba(0,0,0,0.03); padding: 15px; border-radius: 10px; max-width: 350px; margin: 0 auto 20px;">
-            <p style="font-size: 0.9em; margin-bottom: 8px; font-weight: 600;">Masukkan Nama Kamu untuk Menyimpan Skor:</p>
-            <input type="text" id="result-username" class="custom-input" placeholder="Ketik nama kamu..." style="margin-bottom: 10px;">
-            <br>
-            <button class="btn" onclick="saveScoreToHistory()">Simpan & Selesai</button>
+            <p style="font-size: 0.9em; margin-bottom: 8px; font-weight: 600;">Skor otomatis disimpan ke akunmu:</p>
+            <b id="result-username-display" style="color:#00838f; font-size: 1.1em; display:block; margin-bottom: 15px;">-</b>
+            <button class="btn" onclick="saveScoreToHistory()">Simpan ke Histori Akun</button>
         </div>
     </main>
 </div>
 
 <script>
-    // FOLDER TOGGLE LOGIC
+    // --- AUTENTIKASI AKUN LOKAL (USERNAME & PASSWORD) ---
+    let isRegisterMode = false;
+    let currentUser = localStorage.getItem('sinau_active_user') || null;
+
+    window.addEventListener('DOMContentLoaded', () => {
+        if (currentUser) {
+            document.getElementById('view-auth').style.display = 'none';
+            document.getElementById('nav-user-badge').innerText = `👤 ${currentUser}`;
+            updateHistorySidebar();
+        } else {
+            document.getElementById('view-auth').style.display = 'flex';
+        }
+        if(localStorage.getItem('theme_sinau') === 'dark') toggleTheme();
+    });
+
+    function switchAuthMode(mode) {
+        isRegisterMode = (mode === 'register');
+        document.getElementById('auth-title').innerText = isRegisterMode ? "Daftar Akun Baru" : "Masuk Akun";
+        document.getElementById('auth-main-btn').innerText = isRegisterMode ? "Daftar & Masuk" : "Masuk";
+        document.getElementById('auth-switch-text').innerHTML = isRegisterMode 
+            ? `Sudah punya akun? <span onclick="switchAuthMode('login')">Masuk di sini</span>`
+            : `Belum punya akun? <span onclick="switchAuthMode('register')">Daftar sekarang</span>`;
+    }
+
+    async function handleAuth() {
+        const u = document.getElementById('auth-user').value.trim();
+        const p = document.getElementById('auth-pass').value.trim();
+        if(!u || !p) { alert("Username dan password tidak boleh kosong!"); return; }
+
+        let usersDB = JSON.parse(localStorage.getItem('sinau_users_db')) || {};
+
+        if (isRegisterMode) {
+            if (usersDB[u]) { alert("Username sudah terpakai! Gunakan nama lain."); return; }
+            usersDB[u] = p;
+            localStorage.setItem('sinau_users_db', JSON.stringify(usersDB));
+            alert("Pendaftaran berhasil! Akun kamu telah dibuat.");
+        } else {
+            if (!usersDB[u] || usersDB[u] !== p) { alert("Username atau password salah!"); return; }
+        }
+
+        currentUser = u;
+        localStorage.setItem('sinau_active_user', currentUser);
+        document.getElementById('view-auth').style.display = 'none';
+        document.getElementById('nav-user-badge').innerText = `👤 ${currentUser}`;
+        updateHistorySidebar();
+        document.getElementById('auth-user').value = '';
+        document.getElementById('auth-pass').value = '';
+    }
+
+    function logoutUser() {
+        if(confirm("Keluar dari akun ini?")) {
+            localStorage.removeItem('sinau_active_user');
+            currentUser = null;
+            location.reload();
+        }
+    }
+
     function toggleFolder(folderId, headerElement) {
         const content = document.getElementById(folderId);
         const chevron = headerElement.querySelector('.chevron');
@@ -289,14 +379,12 @@
         }
     }
 
-    // PENGATURAN TEMA & MUSIK
     function toggleTheme() {
         document.body.classList.toggle('dark-theme');
         const isDark = document.body.classList.contains('dark-theme');
-        document.getElementById('theme-btn').innerText = isDark ? "☀️️" : "🌙";
+        document.getElementById('theme-btn').innerText = isDark ? "☀️" : "🌙";
         localStorage.setItem('theme_sinau', isDark ? 'dark' : 'light');
     }
-    window.onload = () => { if(localStorage.getItem('theme_sinau') === 'dark') toggleTheme(); updateHistorySidebar(); };
 
     const bgMusic = document.getElementById('bg-music');
     const musicText = document.getElementById('music-text');
@@ -323,9 +411,7 @@
         teks4: "<strong>Teks 4 (Fire)</strong><br>A fire destroyed 20 houses last night. The government provided Rp100.000.000 in cash aid for the victims."
     };
 
-    // --- FULL DATABASE SOAL ---
-
-    // 1. BAHASA INDONESIA (40 Soal)
+    // --- DATABASE LENGKAP 120+ SOAL ---
     const psts_indo_questions = [
         { q: "Surat lamaran pekerjaan yang digabungkan dengan riwayat hidup (curriculum vitae) termasuk jenis surat lamaran model...", o: ["Gabungan", "Terpisah", "Semi-blok", "Resmi"], c: 0, exp: "Model gabungan menyatukan surat dan riwayat hidup dalam satu kesatuan." },
         { q: "Kalimat penolakan lamaran pekerjaan yang halus dan santun adalah...", o: ["Maaf, kami tidak butuh tenaga Anda.", "Dengan menyesal kami belum bisa menerima Anda karena posisi telah terisi.", "Surat lamaran Anda ditolak karena tidak memenuhi syarat.", "Anda tidak kami terima, silakan cari di tempat lain."], c: 1, exp: "Penolakan harus menggunakan bahasa yang santun agar tidak menyinggung pelamar." },
@@ -369,7 +455,6 @@
         { q: "Format surat di mana seluruh teks rata kiri disebut...", o: ["Indented style", "Block style (Bentuk lurus)", "Semi block style", "Official style"], c: 1, exp: "Bentuk lurus (block style) mengetik semua bagian surat rata dari tepi kiri." }
     ];
 
-    // 2. BAHASA INGGRIS (40 Soal)
     const psts_bing_questions = [
         { q: "What is the social function / purpose of a News Item text?", o: ["To entertain the readers", "To persuade people", "To inform readers about newsworthy events", "To describe a specific place"], c: 2, exp: "Tujuan News Item adalah menginformasikan berita harian (newsworthy events)." },
         { q: "Which one is NOT a generic structure of News Item?", o: ["Newsworthy Event", "Background Events", "Sources", "Resolution"], c: 3, exp: "Resolution adalah struktur teks Narrative, bukan News Item." },
@@ -417,7 +502,6 @@
         { q: "(Teks 4) How many houses were destroyed?", o: ["10 houses", "15 houses", "20 houses", "25 houses"], c: 2, passage: readingTexts.teks4, exp: "Tertulis api menghancurkan '20 houses'." }
     ];
 
-    // 3. BAHASA JAWA (40 Soal)
     const psts_jawa_questions = [
         { q: "Tembung sandiwara asale saka basa Jawa, yaiku sandi lan wara. Sandi tegese wadi utawa rahasia, dene wara tegese...", o: ["Wewarah utawa ajaran", "Panggonan", "Tontonan", "Guyonan"], c: 0, exp: "Sandi tegese rahasia/wadi, wara (wewarah) tegese ajaran. Dadi sandiwara iku ajaran sing disandikake sajroning tontonan." },
         { q: "Rerangkening crita utawa urut-urutane kedadeyan ing sandiwara wiwit awal nganti pungkasan diarani...", o: ["Tema", "Alur (Plot)", "Amanat", "Latar"], c: 1, exp: "Alur utawa plot yaiku urutaning kedadeyan ing sajroning crita sandiwara." },
@@ -461,7 +545,6 @@
         { q: "Sandiwara radio iku jinis sandiwara sing mung bisa dirasakake lumantar...", o: ["Pandeleng (mata)", "Pangrungu (kuping)", "Pangrasa (kulit)", "Pangambu (irung)"], c: 1, exp: "Sandiwara radio mung arupa swara (audio), mula mung bisa dirungokake (pangrungu)." }
     ];
 
-    // 4. MATERI TKJ & MPLB
     const tkj_jaringan_qs = [
         { q: "Protokol yang berfungsi memberikan IP address secara otomatis kepada komputer client dalam sebuah jaringan adalah...", o: ["DNS", "FTP", "DHCP", "HTTP"], c: 2, exp: "DHCP (Dynamic Host Configuration Protocol) bertugas membagikan IP secara otomatis ke client." },
         { q: "Keuntungan utama menggunakan VLAN (Virtual Local Area Network) pada switch manageable adalah...", o: ["Menambah kecepatan bandwidth internet", "Membagi satu fisik jaringan menjadi beberapa jaringan logik yang terpisah", "Menggantikan fungsi router sepenuhnya", "Merubah alamat MAC menjadi IP"], c: 1, exp: "VLAN memisahkan broadcast domain secara logik meskipun berada dalam satu switch fisik." },
@@ -507,27 +590,35 @@
             let response = await fetch(FIREBASE_URL);
             let data = await response.json();
             logContainer.innerHTML = ''; 
-            if (!data) { logContainer.innerHTML = "<p style='font-size:0.9em; color:#888; text-align:center;'>Belum ada histori ujian.</p>"; return; }
+            if (!data) { logContainer.innerHTML = "<p style='font-size:0.9em; color:#888; text-align:center;'>Belum ada histori.</p>"; return; }
+            
             globalHistoryCache = Object.keys(data).map(key => ({ id: key, ...data[key] }));
-            globalHistoryCache.reverse();
-            globalHistoryCache.forEach((item, index) => {
+            let myHistory = globalHistoryCache.filter(item => item.nama === currentUser);
+            myHistory.reverse();
+
+            if (myHistory.length === 0) {
+                logContainer.innerHTML = "<p style='font-size:0.9em; color:#888; text-align:center;'>Belum ada riwayat ujian untuk akun ini.</p>";
+                return;
+            }
+
+            myHistory.forEach((item, index) => {
                 logContainer.innerHTML += `
-                <div class="log-item" onclick="openHistoryDetail(${index})">
-                    <b style="color:#00838f;">👤 ${item.nama}</b><br>
-                    <span style="font-size:0.9em;">Modul: ${item.modul}</span><br>
+                <div class="log-item" onclick="openHistoryDetail('${item.id}')">
+                    <span style="font-size:0.9em; font-weight:600; color:#00838f;">Modul: ${item.modul}</span><br>
                     Skor: <b style="font-size:1.1em; color:#e65100;">${item.skor}</b><br>
                     <span style="font-size:0.75em; color:gray;">📅 ${item.waktu}</span>
-                    <div style="font-size:0.75em; color:#00acc1; margin-top:3px;">👆 Klik untuk lihat detail jawaban</div>
+                    <div style="font-size:0.75em; color:#00acc1; margin-top:3px;">👆 Klik untuk lihat detail</div>
                 </div>`;
             });
         } catch (error) { logContainer.innerHTML = "<p style='color:red; text-align:center;'>Gagal memuat histori.</p>"; }
     }
 
-    function openHistoryDetail(index) {
-        const record = globalHistoryCache[index];
-        document.getElementById('modal-title').innerText = `${record.nama} (Skor: ${record.skor})`;
+    function openHistoryDetail(id) {
+        const record = globalHistoryCache.find(x => x.id === id);
+        if(!record) return;
+        document.getElementById('modal-title').innerText = `${record.modul} (Skor: ${record.skor})`;
         const modalBody = document.getElementById('modal-body-content'); modalBody.innerHTML = '';
-        if (!record.detailJawaban) { modalBody.innerHTML = "<p style='text-align:center; color:#888;'>Detail jawaban tidak tersedia.</p>"; } 
+        if (!record.detailJawaban) { modalBody.innerHTML = "<p style='text-align:center; color:#888;'>Detail tidak tersedia.</p>"; } 
         else {
             record.detailJawaban.forEach((ans, i) => {
                 let statusColor = ans.isTrue ? "border-left-color:#4caf50;" : "border-left-color:#f44336;";
@@ -544,15 +635,13 @@
     function closeModal() { document.getElementById('history-modal').style.display = 'none'; }
 
     async function saveScoreToHistory() {
-        const inputName = document.getElementById('result-username').value.trim();
-        if(!inputName) { alert("Harap masukkan nama kamu terlebih dahulu!"); return; }
         let timeString = new Date().toLocaleString('id-ID', {day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute:'2-digit'});
-        const dataBaru = { nama: inputName, modul: database[currentModulId].title, skor: finalCalculatedScore, waktu: timeString, detailJawaban: userSessionAnswers };
+        const dataBaru = { nama: currentUser, modul: database[currentModulId].title, skor: finalCalculatedScore, waktu: timeString, detailJawaban: userSessionAnswers };
         try {
             let btn = document.querySelector('.result-container .btn'); btn.innerText = "Menyimpan..."; btn.disabled = true;
             await fetch(FIREBASE_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dataBaru) });
-            alert("Skor dan detail jawaban berhasil disimpan!"); updateHistorySidebar(); showView('view-dashboard');
-            btn.innerText = "Simpan & Selesai"; btn.disabled = false;
+            alert("Skor berhasil disimpan ke akunmu!"); updateHistorySidebar(); showView('view-dashboard');
+            btn.innerText = "Simpan ke Histori Akun"; btn.disabled = false;
         } catch (error) { alert("Gagal menyimpan data."); }
     }
 
@@ -606,28 +695,9 @@
             showView('view-result');
             finalCalculatedScore = Math.round((score / questions.length) * 100);
             document.getElementById('final-score').innerText = finalCalculatedScore;
-            document.getElementById('result-username').value = ""; 
+            document.getElementById('result-username-display').innerText = currentUser;
             document.getElementById('result-message').innerText = finalCalculatedScore >= 80 ? "Luar biasa!" : "Coba lagi!";
         }, 300);
-    }
-    
-    function toggleChat() {
-        const box = document.getElementById('ai-chat-box');
-        box.style.display = box.style.display === 'flex' ? 'none' : 'flex';
-    }
-
-    function sendAIMsg() {
-        const input = document.getElementById('ai-input');
-        const text = input.value.trim();
-        if(!text) return;
-        const body = document.getElementById('ai-chat-body');
-        body.innerHTML += `<div class="user-msg">${text}</div>`;
-        input.value = '';
-        body.scrollTop = body.scrollHeight;
-        setTimeout(() => {
-            body.innerHTML += `<div class="ai-msg">Semangat belajarnya! Pertanyaan "${text}" dicatat ya. Tetap fokus! 🚀</div>`;
-            body.scrollTop = body.scrollHeight;
-        }, 800);
     }
 </script>
 </body>
