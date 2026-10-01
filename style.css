@@ -17,19 +17,19 @@
     --danger-color: #ef4444;
 }
 
-/* --- LIGHT THEME OVERRIDE --- */
+/* --- LIGHT THEME OVERRIDE (KOREKSI KONTRAS & WARNA) --- */
 body.light-theme {
     --bg-dark-1: #DAF1DE;
     --bg-dark-2: #8EB69B;
-    --panel-bg: rgba(255, 255, 255, 0.9);
-    --panel-border: rgba(35, 83, 71, 0.2);
+    --panel-bg: rgba(240, 248, 242, 0.95);
+    --panel-border: rgba(35, 83, 71, 0.3);
     --theme-1: #235347;
     --theme-dark: #163832;
-    --theme-accent: #163832;
+    --theme-accent: #235347;
     --text-light: #051F20;
-    --text-muted: rgba(5, 31, 32, 0.7);
+    --text-muted: rgba(5, 31, 32, 0.75);
     --bubble-me: #8EB69B;
-    --bubble-other: rgba(255, 255, 255, 0.95);
+    --bubble-other: rgba(220, 242, 225, 0.95);
 }
 
 * {
@@ -113,6 +113,7 @@ body {
 
 .icon-btn:hover {
     background: var(--theme-1);
+    color: #fff;
     border-color: var(--theme-accent);
 }
 
@@ -152,12 +153,12 @@ body {
     color: var(--text-light);
     padding: 18px;
     margin-bottom: 14px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
     transition: transform 0.2s ease, border-color 0.2s ease;
 }
 
 .glass-panel:hover {
-    border-color: rgba(142, 182, 155, 0.4);
+    border-color: var(--theme-accent);
 }
 
 .panel-title {
@@ -183,7 +184,7 @@ body {
     left: 0;
     width: 100%;
     height: 75px;
-    background: rgba(5, 31, 32, 0.95);
+    background: var(--bg-dark-2);
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
     display: flex;
@@ -191,7 +192,7 @@ body {
     align-items: center;
     border-top: 1px solid var(--panel-border);
     z-index: 1000;
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
 }
 
 .nav-item {
@@ -232,7 +233,7 @@ body {
    ========================================================== */
 .btn {
     background: linear-gradient(135deg, var(--theme-1), var(--theme-dark));
-    color: var(--text-light);
+    color: #DAF1DE;
     border: 1px solid var(--theme-accent);
     padding: 12px 20px;
     border-radius: 14px;
@@ -243,6 +244,10 @@ body {
     width: 100%;
     text-align: center;
     box-shadow: 0 4px 15px rgba(35, 83, 71, 0.3);
+}
+
+body.light-theme .btn {
+    color: #fff;
 }
 
 .btn:hover {
@@ -271,6 +276,11 @@ input, textarea, select {
     font-size: 0.95rem;
     margin-bottom: 14px;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+body.light-theme input, body.light-theme textarea, body.light-theme select {
+    background-color: rgba(255, 255, 255, 0.9) !important;
+    color: #051F20 !important;
 }
 
 input:focus, textarea:focus, select:focus {
@@ -369,6 +379,10 @@ input::placeholder, textarea::placeholder {
     padding: 16px;
     margin-bottom: 16px;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+body.light-theme .music-player-widget {
+    background: linear-gradient(135deg, rgba(142, 182, 155, 0.3), rgba(35, 83, 71, 0.2));
 }
 
 .music-controls {
@@ -558,6 +572,10 @@ input::placeholder, textarea::placeholder {
     background: radial-gradient(circle at 50% 50%, var(--bg-dark-1), rgba(5, 31, 32, 0.95));
 }
 
+body.light-theme #private-messages-box {
+    background: radial-gradient(circle at 50% 50%, #DAF1DE, #c2e2c8);
+}
+
 .chat-bubble {
     max-width: 78%;
     padding: 10px 14px;
@@ -571,10 +589,15 @@ input::placeholder, textarea::placeholder {
 
 .chat-bubble-me {
     background-color: var(--bubble-me) !important;
-    color: var(--text-light) !important;
+    color: #DAF1DE !important;
     align-self: flex-end;
     border-top-right-radius: 4px;
     border: 1px solid rgba(142, 182, 155, 0.3);
+}
+
+body.light-theme .chat-bubble-me {
+    background-color: #235347 !important;
+    color: #fff !important;
 }
 
 .chat-bubble-other {
@@ -583,6 +606,11 @@ input::placeholder, textarea::placeholder {
     align-self: flex-start;
     border: 1px solid var(--panel-border);
     border-top-left-radius: 4px;
+}
+
+body.light-theme .chat-bubble-other {
+    background-color: #ffffff !important;
+    color: #051F20 !important;
 }
 
 .chat-input-bar {
@@ -640,12 +668,20 @@ input::placeholder, textarea::placeholder {
 .option-btn.correct {
     background: rgba(34, 197, 94, 0.2) !important;
     border-color: var(--success-color) !important;
+    color: #15803d !important;
+}
+
+body:not(.light-theme) .option-btn.correct {
     color: #86efac !important;
 }
 
 .option-btn.wrong {
     background: rgba(239, 68, 68, 0.2) !important;
     border-color: var(--danger-color) !important;
+    color: #b91c1c !important;
+}
+
+body:not(.light-theme) .option-btn.wrong {
     color: #fca5a5 !important;
 }
 
@@ -693,6 +729,11 @@ input::placeholder, textarea::placeholder {
     flex-direction: column;
     padding: 22px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+body.light-theme .modal-content {
+    background: #ffffff;
+    color: #051F20;
 }
 
 .modal-body {
