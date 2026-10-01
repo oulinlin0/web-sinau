@@ -50,44 +50,43 @@
         .top-header { position: fixed; top: 0; left: 0; width: 100%; padding: 15px 25px; z-index: 100; display: flex; justify-content: center; align-items: center; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;}
         .top-header h1 { font-size: 1.4em; color: #ffffff; font-weight: 700; text-shadow: 0 2px 5px rgba(0,0,0,0.3); }
 
-        /* --- PERFECT CURVED BOTTOM NAVIGATION (SEPARATED HOLE EFFECT) --- */
+        /* --- SMOOTH & FLAT-EDGE CURVED BOTTOM NAVIGATION --- */
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; width: 100%; height: 75px;
-            background: transparent; /* Harus transparan agar bolongannya terlihat */
+            background: transparent;
             display: flex; z-index: 1000;
             padding-bottom: env(safe-area-inset-bottom);
-            filter: drop-shadow(0 -4px 15px rgba(0,0,0,0.15)); /* Trik untuk memberi shadow mengikuti lekukan lubang */
+            filter: drop-shadow(0 -4px 15px rgba(0,0,0,0.15));
         }
         
-        /* Container untuk lapisan navbar putih (mengontrol area ilusi shadow raksasa) */
         .nav-bg-clip {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            border-radius: 30px 30px 0 0;
+            border-radius: 0; /* Ujung kiri dan kanan dibuat rata/tidak melengkung */
             overflow: hidden; 
             z-index: 1; pointer-events: none;
         }
 
         .nav-indicator-wrapper {
             position: absolute; top: 0; left: 0; width: 20%; height: 100%;
-            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            /* Animasi dibuat lebih smooth dan luwes */
+            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
             z-index: 2; pointer-events: none;
         }
 
-        /* 1. EFEK LUBANG CEKUNG TEMBUS PANDANG (THE HOLE) */
+        /* EFEK LUBANG CEKUNG TEMBUS PANDANG */
         .nav-hole {
             position: absolute;
-            top: -35px; /* Separuh dari height, pas memotong atas navbar */
+            top: -35px;
             left: 50%; transform: translateX(-50%);
             width: 70px; height: 70px;
             border-radius: 50%;
             background: transparent;
-            box-shadow: 0 0 0 2000px #ffffff; /* Menciptakan warna putih solid di SELURUH sisa navbar */
+            box-shadow: 0 0 0 2000px #ffffff;
         }
 
-        /* EFEK LENGKUNGAN LEMBUT PADA SIKU LUBANG (FILLETS) */
         .nav-hole::before, .nav-hole::after {
             content: ''; position: absolute;
-            top: 35px; /* Sejajar pas dengan garis lurus batas atas navbar */
+            top: 35px;
             width: 24px; height: 24px;
         }
         .nav-hole::before {
@@ -99,10 +98,10 @@
             background: radial-gradient(circle at top right, transparent 23.5px, #ffffff 24px);
         }
 
-        /* 2. TOMBOL YANG MELAYANG TERPISAH (FLOATING BUTTON) */
+        /* TOMBOL MELAYANG TERPISAH */
         .nav-floating-icon {
             position: absolute;
-            top: -26px; /* Letaknya dibuat benar-benar berpusat di tengah lubang */
+            top: -26px;
             left: 50%; transform: translateX(-50%);
             width: 52px; height: 52px;
             border-radius: 50%;
@@ -110,11 +109,13 @@
             color: #ffffff; font-size: 1.4em;
             display: flex; justify-content: center; align-items: center;
             box-shadow: 0 6px 12px rgba(0,0,0,0.3);
-            border: none; /* Dihilangkan bordernya supaya benar-benar tampak pisah */
+            border: none;
         }
 
         .nav-item { position: relative; width: 20%; height: 100%; display: flex; justify-content: center; align-items: center; flex-direction: column; cursor: pointer; z-index: 3; }
-        .nav-icon { font-size: 1.4em; transition: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); color: #94a3b8; }
+        
+        /* Ikon Navbar diubah jadi 1 warna monokrom agar simpel */
+        .nav-icon { font-size: 1.3em; transition: 0.3s ease; color: #64748b; }
         .nav-text { position: absolute; font-size: 0.65em; font-weight: 600; color: #64748b; transform: translateY(22px); opacity: 0; transition: 0.3s; }
         
         /* Active States */
@@ -167,7 +168,7 @@
         .question-text { font-size: 1.1em; font-weight: 600; margin-bottom: 15px; color: #ffffff; }
         .options { display: grid; gap: 10px; }
         .option-btn { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); padding: 12px 16px; border-radius: 14px; text-align: left; font-size: 0.9em; cursor: pointer; transition: 0.2s; color: #ffffff; font-weight: 500;}
-        .option-btn:hover:not(:disabled) { background: rgba(255,255,255,0.1); }
+        .option-btn.hover:not(:disabled) { background: rgba(255,255,255,0.1); }
         .option-btn.correct { background: rgba(22, 163, 74, 0.8) !important; color: white !important; border-color: #22c55e !important; }
         .option-btn.wrong { background: rgba(220, 38, 38, 0.8) !important; color: white !important; border-color: #ef4444 !important; }
         .feedback-box { display: none; margin-top: 15px; padding: 15px; border-radius: 12px; border-left: 4px solid #fbbf24; background: rgba(0,0,0,0.3); }
@@ -332,19 +333,19 @@
 <!-- CURVED ANIMATED BOTTOM NAVIGATION -->
 <nav class="bottom-nav" id="bottom-nav">
     
-    <!-- Lapis 1: Pembentuk Background Putih + Lubang yang bolong tembus pandang -->
+    <!-- Lapis 1: Background Putih dengan Ujung Rata & Lubang Cekung -->
     <div class="nav-bg-clip">
         <div class="nav-indicator-wrapper" id="bg-wrapper">
             <div class="nav-hole"></div>
         </div>
     </div>
     
-    <!-- Lapis 2: Tombol Bulat Melayang (Terpisah dari navbar putih) -->
+    <!-- Lapis 2: Tombol Bulat Melayang -->
     <div class="nav-indicator-wrapper" id="indicator-wrapper" style="z-index: 4;">
         <div class="nav-floating-icon" id="nav-floating-icon">🏠</div>
     </div>
 
-    <!-- Lapis 3: Menu-menu yang bisa diklik -->
+    <!-- Lapis 3: Menu-menu dengan Ikon 1 Warna (Monokrom) -->
     <div class="nav-item active" onclick="switchTab(0, 'view-dashboard', '🏠')"><span class="nav-icon">🏠</span><span class="nav-text">Home</span></div>
     <div class="nav-item" onclick="switchTab(1, 'view-chat', '💬')"><span class="nav-icon">💬</span><span class="nav-text">Chat</span></div>
     <div class="nav-item" onclick="switchTab(2, 'view-music', '🎵')"><span class="nav-icon">🎵</span><span class="nav-text">Musik</span></div>
@@ -374,7 +375,6 @@
     // --- NAVIGATION LOGIC ---
     function switchTab(index, viewId, iconSymbol = '🏠') {
         if (index >= 0) {
-            /* MENGGERAKKAN KEDUA LAYER BERSAMAAN SECARA HALUS */
             document.getElementById('indicator-wrapper').style.transform = `translateX(${index * 100}%)`;
             document.getElementById('bg-wrapper').style.transform = `translateX(${index * 100}%)`;
             
@@ -629,7 +629,7 @@
         { q: "Sandiwara sing isine ngguyuhake, lucu, lan asring nggawe pamirsane gumuyu diarani sandiwara...", o: ["Komedi", "Tragedi", "Melodrama", "Kolosal"], c: 0, exp: "Komedi iku jinis sandiwara sing asipat lucu lan nyenengake." },
         { q: "Sandiwara sing isine crita sedhih utawa pungkasaning crita paraga utamane nemahi cilaka diarani...", o: ["Komedi", "Tragedi", "Opera", "Parodi"], c: 1, exp: "Tragedi asale saka tembung tragis, tegese crita sing pungkasan e melas utawa sedhih." },
         { q: "Wujud seni pertunjukan sing nggabungake tari lan crita tanpa nggunakake pacelathon (dialog) babar blas diarani...", o: ["Ketoprak", "Ludruk", "Sendratari", "Wayang wong"], c: 2, exp: "Sendratari (Seni Drama lan Tari) nyritakake lakon lumantar obahing tari tanpa dialog langsung." },
-        { q: "Kanggo mbedakake adegan siji lan adegan liyane (ganti wektu utawa panggonan) ing panggung, biasane ditandhani kanthi...", o: ["Ganti sutradara", "Owah-owahan lampu (mati utawa redup) utawa layar ditutup", "Penonton diwenehi maeman", "Paraga meneng kabeh sajroning jam-jaman"], c: 1, exp: "Peralihan adegan utawa babak ditandhani karo bloking lampu utawa tutup layar (kelir)." },
+        { q: "Kanggo mbedakake adegan siji lan adegan liyane (ganti wektu utawa panggonan) ing panggung, biasane ditandhani kanthi...", o: ["Ganti sutradara", "Owah-owahan lampu (mati utawa redup) atau layar ditutup", "Penonton diwenehi maeman", "Paraga meneng kabeh sajroning jam-jaman"], c: 1, exp: "Peralihan adegan utawa babak ditandhani karo bloking lampu utawa tutup layar (kelir)." },
         { q: "Ide pokok utawa gagasan utama sing dadi dhasar lakune crita sandiwara diarani...", o: ["Alur", "Amanat", "Tema", "Sudut pandang"], c: 2, exp: "Tema iku dhasar utawa pondasi crita (contho: tema pendidikan, perjuangan, katresnan)." },
         { q: "Wong sing tugase nulis naskah utawa skenario sandiwara diarani...", o: ["Pangripta (Penulis)", "Aktor", "Sutradara", "Kameramen"], c: 0, exp: "Pangripta naskah utawa penulis skenario tugase nggawe crita lan pacelathon." },
         { q: "Basa Ngoko Alus ing pacelathon sandiwara biasane digunakake dening...", o: ["Bocah cilik marang wong tuwane", "Wong tuwa marang wong enom sing luwih dhuwur derajate utawa diajeni", "Kanca akrab sing lagi wae kenal", "Abdi marang rajane"], c: 1, exp: "Ngoko alus gunane kanggo ngajeni wong sing luwih enom nanging pangkate/derajate luwih dhuwur, utawa antarane sedulur tuwa." },
