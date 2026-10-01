@@ -11,8 +11,35 @@
 
         body {
             background: linear-gradient(135deg, #e0f7fa 0%, #80deea 50%, #4dd0e1 100%);
-            min-height: 100vh; color: #333; overflow-x: hidden;
+            min-height: 100vh; color: #333; overflow-x: hidden; transition: background 0.3s, color 0.3s;
         }
+
+        /* Tema Gelap (Dark Mode) */
+        body.dark-theme {
+            background: linear-gradient(135deg, #121212 0%, #1e1e2f 50%, #1a1a2e 100%);
+            color: #e0e0e0;
+        }
+        body.dark-theme .navbar, body.dark-theme .card, body.dark-theme .sidebar, body.dark-theme .ai-chat-box, body.dark-theme .history-item {
+            background: rgba(30, 30, 42, 0.95); border-color: #333; color: #e0e0e0; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        body.dark-theme .brand h1, body.dark-theme .section-title, body.dark-theme .history-info h3, body.dark-theme .question-text { color: #4dd0e1; }
+        body.dark-theme .menu-btn { color: #4dd0e1; }
+        body.dark-theme .music-widget { background: #2c2c3e; border: 1px solid #4dd0e1; color: #4dd0e1; }
+        body.dark-theme .music-widget:hover { background: #3d3d5c; }
+        body.dark-theme .sidebar-header { border-bottom: 2px solid #444; }
+        body.dark-theme .log-item { background: #2c2c3e; border-left: 4px solid #4dd0e1; color: #e0e0e0; }
+        body.dark-theme .history-info p { color: #aaa; }
+        body.dark-theme .option-btn { background: #1e1e2f; border: 2px solid #555; color: #e0e0e0; }
+        body.dark-theme .option-btn:hover:not(:disabled) { background: #2c2c3e; }
+        body.dark-theme .option-btn.correct { background: #1b5e20 !important; color: #fff !important; border-color: #4caf50 !important; }
+        body.dark-theme .option-btn.wrong { background: #b71c1c !important; color: #fff !important; border-color: #f44336 !important; }
+        body.dark-theme .feedback-box { background: #332b1a; border-left: 4px solid #ffb300; color: #eee; }
+        body.dark-theme .ai-chat-header { background: #4a148c; }
+        body.dark-theme .ai-chat-body { background: #121212; }
+        body.dark-theme .ai-msg { background: #311b92; color: #fff; }
+        body.dark-theme .user-msg { background: #0d47a1; color: #fff; }
+        body.dark-theme input { background: #2c2c3e; color: #fff; border: 1px solid #555; }
+        body.dark-theme input::placeholder { color: #bbb; }
 
         /* Navbar & Menu */
         .navbar {
@@ -20,12 +47,11 @@
             padding: 15px 20px; background: rgba(255, 255, 255, 0.9);
             box-shadow: 0 4px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100;
         }
-        
-        .menu-btn {
-            background: none; border: none; font-size: 1.5em; color: #00838f; cursor: pointer;
-        }
-
+        .menu-btn { background: none; border: none; font-size: 1.5em; color: #00838f; cursor: pointer; }
         .brand h1 { font-size: 1.5em; color: #006064; display: flex; align-items: center; gap: 8px;}
+        
+        .right-nav { display: flex; align-items: center; gap: 10px; }
+        .theme-btn { background: none; border: none; font-size: 1.4em; cursor: pointer; }
 
         /* Widget Tombol Musik Interaktif */
         .music-widget {
@@ -37,15 +63,15 @@
 
         /* Sidebar History */
         .sidebar {
-            position: fixed; top: 0; left: -300px; width: 280px; height: 100vh;
+            position: fixed; top: 0; left: -300px; width: 300px; height: 100vh;
             background: #fff; box-shadow: 2px 0 15px rgba(0,0,0,0.1);
             transition: 0.3s; z-index: 200; padding: 20px; display: flex; flex-direction: column;
         }
         .sidebar.active { left: 0; }
         .sidebar-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e0f7fa; padding-bottom: 15px; margin-bottom: 15px;}
         .close-btn { background: none; border: none; font-size: 1.5em; color: #e53935; cursor: pointer; }
-        .history-log { flex: 1; overflow-y: auto; }
-        .log-item { background: #f1f8e9; padding: 10px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #8bc34a; font-size: 0.9em;}
+        .history-log { flex: 1; overflow-y: auto; padding-right: 5px; }
+        .log-item { background: #f1f8e9; padding: 12px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #8bc34a; font-size: 0.9em; line-height: 1.4;}
 
         .container { max-width: 900px; margin: 20px auto; padding: 0 15px; }
 
@@ -59,6 +85,10 @@
         .view.active { display: block; }
 
         .section-title { font-size: 1.3em; color: #00838f; margin-bottom: 15px; border-bottom: 2px solid #b2ebf2; padding-bottom: 10px; }
+
+        /* Custom Inputs */
+        input.custom-input { width: 100%; max-width: 300px; padding: 12px; border-radius: 8px; border: 2px solid #b2ebf2; outline: none; font-size: 1em; margin-bottom: 15px; transition: 0.3s; }
+        input.custom-input:focus { border-color: #00838f; }
 
         /* Dashboard Items */
         .history-list { display: flex; flex-direction: column; gap: 15px; }
@@ -84,7 +114,6 @@
         .progress-bar { width: 100%; height: 8px; background: #e0e0e0; border-radius: 4px; overflow: hidden; margin-bottom: 20px;}
         .progress-fill { height: 100%; background: #00bcd4; width: 0%; transition: width 0.3s ease; }
         
-        .reading-text { background: #f1f8e9; padding: 15px; border-radius: 10px; font-size: 0.9em; color: #33691e; margin-bottom: 20px; border-left: 4px solid #8bc34a; max-height: 150px; overflow-y: auto;}
         .question-text { font-size: 1.1em; font-weight: 600; margin-bottom: 15px; color: #263238; }
         .options { display: grid; gap: 10px; }
         .option-btn {
@@ -136,7 +165,6 @@
 <!-- Elemen Audio Latar -->
 <audio id="bg-music" loop>
     <source src="DJ TEMANKU SEMUA PADA JAHAT TANTE __ DJ TANTE CULIK AKU DONG VIRAL TIKTOK TERBARU 2024.mp3" type="audio/mpeg">
-    Browser Anda tidak mendukung tag audio.
 </audio>
 
 <!-- Navbar -->
@@ -146,9 +174,13 @@
         <div class="brand"><h1>📚 sinau bang</h1></div>
     </div>
     
-    <!-- Tombol Musik Interaktif -->
-    <div class="music-widget" onclick="toggleMusic()" id="music-btn-box">
-        🎵 <span id="music-text">Putar Musik</span>
+    <div class="right-nav">
+        <!-- Tombol Dark Mode -->
+        <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">🌙</button>
+        <!-- Tombol Musik Interaktif -->
+        <div class="music-widget" onclick="toggleMusic()" id="music-btn-box">
+            🎵 <span id="music-text">Putar</span>
+        </div>
     </div>
 </div>
 
@@ -159,19 +191,33 @@
         <button class="close-btn" onclick="toggleSidebar()">✖</button>
     </div>
     <div class="history-log" id="history-log"></div>
-    <button class="btn btn-outline" style="margin-top: 10px;" onclick="clearHistory()">Hapus Data</button>
+    <button class="btn btn-outline" style="margin-top: 10px; width:100%;" onclick="clearHistory()">Hapus Semua Data</button>
 </div>
 
 <div class="container">
+
+    <!-- LOGIN VIEW (Halaman Awal) -->
+    <main id="view-login" class="view active card" style="text-align: center; padding-top: 40px; padding-bottom: 40px;">
+        <h2 class="section-title" style="border:none;">Selamat Datang! 👋</h2>
+        <p style="margin-bottom: 20px; font-size: 0.95em;">Silakan masukkan nama kamu sebelum mulai belajar agar histori dapat tersimpan.</p>
+        <input type="text" id="username-input" class="custom-input" placeholder="Ketik nama kamu di sini..." onkeypress="if(event.key === 'Enter') masukDashboard()">
+        <br>
+        <button class="btn" style="padding: 12px 30px; font-size: 1.1em;" onclick="masukDashboard()">Masuk 🚀</button>
+    </main>
+
     <!-- DASHBOARD -->
-    <main id="view-dashboard" class="view active card">
-        <h2 class="section-title">Modul Belajar</h2>
+    <main id="view-dashboard" class="view card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2 class="section-title" style="border:none; margin:0;">Modul Belajar</h2>
+            <span id="welcome-name" style="font-weight: 600; color: #00838f; font-size: 0.9em;"></span>
+        </div>
+        <hr style="border: 1px solid #b2ebf2; margin: 10px 0 20px;">
+        
         <div class="history-list">
             <div class="history-item">
                 <div class="history-info">
                     <h3>KISI-KISI PSTS BHS INDO XII</h3>
                     <p>40 Soal: Surat Lamaran Pekerjaan</p>
-                    <p id="status-modul-indo" style="color: #00acc1; font-weight:600; font-size: 0.8em;"></p>
                 </div>
                 <button class="btn" onclick="startStudySession('psts_indo')">Mulai</button>
             </div>
@@ -180,7 +226,6 @@
                 <div class="history-info">
                     <h3 style="color: #558b2f;">KISI-KISI PSTS BING XII</h3>
                     <p>40 Soal: News Item Text</p>
-                    <p id="status-modul-bing" style="color: #558b2f; font-weight:600; font-size: 0.8em;"></p>
                 </div>
                 <button class="btn" style="background: linear-gradient(135deg, #8bc34a, #558b2f);" onclick="startStudySession('psts_bing')">Mulai</button>
             </div>
@@ -190,13 +235,11 @@
     <!-- QUIZ VIEW -->
     <main id="view-quiz" class="view card">
         <div class="quiz-header">
-            <button class="btn btn-outline" style="padding: 5px 12px; font-size: 0.8em;" onclick="goHome()">⬅ Batal</button>
+            <button class="btn btn-outline" style="padding: 5px 12px; font-size: 0.8em;" onclick="showView('view-dashboard')">⬅ Batal</button>
             <h3 id="quiz-title" style="color:#00838f; font-size: 1.1em;">Judul</h3>
             <span id="question-tracker" style="font-weight: 600;">1/40</span>
         </div>
         <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
-
-        <div id="reading-container" class="reading-text" style="display: none;"></div>
 
         <div class="question-area">
             <div id="question-text" class="question-text">Memuat...</div>
@@ -218,7 +261,7 @@
         <h2 class="section-title">Selesai! 🎉</h2>
         <div class="score-circle" id="final-score">100</div>
         <p id="result-message" style="margin-bottom: 20px;">Luar biasa!</p>
-        <button class="btn" onclick="goHome()">Ke Dashboard</button>
+        <button class="btn" onclick="showView('view-dashboard')">Ke Dashboard</button>
     </main>
 </div>
 
@@ -230,15 +273,46 @@
         <button onclick="toggleChat()" style="background:none; border:none; color:white; font-size:1.2em; cursor:pointer;">✖</button>
     </div>
     <div class="ai-chat-body" id="ai-chat-body">
-        <div class="ai-msg">Halo! Aku simulasi AI. Karena ini file HTML offline, aku bantu catat pertanyaanmu ya. Ada yang bingung dari soal tadi?</div>
+        <div class="ai-msg">Halo! Aku simulasi AI. Ada yang bingung dari soal tadi?</div>
     </div>
     <div class="ai-chat-input">
-        <input type="text" id="ai-input" placeholder="Ketik pertanyaanmu..." onkeypress="if(event.key === 'Enter') sendAIMsg()">
+        <input type="text" id="ai-input" placeholder="Ketik pertanyaan..." onkeypress="if(event.key === 'Enter') sendAIMsg()">
         <button onclick="sendAIMsg()">➤</button>
     </div>
 </div>
 
 <script>
+    // --- PENGATURAN TEMA (DARK/LIGHT MODE) ---
+    function toggleTheme() {
+        document.body.classList.toggle('dark-theme');
+        const isDark = document.body.classList.contains('dark-theme');
+        document.getElementById('theme-btn').innerText = isDark ? "☀️" : "🌙";
+        localStorage.setItem('theme_sinau', isDark ? 'dark' : 'light');
+    }
+
+    // Cek tema yang tersimpan saat web dimuat
+    window.onload = () => {
+        if(localStorage.getItem('theme_sinau') === 'dark') {
+            toggleTheme();
+        }
+        updateHistorySidebar();
+    };
+
+    // --- SISTEM LOGIN NAMA PENGGUNA ---
+    let currentUser = "";
+    
+    function masukDashboard() {
+        const inputName = document.getElementById('username-input').value.trim();
+        if(!inputName) {
+            alert("Harap masukkan nama kamu terlebih dahulu!");
+            return;
+        }
+        currentUser = inputName;
+        document.getElementById('welcome-name').innerText = `Halo, ${currentUser}!`;
+        showView('view-dashboard');
+    }
+
+    // --- KONTROL MUSIK INTERAKTIF ---
     const bgMusic = document.getElementById('bg-music');
     const musicText = document.getElementById('music-text');
     let isMusicPlaying = false;
@@ -246,23 +320,23 @@
     function toggleMusic() {
         if (isMusicPlaying) {
             bgMusic.pause();
-            musicText.innerText = "Putar Musik";
+            musicText.innerText = "Putar";
             isMusicPlaying = false;
         } else {
             let playPromise = bgMusic.play();
-
             if (playPromise !== undefined) {
                 playPromise.then(_ => {
-                    musicText.innerText = "Matikan Musik ⏸";
+                    musicText.innerText = "Jeda";
                     isMusicPlaying = true;
                 }).catch(error => {
-                    console.error("Gagal memutar audio:", error);
-                    alert("Gagal memutar audio. Pastikan file '" + bgMusic.querySelector('source').getAttribute('src') + "' berada dalam direktori yang sama dengan file HTML Anda.");
+                    console.error("Gagal memutar:", error);
+                    alert("Gagal memutar audio.");
                 });
             }
         }
     }
 
+    // Fungsi Pengacak Khusus
     function shuffleArray(array) {
         let currentIndex = array.length, randomIndex;
         while (currentIndex !== 0) {
@@ -273,6 +347,7 @@
         return array;
     }
 
+    // --- DATABASE SOAL ---
     const psts_indo_questions = [
         { q: "Surat lamaran pekerjaan yang digabungkan dengan riwayat hidup (curriculum vitae) termasuk jenis surat lamaran...", o: ["Model gabungan", "Model terpisah", "Model semi-blok", "Model resmi"], c: 0, exp: "Surat lamaran yang digabung dengan riwayat hidup disebut model gabungan." },
         { q: "Berikut ini yang merupakan contoh kalimat penolakan lamaran pekerjaan yang halus dan tepat adalah...", o: ["Maaf, kami tidak butuh tenaga Anda.", "Dengan menyesal kami tidak dapat menerima Anda karena posisi telah terisi.", "Surat lamaran Anda ditolak karena tidak memenuhi syarat.", "Anda tidak kami terima, silakan cari di tempat lain."], c: 1, exp: "Kalimat penolakan harus santun dan memberikan alasan yang logis tanpa menyakiti pelamar." },
@@ -280,9 +355,9 @@
         { q: "Alenia pembuka surat lamaran pekerjaan yang tepat berdasarkan iklan di koran Kompas tanggal 5 September 2024 adalah...", o: ["Sesuai iklan di Kompas, saya melamar pekerjaan...", "Berdasarkan iklan yang dimuat pada harian Kompas tanggal 5 September 2024, saya mengajukan lamaran...", "Membaca iklan di koran, saya berniat melamar...", "Saya melihat iklan di Kompas dan saya ingin bekerja di perusahaan Bapak."], c: 1, exp: "Penulisan sumber iklan harus mencantumkan nama media dan tanggal terbit secara formal." },
         { q: "Penulisan alamat surat yang benar sesuai dengan EYD/PUEBI adalah...", o: ["Kepada Yth. Bapak Direktur PT Sukses Makmur Jl. Melati 10 Jakarta", "Yth. Direktur PT Sukses Makmur Jalan Melati No. 10 Jakarta", "Yth. Pimpinan PT. Sukses Makmur, Jalan Melati 10, Jakarta.", "Kepada Yth. Pimpinan PT Sukses Makmur di Jakarta"], c: 1, exp: "Alamat surat tidak menggunakan kata 'Kepada', tidak menggunakan titik setelah 'PT', dan menggunakan kata 'Jalan' tanpa disingkat." }
     ];
+    // Saya ubah penomoran/variasinya agar kelihatan saat diacak
     for(let i=5; i<40; i++) {
-        // Teks "Latihan Analisis Surat Lamaran" DIHAPUS dari sini
-        psts_indo_questions.push({ q: `Manakah penulisan alamat surat yang salah?`, o: ["Yth. Direktur PT Abadi", "Kepada Yth. Bapak Direktur", "Yth. Pimpinan HRD", "Yth. Kepala HRD PT Makmur"], c: 1, exp: "Penggunaan 'Kepada' dan 'Yth.' secara bersamaan adalah pemborosan kata (salah)." });
+        psts_indo_questions.push({ q: `(Variasi #${i+1}) Manakah penulisan alamat surat yang salah?`, o: ["Yth. Direktur PT Abadi", "Kepada Yth. Bapak Direktur", "Yth. Pimpinan HRD", "Yth. Kepala HRD PT Makmur"], c: 1, exp: "Penggunaan 'Kepada' dan 'Yth.' secara bersamaan adalah pemborosan kata (salah)." });
     }
 
     const psts_bing_questions = [
@@ -290,9 +365,9 @@
         { q: "Which one is NOT a generic structure of News Item?", o: ["Newsworthy Event", "Background Event", "Sources", "Resolution"], c: 3, exp: "Resolution ada di Narrative text, bukan News Item." },
         { q: "The summary of the main event is written in the...", o: ["Orientation", "Newsworthy Event", "Sources", "Background"], c: 1, exp: "Newsworthy event berisi ringkasan/inti kejadian utama." }
     ];
+    // Saya ubah penomoran/variasinya agar kelihatan saat diacak
     for(let i=3; i<40; i++) {
-        // Teks "Practice Question" DIHAPUS dari sini
-        psts_bing_questions.push({ q: `Which of the following is a Past Tense verb?`, o: ["Go", "Went", "Going", "Goes"], c: 1, exp: "'Went' is the past form of 'go'." });
+        psts_bing_questions.push({ q: `(Variation #${i+1}) Which of the following is a Past Tense verb?`, o: ["Go", "Went", "Going", "Goes"], c: 1, exp: "'Went' is the past form of 'go'." });
     }
 
     const database = {
@@ -306,42 +381,48 @@
     let score = 0;
     let answered = false;
 
-    function initDashboard() {
-        const indoScore = localStorage.getItem('score_psts_indo');
-        const bingScore = localStorage.getItem('score_psts_bing');
-        if (indoScore !== null) document.getElementById('status-modul-indo').innerText = `Skor Terakhir: ${indoScore}`;
-        if (bingScore !== null) document.getElementById('status-modul-bing').innerText = `Skor Terakhir: ${bingScore}`;
-        updateHistorySidebar();
-    }
-
+    // --- FUNGSI HISTORI ---
     function updateHistorySidebar() {
         const logContainer = document.getElementById('history-log');
         logContainer.innerHTML = '';
-        let hasData = false;
-        for (let i = 0; i < localStorage.length; i++) {
-            const key = localStorage.key(i);
-            if (key.startsWith('score_')) {
-                hasData = true;
-                const modulName = key.replace('score_', '').toUpperCase();
-                const val = localStorage.getItem(key);
-                logContainer.innerHTML += `<div class="log-item">Modul: <b>${modulName}</b> <br>Nilai: <b>${val}</b></div>`;
-            }
+        
+        let historyData = JSON.parse(localStorage.getItem('quizHistory_sinau')) || [];
+        
+        if (historyData.length === 0) {
+            logContainer.innerHTML = "<p style='font-size:0.9em; color:#888; text-align:center;'>Belum ada histori ujian.</p>";
+            return;
         }
-        if (!hasData) logContainer.innerHTML = "<p style='font-size:0.9em; color:#888;'>Belum ada histori ujian.</p>";
+
+        historyData.slice().reverse().forEach(item => {
+            logContainer.innerHTML += `
+            <div class="log-item">
+                <b style="color:#00838f;">👤 ${item.nama}</b><br>
+                <span style="font-size:0.9em;">Modul: ${item.modul}</span><br>
+                Skor: <b style="font-size:1.1em; color:#e65100;">${item.skor}</b><br>
+                <span style="font-size:0.75em; color:gray;">📅 ${item.waktu}</span>
+            </div>`;
+        });
     }
 
     function clearHistory() {
-        localStorage.clear();
-        alert("Histori dibersihkan. Halaman akan dimuat ulang.");
-        location.reload();
+        if(confirm("Apakah kamu yakin ingin menghapus semua data histori belajar?")) {
+            localStorage.removeItem('quizHistory_sinau');
+            updateHistorySidebar();
+            alert("Histori berhasil dihapus!");
+        }
     }
 
+    // --- KONTROL TAMPILAN ---
     function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
-    function showView(id) { document.querySelectorAll('.view').forEach(v => v.classList.remove('active')); document.getElementById(id).classList.add('active'); }
-    function goHome() { showView('view-dashboard'); initDashboard(); }
+    function showView(id) { 
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active')); 
+        document.getElementById(id).classList.add('active'); 
+    }
 
+    // --- KUIS LOGIC (Acak Soal setiap kali Masuk) ---
     function startStudySession(modulId) {
         currentModulId = modulId;
+        // Kode di bawah ini yang memastikan soal diacak SETIAP KALI tombol MULAI ditekan
         questions = shuffleArray([...database[modulId].questions]); 
         document.getElementById('quiz-title').innerText = database[modulId].title;
         currentQIndex = 0; score = 0;
@@ -356,13 +437,12 @@
         document.getElementById('question-tracker').innerText = `${currentQIndex + 1}/${questions.length}`;
         document.getElementById('progress-fill').style.width = `${((currentQIndex) / questions.length) * 100}%`;
 
-        document.getElementById('reading-container').style.display = 'none';
-        // Hanya menampilkan nomor soal dan pertanyaannya
         document.getElementById('question-text').innerText = `${currentQIndex + 1}. ${q.q}`;
         
         const optionsContainer = document.getElementById('options-container');
         optionsContainer.innerHTML = '';
         
+        // Pilihan Ganda (A, B, C, D) juga diacak otomatis
         let optionsArr = q.o.map((text, index) => ({ text, isCorrect: index === q.c }));
         optionsArr = shuffleArray(optionsArr);
 
@@ -408,11 +488,27 @@
             showView('view-result');
             const finalScore = Math.round((score / questions.length) * 100);
             document.getElementById('final-score').innerText = finalScore;
-            localStorage.setItem(`score_${currentModulId}`, finalScore);
+            
+            // Simpan ke Histori Berdasarkan Nama
+            let historyData = JSON.parse(localStorage.getItem('quizHistory_sinau')) || [];
+            let now = new Date();
+            let timeString = now.toLocaleString('id-ID', {day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute:'2-digit'});
+
+            historyData.push({
+                nama: currentUser,
+                modul: database[currentModulId].title,
+                skor: finalScore,
+                waktu: timeString
+            });
+            
+            localStorage.setItem('quizHistory_sinau', JSON.stringify(historyData));
+            updateHistorySidebar();
+
             document.getElementById('result-message').innerText = finalScore >= 80 ? "Luar biasa! Pertahankan!" : "Jangan menyerah, coba lagi!";
         }, 300);
     }
 
+    // --- AI CHATBOX ---
     function toggleChat() {
         const box = document.getElementById('ai-chat-box');
         box.style.display = box.style.display === 'flex' ? 'none' : 'flex';
@@ -427,12 +523,11 @@
         input.value = '';
         body.scrollTop = body.scrollHeight;
         setTimeout(() => {
-            body.innerHTML += `<div class="ai-msg">Semangat belajarnya! Pertanyaan "${text}" dicatat ya. Tetap fokus! 🚀</div>`;
+            body.innerHTML += `<div class="ai-msg">Semangat belajarnya, ${currentUser}! Pertanyaan "${text}" dicatat ya. Tetap fokus! 🚀</div>`;
             body.scrollTop = body.scrollHeight;
         }, 800);
     }
 
-    initDashboard();
 </script>
 </body>
 </html>
