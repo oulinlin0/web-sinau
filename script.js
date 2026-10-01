@@ -27,6 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // --- VARIABEL PRIVATE CHAT ---
 let activeChatUser = null;
 let currentChatInterval = null;
+let chatListInterval = null; 
 
 // --- NAVIGATION LOGIC ---  
 function switchTab(index, viewId, iconSymbol = '<i class="fa-solid fa-house"></i>') {  
@@ -67,6 +68,12 @@ function switchTab(index, viewId, iconSymbol = '<i class="fa-solid fa-house"></i
 
     if (viewId !== 'view-private-room' && currentChatInterval) {
         clearInterval(currentChatInterval);
+        currentChatInterval = null;
+    }
+
+    if (viewId !== 'view-chat' && chatListInterval) {
+        clearInterval(chatListInterval);
+        chatListInterval = null;
     }
 
     if (viewId === 'view-history') {  
@@ -75,6 +82,10 @@ function switchTab(index, viewId, iconSymbol = '<i class="fa-solid fa-house"></i
 
     if (viewId === 'view-chat') {  
         loadChatUsersList();  
+        // Diubah menjadi 500ms (0.5 detik) agar super cepat / real-time
+        if (!chatListInterval) {
+            chatListInterval = setInterval(loadChatUsersList, 500);
+        }
     }  
 }  
 
@@ -170,7 +181,7 @@ async function loadChatUsersList() {
     const activeUsersList = document.getElementById('active-users-list');  
     const recentChatList = document.getElementById('chat-recent-list');  
       
-    if (activeUsersList) {
+    if (activeUsersList && activeUsersList.innerHTML.trim() === "") {
         activeUsersList.innerHTML = `  
             <div class="active-user-item">  
                 <div class="avatar-wrapper new-chat"><i class="fa-solid fa-plus"></i></div>  
@@ -178,24 +189,26 @@ async function loadChatUsersList() {
             </div>  
         `;  
     }
-    
-    if (recentChatList) {
-        recentChatList.innerHTML = '<p style="text-align:center; opacity:0.5;">Memuat kontak...</p>';  
-    }
 
     try {  
         let res = await fetch(FIREBASE_USERS_URL);  
         let usersDB = await res.json() || {};  
           
         let otherUsers = Object.keys(usersDB).filter(u => u !== currentUser);  
-        if (recentChatList) recentChatList.innerHTML = '';  
-
         if (otherUsers.length === 0) {  
-            if (recentChatList) {
+            if (recentChatList && recentChatList.innerHTML.trim() === "") {
                 recentChatList.innerHTML = '<p style="text-align:center; opacity:0.5;">Belum ada teman terdaftar.</p>';  
             }
             return;  
         }  
+
+        let activeUsersHTML = `  
+            <div class="active-user-item">  
+                <div class="avatar-wrapper new-chat"><i class="fa-solid fa-plus"></i></div>  
+                <span>New</span>  
+            </div>  
+        `;
+        let recentChatHTML = '';
 
         for (let user of otherUsers) {  
             const avatarPath = getAvatarUrl(user);  
@@ -204,7 +217,6 @@ async function loadChatUsersList() {
             let metaRes = await fetch(`https://sinaubang-web-a5069-default-rtdb.asia-southeast1.firebasedatabase.app/chat_meta/${roomId}.json`);
             let meta = await metaRes.json() || { lastMessage: "Ketuk untuk mulai obrolan...", time: "", lastSender: "" };
 
-            // Ambil pesan untuk menghitung jumlah unread secara akurat berdasarkan timestamp
             let msgRes = await fetch(`https://sinaubang-web-a5069-default-rtdb.asia-southeast1.firebasedatabase.app/private_chats/${roomId}.json`);
             let msgsData = await msgRes.json() || {};
 
@@ -226,41 +238,38 @@ async function loadChatUsersList() {
 
             let badgeHTML = isUnread ? `<div class="unread-badge">${unreadCount}</div>` : '';
 
-            if (activeUsersList) {
-                activeUsersList.innerHTML += `  
-                    <div class="active-user-item" onclick="openPrivateChat('${user}')">  
-                        <div class="avatar-wrapper online">  
-                            <img src="${avatarPath}" alt="${user}">  
-                            <div class="online-dot"></div>  
-                        </div>  
-                        <span>${user}</span>  
+            activeUsersHTML += `  
+                <div class="active-user-item" onclick="openPrivateChat('${user}')">  
+                    <div class="avatar-wrapper online">  
+                        <img src="${avatarPath}" alt="${user}">  
+                        <div class="online-dot"></div>  
                     </div>  
-                `;  
-            }
+                    <span>${user}</span>  
+                </div>  
+            `;  
 
-            if (recentChatList) {
-                recentChatList.innerHTML += `  
-                    <div class="chat-list-item" onclick="openPrivateChat('${user}')">  
-                        <div class="avatar-wrapper" style="width: 50px; height: 50px; margin-bottom: 0; flex-shrink: 0;">  
-                            <img src="${avatarPath}" alt="${user}">  
-                        </div>  
-                        <div class="chat-list-info">  
-                            <div class="chat-list-name">${user}</div>  
-                            <div class="chat-list-msg">${previewText}</div>  
-                        </div>  
-                        <div class="chat-list-meta">  
-                            <span style="font-weight: ${isUnread ? '700' : 'normal'}; color: ${isUnread ? '#22c55e' : 'inherit'};">${meta.time || ''}</span>  
-                            ${badgeHTML}  
-                        </div>  
+            recentChatHTML += `  
+                <div class="chat-list-item" onclick="openPrivateChat('${user}')">  
+                    <div class="avatar-wrapper" style="width: 50px; height: 50px; margin-bottom: 0; flex-shrink: 0;">  
+                        <img src="${avatarPath}" alt="${user}">  
                     </div>  
-                `;  
-            }
+                    <div class="chat-list-info">  
+                        <div class="chat-list-name">${user}</div>  
+                        <div class="chat-list-msg">${previewText}</div>  
+                    </div>  
+                    <div class="chat-list-meta">  
+                        <span style="font-weight: ${isUnread ? '700' : 'normal'}; color: ${isUnread ? '#22c55e' : 'inherit'};">${meta.time || ''}</span>  
+                        ${badgeHTML}  
+                    </div>  
+                </div>  
+            `;  
         }  
+
+        if (activeUsersList) activeUsersList.innerHTML = activeUsersHTML;
+        if (recentChatList) recentChatList.innerHTML = recentChatHTML;
+
     } catch (error) {  
         console.error("Gagal memuat kontak", error);  
-        if (recentChatList) {
-            recentChatList.innerHTML = '<p style="text-align:center; color:#ef4444;">Gagal memuat kontak.</p>';
-        }
     }  
 }  
 
@@ -297,7 +306,8 @@ async function openPrivateChat(targetUser) {
     loadPrivateMessages();  
       
     if(currentChatInterval) clearInterval(currentChatInterval);  
-    currentChatInterval = setInterval(loadPrivateMessages, 3000);  
+    // Diubah menjadi 500ms (0.5 detik) agar pesan di dalam ruang chat juga muncul secepatnya
+    currentChatInterval = setInterval(loadPrivateMessages, 500);  
 }  
 
 async function loadPrivateMessages() {  
@@ -344,7 +354,6 @@ async function sendPrivateMessage() {
     let timeString = new Date().toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'});   
     inputField.value = '';  
       
-    // Kirim pesan menyertakan timestamp akurat
     await fetch(PRIVATE_URL, {   
         method: 'POST',   
         headers: { 'Content-Type': 'application/json' },   
@@ -354,7 +363,6 @@ async function sendPrivateMessage() {
     let resMeta = await fetch(META_URL);
     let metaData = await resMeta.json() || {};
 
-    // Perbarui metadata obrolan terakhir
     await fetch(META_URL, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
