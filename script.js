@@ -28,6 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
 let activeChatUser = null;
 let currentChatInterval = null;
 let chatListInterval = null; 
+let lastMessageCount = 0; // Pengaman anti kedip-kedip
 
 // --- NAVIGATION LOGIC ---  
 function switchTab(index, viewId, iconSymbol = '<i class="fa-solid fa-house"></i>') {  
@@ -82,7 +83,6 @@ function switchTab(index, viewId, iconSymbol = '<i class="fa-solid fa-house"></i
 
     if (viewId === 'view-chat') {  
         loadChatUsersList();  
-        // Diubah menjadi 500ms (0.5 detik) agar super cepat / real-time
         if (!chatListInterval) {
             chatListInterval = setInterval(loadChatUsersList, 500);
         }
@@ -275,6 +275,7 @@ async function loadChatUsersList() {
 
 async function openPrivateChat(targetUser) {  
     activeChatUser = targetUser;  
+    lastMessageCount = 0; // Reset hitungan pesan saat membuka ruang chat baru
     
     const roomId = getRoomId(currentUser, targetUser);
     const META_URL = `https://sinaubang-web-a5069-default-rtdb.asia-southeast1.firebasedatabase.app/chat_meta/${roomId}.json`;
@@ -306,7 +307,6 @@ async function openPrivateChat(targetUser) {
     loadPrivateMessages();  
       
     if(currentChatInterval) clearInterval(currentChatInterval);  
-    // Diubah menjadi 500ms (0.5 detik) agar pesan di dalam ruang chat juga muncul secepatnya
     currentChatInterval = setInterval(loadPrivateMessages, 500);  
 }  
 
@@ -321,21 +321,34 @@ async function loadPrivateMessages() {
         let res = await fetch(PRIVATE_URL);  
         let data = await res.json();  
         
-        chatBox.innerHTML = '';  
         if(!data) {  
-            chatBox.innerHTML = '<p style="text-align:center; color:rgba(255,255,255,0.5);">Belum ada pesan. Sapa temanmu!</p>';  
+            if (lastMessageCount !== 0) {
+                lastMessageCount = 0;
+                chatBox.innerHTML = '<p style="text-align:center; color:rgba(255,255,255,0.5);">Belum ada pesan. Sapa temanmu!</p>';  
+            }
             return;  
         }  
         
-        Object.values(data).forEach(c => {  
+        let messagesArray = Object.values(data);
+        
+        // PENTING: Jika jumlah pesan sama persis, JANGAN RENDER ULANG (Mencegah kedip 100%)
+        if (messagesArray.length === lastMessageCount) {
+            return; 
+        }
+        
+        lastMessageCount = messagesArray.length;
+        
+        let htmlContent = '';
+        messagesArray.forEach(c => {  
             let isMe = (c.sender === currentUser);  
             let bClass = isMe ? 'chat-bubble-me' : 'chat-bubble-other';  
-            chatBox.innerHTML += `  
+            htmlContent += `  
                 <div class="chat-bubble ${bClass}">  
                     ${c.message}<br><small style="opacity:0.7; font-size:0.75em; float:right; margin-left:10px; margin-top:3px;">${c.time} ${isMe ? '<i class="fa-solid fa-check" style="margin-left:2px;"></i>' : ''}</small>  
                 </div>`;  
         });  
         
+        chatBox.innerHTML = htmlContent;  
         chatBox.scrollTop = chatBox.scrollHeight;  
     } catch(e) { console.error(e); }  
 }  
@@ -568,77 +581,5 @@ const tkj_vsat_qs = [
 ];  
 
 const mplb_sop_qs = [  
-    { q: "Dalam SOP Front Office, sikap melayani tamu dengan ramah, cepat, dan tanggap sering disebut sebagai penerapan prinsip...", o: ["Pelayanan Prima (Service Excellence)", "Manajemen Konflik", "Arsip Dinamis", "Administrasi Keuangan"], c: 0, exp: "Pelayanan prima (Service Excellence) adalah standar tertinggi dalam melayani tamu/pelanggan." },  
-    { q: "Langkah pertama yang harus dilakukan resepsionis (Front Office) ketika tamu memasuki area lobi kantor adalah...", o: ["Meminta identitas KTP", "Memberikan salam (Greeting) dengan senyum", "Menyuruh tamu langsung duduk", "Menelepon atasan"], c: 1, exp: "Memberikan salam dengan ramah adalah prosedur paling awal (SOP) di Front Office." },  
-    { q: "Saat menerima telepon keluhan dari tamu, tindakan yang paling tepat sesuai SOP adalah...", o: ["Menutup telepon secara sepihak", "Mendengarkan dengan empati, mencatat, dan menenangkan tamu", "Meminta tamu untuk datang langsung", "Menyalahkan departemen lain"], c: 1, exp: "Dalam pelayanan, keluhan harus didengarkan dengan empati dan dicatat sebelum diberikan solusi." },  
-    { q: "Standar grooming (penampilan) bagi seorang petugas Front Office umumnya meliputi, kecuali...", o: ["Pakaian seragam rapi dan disetrika", "Rambut tertata rapi atau menggunakan hijab yang sesuai standar", "Menggunakan perhiasan mencolok berlebihan", "Memakai tanda pengenal (name tag)"], c: 2, exp: "Perhiasan berlebihan tidak sesuai dengan standar penampilan profesional di perkantoran/perhotelan." },  
-    { q: "Jika tamu tidak memiliki janji temu dengan pimpinan yang sedang rapat, resepsionis sebaiknya...", o: ["Mempersilakan tamu masuk menerobos rapat", "Meminta tamu menunggu di luar tanpa penjelasan", "Menjelaskan dengan sopan bahwa pimpinan sedang rapat dan meminta tamu mengisi buku tamu/meninggalkan pesan", "Menyuruh tamu pulang dengan nada kasar"], c: 2, exp: "Penyampaian informasi yang jelas dan sopan serta menawarkan alternatif (meninggalkan pesan) adalah SOP yang benar." }  
-];  
-
-const db = {  
-    'psts_indo': { title: "PSTS BHS INDO XII", q: psts_indo_questions },  
-    'psts_bing': { title: "PSTS BING XII", q: psts_bing_questions },  
-    'psts_jawa': { title: "PSTS BHS JAWA XII", q: psts_jawa_questions },  
-    'tkj_jaringan': { title: "Config IP, DHCP & VLAN", q: tkj_jaringan_qs },  
-    'tkj_vsat': { title: "Topologi & Sistem VSAT", q: tkj_vsat_qs },  
-    'mplb_sop': { title: "SOP Pelayanan Prima", q: mplb_sop_qs }  
-};  
-  
-let currentModulId = ''; let questions = []; let currentQIndex = 0; let score = 0; let finalCalculatedScore = 0; let answered = false; let userSessionAnswers = [];  
-
-function startStudySession(modulId) {  
-    currentModulId = modulId; questions = shuffleArray(JSON.parse(JSON.stringify(db[modulId].q)));   
-    currentQIndex = 0; score = 0; userSessionAnswers = [];  
-    document.getElementById('quiz-title').innerText = db[modulId].title;  
-    switchTab(-1, 'view-quiz'); renderQuestion();  
-}  
-
-let currentOpts = [];  
-function renderQuestion() {  
-    answered = false; const q = questions[currentQIndex];  
-    document.getElementById('question-tracker').innerText = `${currentQIndex + 1}/${questions.length}`;  
-    document.getElementById('progress-fill').style.width = `${((currentQIndex) / questions.length) * 100}%`;  
-    const readingBox = document.getElementById('reading-text');  
-    if (q.passage) { readingBox.innerHTML = q.passage; readingBox.style.display = 'block'; } else { readingBox.style.display = 'none'; readingBox.innerHTML = ''; }  
-    document.getElementById('question-text').innerText = `${currentQIndex + 1}. ${q.q}`;  
-    const optC = document.getElementById('options-container'); optC.innerHTML = '';  
-    currentOpts = shuffleArray(q.o.map((text, i) => ({ text, isCorrect: i === q.c })));  
-    currentOpts.forEach((opt, i) => {  
-        const btn = document.createElement('button'); btn.className = 'option-btn'; btn.innerText = String.fromCharCode(65 + i) + ". " + opt.text;  
-        btn.onclick = () => selectAnswer(opt, btn); optC.appendChild(btn);  
-    });  
-    document.getElementById('feedback-box').style.display = 'none'; document.getElementById('next-btn-container').style.display = 'none';  
-}  
-
-function selectAnswer(selOpt, btn) {  
-    if (answered) return; answered = true; let cText = "";  
-    const allBtns = document.querySelectorAll('.option-btn');  
-    currentOpts.forEach((opt, idx) => { allBtns[idx].disabled = true; if(opt.isCorrect) { allBtns[idx].classList.add('correct'); cText = opt.text; } });  
-    if (selOpt.isCorrect) { btn.classList.add('correct'); score++; } else { btn.classList.add('wrong'); }  
-    userSessionAnswers.push({ soal: questions[currentQIndex].q, pilihanUser: selOpt.text, isTrue: selOpt.isCorrect, jawabanBenar: cText });  
-    document.getElementById('feedback-text').innerText = questions[currentQIndex].exp;  
-    document.getElementById('feedback-box').style.display = 'block'; document.getElementById('next-btn-container').style.display = 'block';  
-}  
-
-function nextQuestion() { currentQIndex++; if (currentQIndex < questions.length) renderQuestion(); else finishQuiz(); }  
-  
-function finishQuiz() {   
-    document.getElementById('progress-fill').style.width = `100%`;   
-    setTimeout(() => {   
-        switchTab(-1, 'view-result');  
-        finalCalculatedScore = Math.round((score / questions.length) * 100);  
-        document.getElementById('final-score').innerText = finalCalculatedScore;  
-        document.getElementById('result-message').innerText = finalCalculatedScore >= 80 ? "Luar biasa!" : "Coba lagi ya, pasti bisa!";  
-    }, 300);   
-}  
-  
-async function saveScoreToHistory() {   
-    let timeString = new Date().toLocaleString('id-ID', {day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute:'2-digit'});  
-    const dataBaru = { nama: currentUser, modul: document.getElementById('quiz-title').innerText, skor: finalCalculatedScore, waktu: timeString, detailJawaban: userSessionAnswers };  
-    try {  
-        let btn = document.querySelector('#view-result .btn'); btn.innerText = "Menyimpan..."; btn.disabled = true;  
-        await fetch(FIREBASE_SKOR_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dataBaru) });  
-        alert("Skor berhasil disimpan ke akun online-mu!"); loadHistoryView(); switchTab(0, 'view-dashboard', '<i class=\'fa-solid fa-house\'></i>');  
-        btn.innerText = "💾 Simpan & Kembali"; btn.disabled = false;  
-    } catch (error) { alert("Gagal menyimpan data."); }  
-}
+    { q: "Test SOP" }
+];
