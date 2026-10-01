@@ -125,7 +125,18 @@
 
         <!-- 3. MUSIC -->  
         <main id="view-music" class="view card glass-panel">  
-            <h2 class="section-title">🎵 Pilihan Musik</h2>  
+            <h2 class="section-title">🎵 Pilihan & Cari Musik</h2>  
+            
+            <!-- YouTube Search Bar -->
+            <div style="margin-bottom: 20px;">
+                <p style="font-size: 0.85em; color: var(--text-muted); margin-bottom: 8px;">Cari lagu atau musik favorit dari YouTube:</p>
+                <div style="display: flex; gap: 8px;">
+                    <input type="text" id="yt-search-input" placeholder="Judul lagu / artis..." style="margin-bottom: 0 !important;">
+                    <button class="btn" style="width: auto; padding: 0 16px;" onclick="searchYouTubeMusic()">Cari</button>
+                </div>
+            </div>
+            <div id="yt-search-results" style="margin-bottom: 20px;"></div>
+
             <div style="display: flex; flex-direction: column; gap: 10px;">  
                 <div class="history-item glass-panel">  
                     <div class="history-info"><h3>DJ TikTok Viral 2024</h3></div>  
