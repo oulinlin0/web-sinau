@@ -27,6 +27,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
+// --- VARIABEL PRIVATE CHAT ---
+let activeChatUser = null;
+let currentChatInterval = null;
+
 // --- NAVIGATION LOGIC ---  
 function switchTab(index, viewId, iconSymbol = '<i class="fa-solid fa-house"></i>') {  
     if (index >= 0) {  
@@ -54,7 +58,7 @@ function switchTab(index, viewId, iconSymbol = '<i class="fa-solid fa-house"></i
         targetView.classList.add('active');  
     }  
 
-    if (viewId === 'view-quiz' || viewId === 'view-result') {  
+    if (viewId === 'view-quiz' || viewId === 'view-result' || viewId === 'view-private-room') {  
         document.getElementById('bottom-nav').style.display = 'none';  
         document.getElementById('top-header').style.display = 'none';  
     } else {  
@@ -62,12 +66,17 @@ function switchTab(index, viewId, iconSymbol = '<i class="fa-solid fa-house"></i
         document.getElementById('top-header').style.display = 'flex';  
     }  
 
+    // Hentikan interval chat jika keluar dari private room
+    if (viewId !== 'view-private-room' && currentChatInterval) {
+        clearInterval(currentChatInterval);
+    }
+
     if (viewId === 'view-history') {  
         loadHistoryView();  
     }  
 
     if (viewId === 'view-chat') {  
-        loadChatMessages();  
+        loadChatUsersList(); // Memuat daftar kontak private chat 
     }  
 }  
 
@@ -75,7 +84,6 @@ function switchTab(index, viewId, iconSymbol = '<i class="fa-solid fa-house"></i
 let isRegisterMode = false; let currentUser = localStorage.getItem('sinau_active_user') || null;  
 const FIREBASE_USERS_URL = "https://sinaubang-web-a5069-default-rtdb.asia-southeast1.firebasedatabase.app/users.json";  
 const FIREBASE_SKOR_URL = "https://sinaubang-web-a5069-default-rtdb.asia-southeast1.firebasedatabase.app/skor.json";  
-const FIREBASE_CHAT_URL = "https://sinaubang-web-a5069-default-rtdb.asia-southeast1.firebasedatabase.app/chat_global.json";  
 
 window.addEventListener('DOMContentLoaded', () => {  
     if (currentUser) {  
@@ -121,27 +129,154 @@ function playSelectedTrack(src, index) {
 }  
 function toggleMusicPlayback() { if (isMusicPlaying) { bgMusic.pause(); isMusicPlaying = false; document.getElementById('main-music-toggle').innerText = "▶ Putar"; } else { bgMusic.play(); isMusicPlaying = true; document.getElementById('main-music-toggle').innerText = "⏸ Jeda"; } }  
 
-// --- CHAT LOGIC ---  
-async function loadChatMessages() {  
-    const chatBox = document.getElementById('chat-messages-box'); chatBox.innerHTML = '<p style="text-align:center; color:rgba(255,255,255,0.5);">Memuat pesan...</p>';  
-    try {  
-        let res = await fetch(FIREBASE_CHAT_URL); let data = await res.json(); chatBox.innerHTML = '';  
-        if(!data) { chatBox.innerHTML = '<p style="text-align:center; color:rgba(255,255,255,0.5);">Mulai obrolan!</p>'; return; }  
-        Object.values(data).forEach(c => {  
-            let isMe = (c.sender === currentUser); let bClass = isMe ? 'chat-bubble-me' : 'chat-bubble-other';  
-            chatBox.innerHTML += `<div class="chat-bubble ${bClass}"><b>${c.sender}</b><br>${c.message}<br><small style="opacity:0.7;">${c.time}</small></div>`;  
-        }); chatBox.scrollTop = chatBox.scrollHeight;  
-    } catch(e) {}  
-}  
-async function sendChatMessage() {  
-    const inputField = document.getElementById('chat-input-field'); const msg = inputField.value.trim(); if(!msg) return;  
-    let timeString = new Date().toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'}); inputField.value = '';  
-    await fetch(FIREBASE_CHAT_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sender: currentUser, message: msg, time: timeString }) });  
-    loadChatMessages();  
-}  
-function handleChatKeyPress(e) { if(e.key === 'Enter') sendChatMessage(); }  
+// --- PRIVATE CHAT LOGIC ---  
+function getAvatarUrl(name) {
+    return `https://ui-avatars.com/api/?name=${name}&background=random&color=fff&bold=true`;
+}
 
-// --- HISTORY ---  
+async function loadChatUsersList() {
+    const activeUsersList = document.getElementById('active-users-list');
+    const recentChatList = document.getElementById('chat-recent-list');
+    
+    activeUsersList.innerHTML = `
+        <div class="active-user-item">
+            <div class="avatar-wrapper new-chat"><i class="fa-solid fa-plus"></i></div>
+            <span>New</span>
+        </div>
+    `;
+    recentChatList.innerHTML = '<p style="text-align:center; color:rgba(255,255,255,0.5);">Memuat kontak...</p>';
+
+    try {
+        let res = await fetch(FIREBASE_USERS_URL);
+        let usersDB = await res.json() || {};
+        
+        let otherUsers = Object.keys(usersDB).filter(u => u !== currentUser);
+        recentChatList.innerHTML = '';
+
+        if (otherUsers.length === 0) {
+            recentChatList.innerHTML = '<p style="text-align:center; color:rgba(255,255,255,0.5);">Belum ada teman yang terdaftar.</p>';
+            return;
+        }
+
+        otherUsers.forEach(user => {
+            const avatarPath = getAvatarUrl(user);
+            
+            // Tambahkan ke Horizontal Slider (Active Users)
+            activeUsersList.innerHTML += `
+                <div class="active-user-item" onclick="openPrivateChat('${user}')">
+                    <div class="avatar-wrapper online">
+                        <img src="${avatarPath}" alt="${user}">
+                        <div class="online-dot"></div>
+                    </div>
+                    <span>${user}</span>
+                </div>
+            `;
+
+            // Tambahkan ke List Vertikal
+            recentChatList.innerHTML += `
+                <div class="chat-list-item" onclick="openPrivateChat('${user}')">
+                    <div class="avatar-wrapper" style="width: 50px; height: 50px; margin-bottom: 0;">
+                        <img src="${avatarPath}" alt="${user}">
+                    </div>
+                    <div class="chat-list-info">
+                        <div class="chat-list-name">${user}</div>
+                        <div class="chat-list-msg">Ketuk untuk mulai obrolan...</div>
+                    </div>
+                    <div class="chat-list-meta">
+                        <span>Hari ini</span>
+                    </div>
+                </div>
+            `;
+        });
+    } catch (error) {
+        console.error("Gagal memuat kontak", error);
+    }
+}
+
+function openPrivateChat(targetUser) {
+    activeChatUser = targetUser;
+    
+    // Ganti View
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById('view-private-room').classList.add('active');
+    
+    // Set Header
+    document.getElementById('private-chat-name').innerText = targetUser;
+    document.getElementById('private-chat-avatar').src = getAvatarUrl(targetUser);
+    
+    // Sembunyikan navigasi bawah agar fokus chatting
+    document.getElementById('bottom-nav').style.display = 'none';
+    
+    loadPrivateMessages();
+    
+    // Auto-refresh pesan setiap 3 detik (Simulasi Realtime)
+    if(currentChatInterval) clearInterval(currentChatInterval);
+    currentChatInterval = setInterval(loadPrivateMessages, 3000);
+}
+
+function getRoomId(user1, user2) {
+    // Diurutkan sesuai abjad agar A chat B = B chat A
+    return [user1, user2].sort().join('_');
+}
+
+async function loadPrivateMessages() {
+    if (!activeChatUser) return;
+    
+    const roomId = getRoomId(currentUser, activeChatUser);
+    const PRIVATE_URL = `https://sinaubang-web-a5069-default-rtdb.asia-southeast1.firebasedatabase.app/private_chats/${roomId}.json`;
+    
+    const chatBox = document.getElementById('private-messages-box');
+    
+    try {
+        let res = await fetch(PRIVATE_URL);
+        let data = await res.json();
+        
+        chatBox.innerHTML = '';
+        if(!data) { 
+            chatBox.innerHTML = '<p style="text-align:center; color:rgba(255,255,255,0.5);">Belum ada pesan. Sapa temanmu!</p>'; 
+            return; 
+        }
+        
+        Object.values(data).forEach(c => {
+            let isMe = (c.sender === currentUser);
+            let bClass = isMe ? 'chat-bubble-me' : 'chat-bubble-other';
+            chatBox.innerHTML += `
+                <div class="chat-bubble ${bClass}">
+                    ${c.message}<br><small style="opacity:0.7; font-size:0.8em; margin-top:5px; display:block;">${c.time}</small>
+                </div>`;
+        });
+        
+        chatBox.scrollTop = chatBox.scrollHeight;
+    } catch(e) { console.error(e); }
+}
+
+async function sendPrivateMessage() {
+    if (!activeChatUser) return;
+    
+    const inputField = document.getElementById('private-input-field'); 
+    const msg = inputField.value.trim(); 
+    if(!msg) return;
+    
+    const roomId = getRoomId(currentUser, activeChatUser);
+    const PRIVATE_URL = `https://sinaubang-web-a5069-default-rtdb.asia-southeast1.firebasedatabase.app/private_chats/${roomId}.json`;
+    
+    let timeString = new Date().toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'}); 
+    inputField.value = '';
+    
+    await fetch(PRIVATE_URL, { 
+        method: 'POST', 
+        headers: { 'Content-Type': 'application/json' }, 
+        body: JSON.stringify({ sender: currentUser, message: msg, time: timeString }) 
+    });
+    
+    loadPrivateMessages();
+}
+
+function handlePrivateKeyPress(e) { 
+    if(e.key === 'Enter') sendPrivateMessage(); 
+}
+
+// --- HISTORY LOGIC ---  
 let globalHistoryCache = [];  
 async function loadHistoryView() {  
     const log = document.getElementById('main-history-log'); log.innerHTML = '<p style="text-align:center; color:rgba(255,255,255,0.5);">Memuat...</p>';  
