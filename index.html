@@ -114,6 +114,13 @@
         .progress-bar { width: 100%; height: 8px; background: #e0e0e0; border-radius: 4px; overflow: hidden; margin-bottom: 20px;}
         .progress-fill { height: 100%; background: #00bcd4; width: 0%; transition: width 0.3s ease; }
         
+        .reading-box {
+            background: #f8f9fa; border-left: 4px solid #00acc1; padding: 12px 15px;
+            margin-bottom: 15px; border-radius: 0 8px 8px 0; font-size: 0.9em;
+            line-height: 1.5; color: #455a64; display: none;
+        }
+        body.dark-theme .reading-box { background: #2c2c3e; border-left-color: #4dd0e1; color: #e0e0e0; }
+
         .question-text { font-size: 1.1em; font-weight: 600; margin-bottom: 15px; color: #263238; }
         .options { display: grid; gap: 10px; }
         .option-btn {
@@ -226,6 +233,8 @@
         <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
 
         <div class="question-area">
+            <!-- Teks bacaan akan muncul di sini jika ada -->
+            <div id="reading-text" class="reading-box"></div>
             <div id="question-text" class="question-text">Memuat...</div>
             <div id="options-container" class="options"></div>
         </div>
@@ -323,6 +332,14 @@
         return array;
     }
 
+    // --- DATA TEKS BACAAN ---
+    const readingTexts = {
+        teks1: "<strong>Teks 1 (Flood)</strong><br>A massive flood hit Jakarta on Monday, Sept 14. It started at 02.00 AM. 500 refugees fled to safer places. The water reached 2 meters. The Mayor stated, 'We are sending boats.' Sadly, there were 3 casualties.",
+        teks2: "<strong>Teks 2 (Robbery)</strong><br>An armed robbery occurred at a local bank at 14.00. 3 men stole $50,000. It lasted 10 minutes. The police arrived 5 minutes later. Chief Inspector Budi reported the arrest of one suspect.",
+        teks3: "<strong>Teks 3 (Bus Crash)</strong><br>A fatal bus crash happened on Sunday, Oct 10 at 06.00. The bus carried 40 passengers. 5 died and 10 were heavily injured due to brake failure.",
+        teks4: "<strong>Teks 4 (Fire)</strong><br>A fire destroyed 20 houses last night. The government provided Rp100.000.000 in cash aid for the victims."
+    };
+
     // --- DATABASE SOAL ---
     const psts_indo_questions = [
         { q: "Surat lamaran pekerjaan yang digabungkan dengan riwayat hidup (curriculum vitae) termasuk jenis surat lamaran model...", o: ["Gabungan", "Terpisah", "Semi-blok", "Resmi"], c: 0, exp: "Model gabungan menyatukan surat dan riwayat hidup dalam satu kesatuan." },
@@ -383,31 +400,36 @@
         { q: "Choose the correct sentence using a saying verb:", o: ["The police jumped quickly.", "The building was very tall.", "The witness said that he saw the thief.", "She is eating an apple."], c: 2, exp: "Kata 'said' adalah saying verb." },
         { q: "What kind of information is included in the 'Sources' section?", o: ["The writer's opinion", "The weather forecast", "Comments from witnesses or authorities", "A fairy tale story"], c: 2, exp: "Sources berisi komentar dari pihak berwenang atau saksi mata." },
         { q: "The information presented in a News Item must be...", o: ["Fictional and imaginary", "Factual and real", "Subjective opinions", "Funny and joking"], c: 1, exp: "Berita harus berdasarkan fakta yang nyata." },
-        { q: "(Teks 1) 'A massive flood hit Jakarta on Monday, Sept 14. It started at 02.00 AM. 500 refugees fled. Water reached 2 meters.' What is the main topic?", o: ["A natural disaster / flood", "A traffic jam", "A car accident", "A political debate"], c: 0, exp: "Teks membahas tentang 'massive flood' (banjir besar)." },
-        { q: "(Teks 1) On what day and date did the flood happen?", o: ["Sunday, Sept 13", "Monday, Sept 14", "Tuesday, Sept 15", "Friday, Sept 14"], c: 1, exp: "Tertulis dengan jelas 'Monday, Sept 14'." },
-        { q: "(Teks 1) What time did the flood start?", o: ["12.00 PM", "02.00 AM", "04.00 AM", "08.00 PM"], c: 1, exp: "Tertulis 'It started at 02.00 AM'." },
-        { q: "(Teks 1) How many refugees fled from the flood?", o: ["100 people", "200 people", "500 people", "1000 people"], c: 2, exp: "Informasi rinci menyebutkan '500 refugees'." },
-        { q: "(Teks 1) What was the maximum height of the flood water?", o: ["1 meter", "1.5 meters", "2 meters", "3 meters"], c: 2, exp: "Teks menyebutkan 'Water reached 2 meters'." },
-        { q: "(Teks 1) The Mayor stated, 'We are sending boats.' Who is the source of this statement?", o: ["The reporter", "The Mayor", "The victim", "The President"], c: 1, exp: "Pernyataan (quote) diberikan oleh The Mayor (Wali Kota)." },
-        { q: "(Teks 1) If the text says 'There were 3 casualties', how many people died?", o: ["None", "3 people", "13 people", "30 people"], c: 1, exp: "Casualties dalam konteks bencana merujuk pada korban jiwa (3 orang)." },
-        { q: "(Teks 2) 'An armed robbery occurred at a local bank at 14.00. 3 men stole $50,000. It lasted 10 minutes.' The main topic is...", o: ["Bank promotion", "A crime / robbery", "A new bank opening", "A security training"], c: 1, exp: "Teks membahas 'armed robbery' (perampokan bersenjata)." },
-        { q: "(Teks 2) What time did the robbery occur?", o: ["10.00", "12.00", "14.00", "16.00"], c: 2, exp: "Tertulis 'occurred at a local bank at 14.00'." },
-        { q: "(Teks 2) How many criminals/robbers were involved?", o: ["1 man", "2 men", "3 men", "4 men"], c: 2, exp: "Tertulis '3 men stole...'." },
-        { q: "(Teks 2) What was the estimated money lost?", o: ["$5,000", "$15,000", "$50,000", "$500,000"], c: 2, exp: "Tertulis mereka mencuri '$50,000'." },
-        { q: "(Teks 2) How long did the robbery incident last?", o: ["5 minutes", "10 minutes", "30 minutes", "1 hour"], c: 1, exp: "Tertulis 'It lasted 10 minutes'." },
-        { q: "(Teks 2) 'The police arrived 5 minutes later.' When did they arrive?", o: ["Before the robbery", "Exactly at 14.00", "At 14.05", "At 15.00"], c: 2, exp: "Perampokan jam 14.00, polisi datang 5 menit kemudian, berarti 14.05." },
-        { q: "(Teks 2) 'Chief Inspector Budi reported the arrest.' Who is the authority giving information?", o: ["The bank teller", "Chief Inspector Budi", "The robber", "The manager"], c: 1, exp: "Narasumber resminya adalah Chief Inspector Budi." },
-        { q: "(Teks 3) 'A fatal bus crash happened on Sunday, Oct 10 at 06.00. The bus carried 40 passengers. 5 died and 10 were heavily injured due to brake failure.' The topic is...", o: ["A bus tour", "A traffic accident / bus crash", "Buying a new bus", "Road construction"], c: 1, exp: "Topik membahas kecelakaan lalu lintas (bus crash)." },
-        { q: "(Teks 3) On what day and date did the bus crash occur?", o: ["Saturday, Oct 9", "Sunday, Oct 10", "Monday, Oct 11", "Sunday, Nov 10"], c: 1, exp: "Tertulis 'Sunday, Oct 10'." },
-        { q: "(Teks 3) What time did the accident happen?", o: ["05.00", "06.00", "07.00", "08.00"], c: 1, exp: "Tertulis kejadian pada '06.00'." },
-        { q: "(Teks 3) What was the total number of passengers?", o: ["10", "15", "30", "40"], c: 3, exp: "Bus membawa '40 passengers'." },
-        { q: "(Teks 3) How many victims died in the accident?", o: ["2", "5", "10", "40"], c: 1, exp: "Tertulis '5 died'." },
-        { q: "(Teks 3) How many victims were heavily injured?", o: ["5", "10", "15", "35"], c: 1, exp: "Tertulis '10 were heavily injured'." },
-        { q: "(Teks 3) What was the main cause of the crash?", o: ["Sleepy driver", "Bad weather", "Brake failure", "Speeding"], c: 2, exp: "Tertulis penyebabnya adalah 'due to brake failure' (rem blong)." },
-        { q: "(Teks 4) 'A fire destroyed 20 houses last night. The government provided Rp100.000.000 in cash aid for the victims.' The main topic is...", o: ["House renovation", "Government aid for fire victims", "Buying a new house", "Firefighter training"], c: 1, exp: "Topik berfokus pada bantuan pemerintah pasca kebakaran." },
-        { q: "(Teks 4) How much cash aid did the government provide?", o: ["Rp10.000.000", "Rp50.000.000", "Rp100.000.000", "Rp200.000.000"], c: 2, exp: "Dana bantuan sebesar 'Rp100.000.000'." },
-        { q: "(Teks 4) When did the fire happen?", o: ["This morning", "Yesterday afternoon", "Last night", "Two days ago"], c: 2, exp: "Tertulis kejadian 'last night' (tadi malam)." },
-        { q: "(Teks 4) How many houses were destroyed?", o: ["10 houses", "15 houses", "20 houses", "25 houses"], c: 2, exp: "Tertulis api menghancurkan '20 houses'." }
+        
+        // Soal dengan Teks Bacaan
+        { q: "(Teks 1) What is the main topic?", o: ["A natural disaster / flood", "A traffic jam", "A car accident", "A political debate"], c: 0, passage: readingTexts.teks1, exp: "Teks membahas tentang 'massive flood' (banjir besar)." },
+        { q: "(Teks 1) On what day and date did the flood happen?", o: ["Sunday, Sept 13", "Monday, Sept 14", "Tuesday, Sept 15", "Friday, Sept 14"], c: 1, passage: readingTexts.teks1, exp: "Tertulis dengan jelas 'Monday, Sept 14'." },
+        { q: "(Teks 1) What time did the flood start?", o: ["12.00 PM", "02.00 AM", "04.00 AM", "08.00 PM"], c: 1, passage: readingTexts.teks1, exp: "Tertulis 'It started at 02.00 AM'." },
+        { q: "(Teks 1) How many refugees fled from the flood?", o: ["100 people", "200 people", "500 people", "1000 people"], c: 2, passage: readingTexts.teks1, exp: "Informasi rinci menyebutkan '500 refugees'." },
+        { q: "(Teks 1) What was the maximum height of the flood water?", o: ["1 meter", "1.5 meters", "2 meters", "3 meters"], c: 2, passage: readingTexts.teks1, exp: "Teks menyebutkan 'Water reached 2 meters'." },
+        { q: "(Teks 1) The Mayor stated, 'We are sending boats.' Who is the source of this statement?", o: ["The reporter", "The Mayor", "The victim", "The President"], c: 1, passage: readingTexts.teks1, exp: "Pernyataan (quote) diberikan oleh The Mayor (Wali Kota)." },
+        { q: "(Teks 1) How many casualties were there?", o: ["None", "3 people", "13 people", "30 people"], c: 1, passage: readingTexts.teks1, exp: "Casualties dalam konteks bencana merujuk pada korban jiwa (3 orang)." },
+        
+        { q: "(Teks 2) The main topic is...", o: ["Bank promotion", "A crime / robbery", "A new bank opening", "A security training"], c: 1, passage: readingTexts.teks2, exp: "Teks membahas 'armed robbery' (perampokan bersenjata)." },
+        { q: "(Teks 2) What time did the robbery occur?", o: ["10.00", "12.00", "14.00", "16.00"], c: 2, passage: readingTexts.teks2, exp: "Tertulis 'occurred at a local bank at 14.00'." },
+        { q: "(Teks 2) How many criminals/robbers were involved?", o: ["1 man", "2 men", "3 men", "4 men"], c: 2, passage: readingTexts.teks2, exp: "Tertulis '3 men stole...'." },
+        { q: "(Teks 2) What was the estimated money lost?", o: ["$5,000", "$15,000", "$50,000", "$500,000"], c: 2, passage: readingTexts.teks2, exp: "Tertulis mereka mencuri '$50,000'." },
+        { q: "(Teks 2) How long did the robbery incident last?", o: ["5 minutes", "10 minutes", "30 minutes", "1 hour"], c: 1, passage: readingTexts.teks2, exp: "Tertulis 'It lasted 10 minutes'." },
+        { q: "(Teks 2) When did the police arrive?", o: ["Before the robbery", "Exactly at 14.00", "At 14.05", "At 15.00"], c: 2, passage: readingTexts.teks2, exp: "Perampokan jam 14.00, polisi datang 5 menit kemudian, berarti 14.05." },
+        { q: "(Teks 2) Who is the authority giving information?", o: ["The bank teller", "Chief Inspector Budi", "The robber", "The manager"], c: 1, passage: readingTexts.teks2, exp: "Narasumber resminya adalah Chief Inspector Budi." },
+        
+        { q: "(Teks 3) The topic is...", o: ["A bus tour", "A traffic accident / bus crash", "Buying a new bus", "Road construction"], c: 1, passage: readingTexts.teks3, exp: "Topik membahas kecelakaan lalu lintas (bus crash)." },
+        { q: "(Teks 3) On what day and date did the bus crash occur?", o: ["Saturday, Oct 9", "Sunday, Oct 10", "Monday, Oct 11", "Sunday, Nov 10"], c: 1, passage: readingTexts.teks3, exp: "Tertulis 'Sunday, Oct 10'." },
+        { q: "(Teks 3) What time did the accident happen?", o: ["05.00", "06.00", "07.00", "08.00"], c: 1, passage: readingTexts.teks3, exp: "Tertulis kejadian pada '06.00'." },
+        { q: "(Teks 3) What was the total number of passengers?", o: ["10", "15", "30", "40"], c: 3, passage: readingTexts.teks3, exp: "Bus membawa '40 passengers'." },
+        { q: "(Teks 3) How many victims died in the accident?", o: ["2", "5", "10", "40"], c: 1, passage: readingTexts.teks3, exp: "Tertulis '5 died'." },
+        { q: "(Teks 3) How many victims were heavily injured?", o: ["5", "10", "15", "35"], c: 1, passage: readingTexts.teks3, exp: "Tertulis '10 were heavily injured'." },
+        { q: "(Teks 3) What was the main cause of the crash?", o: ["Sleepy driver", "Bad weather", "Brake failure", "Speeding"], c: 2, passage: readingTexts.teks3, exp: "Tertulis penyebabnya adalah 'due to brake failure' (rem blong)." },
+        
+        { q: "(Teks 4) The main topic is...", o: ["House renovation", "Government aid for fire victims", "Buying a new house", "Firefighter training"], c: 1, passage: readingTexts.teks4, exp: "Topik berfokus pada bantuan pemerintah pasca kebakaran." },
+        { q: "(Teks 4) How much cash aid did the government provide?", o: ["Rp10.000.000", "Rp50.000.000", "Rp100.000.000", "Rp200.000.000"], c: 2, passage: readingTexts.teks4, exp: "Dana bantuan sebesar 'Rp100.000.000'." },
+        { q: "(Teks 4) When did the fire happen?", o: ["This morning", "Yesterday afternoon", "Last night", "Two days ago"], c: 2, passage: readingTexts.teks4, exp: "Tertulis kejadian 'last night' (tadi malam)." },
+        { q: "(Teks 4) How many houses were destroyed?", o: ["10 houses", "15 houses", "20 houses", "25 houses"], c: 2, passage: readingTexts.teks4, exp: "Tertulis api menghancurkan '20 houses'." }
     ];
 
     const database = {
@@ -480,6 +502,16 @@
         // Memperbarui UI Tracker
         document.getElementById('question-tracker').innerText = `${currentQIndex + 1}/${questions.length}`;
         document.getElementById('progress-fill').style.width = `${((currentQIndex) / questions.length) * 100}%`;
+
+        // Tampilkan teks bacaan jika soal memiliki property passage
+        const readingBox = document.getElementById('reading-text');
+        if (q.passage) {
+            readingBox.innerHTML = q.passage;
+            readingBox.style.display = 'block';
+        } else {
+            readingBox.style.display = 'none';
+            readingBox.innerHTML = '';
+        }
 
         document.getElementById('question-text').innerText = `${currentQIndex + 1}. ${q.q}`;
         
