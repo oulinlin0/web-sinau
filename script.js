@@ -1,31 +1,24 @@
-// --- CUSTOM BACKGROUND & THEME LOGIC ---  
+// --- CUSTOM SINGLE COLOR THEME LOGIC ---  
 const inputColor1 = document.getElementById('bg-color-1');  
-const inputColor2 = document.getElementById('bg-color-2');  
   
 function updateCustomBackground() {  
-    const c1 = inputColor1.value;  
-    const c2 = inputColor2.value;  
+    const color = inputColor1 ? inputColor1.value : '#0ea5e9';  
       
-    // 1. Ubah background utama
-    document.body.style.background = `linear-gradient(135deg, ${c1}, ${c2})`;  
+    // 1. Ubah pancaran warna pada background utama
+    document.body.style.background = `radial-gradient(circle at 50% 25%, ${color}44 0%, transparent 70%), #080c14`;  
       
-    // 2. Ubah variabel tema agar tombol putar, ikon aktif, dan aksen ikut berubah warna
-    document.documentElement.style.setProperty('--theme-1', c1);
-    document.documentElement.style.setProperty('--theme-2', c2);
+    // 2. Ubah variabel warna tema tunggal
+    document.documentElement.style.setProperty('--theme-1', color);  
 
     // 3. Simpan ke local storage
-    localStorage.setItem('sinau_bg_1', c1);  
-    localStorage.setItem('sinau_bg_2', c2);  
+    localStorage.setItem('sinau_theme_color', color);  
 }  
   
-const savedC1 = localStorage.getItem('sinau_bg_1');  
-const savedC2 = localStorage.getItem('sinau_bg_2');  
-if(savedC1 && savedC2) {  
-    inputColor1.value = savedC1;  
-    inputColor2.value = savedC2;  
-    document.body.style.background = `linear-gradient(135deg, ${savedC1}, ${savedC2})`;  
-    document.documentElement.style.setProperty('--theme-1', savedC1);
-    document.documentElement.style.setProperty('--theme-2', savedC2);
+const savedColor = localStorage.getItem('sinau_theme_color');  
+if (savedColor) {  
+    if (inputColor1) inputColor1.value = savedColor;  
+    document.body.style.background = `radial-gradient(circle at 50% 25%, ${savedColor}44 0%, transparent 70%), #080c14`;  
+    document.documentElement.style.setProperty('--theme-1', savedColor);  
 }  
 
 // --- NAVIGATION LOGIC ---  
