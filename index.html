@@ -8,7 +8,7 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- FontAwesome Icons (Ikon Simpel/Monokrom) -->
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -19,14 +19,13 @@
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
 
-        /* 1. BACKGROUND LIQUID ABSTRAK YANG LEBIH HIDUP */
+        /* 1. BACKGROUND LIQUID ABSTRAK */
         body {
-            /* Warna cair/liquid: Teal, Sky Blue, dan Violet pada latar gelap */
             background: 
                 radial-gradient(circle at 20% 30%, rgba(45, 212, 191, 0.4) 0%, transparent 50%),
                 radial-gradient(circle at 80% 80%, rgba(14, 165, 233, 0.4) 0%, transparent 50%),
                 radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.3) 0%, transparent 60%),
-                #0f172a; /* Slate pekat */
+                #0f172a;
             min-height: 100vh; color: #ffffff; overflow-x: hidden; 
             background-attachment: fixed; padding-bottom: 95px; padding-top: 75px;
             -webkit-tap-highlight-color: transparent; transition: background 0.5s ease;
@@ -34,10 +33,10 @@
 
         /* 2. EFEK LIQUID GLASS TRANSPARAN & BLUR */
         .glass-panel {
-            background: rgba(255, 255, 255, 0.05); /* Transparansi tinggi */
+            background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.15);
-            border-top: 1px solid rgba(255, 255, 255, 0.3); /* Pantulan cahaya atas */
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
             border-left: 1px solid rgba(255, 255, 255, 0.2);
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3), inset 0 1px 5px rgba(255, 255, 255, 0.1);
             transition: all 0.3s ease; color: #ffffff;
@@ -62,7 +61,7 @@
         .top-header { position: fixed; top: 0; left: 0; width: 100%; padding: 15px 25px; z-index: 100; display: flex; justify-content: center; align-items: center; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;}
         .top-header h1 { font-size: 1.4em; color: #ffffff; font-weight: 700; text-shadow: 0 2px 5px rgba(0,0,0,0.3); }
 
-        /* --- SMOOTH SVG CURVED BOTTOM NAVIGATION --- */
+        /* --- SMOOTH & SHALLOW CURVED BOTTOM NAVIGATION --- */
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; width: 100%; height: 75px;
             display: flex; z-index: 1000;
@@ -75,19 +74,19 @@
             overflow: hidden; z-index: 1; pointer-events: none;
         }
 
-        /* Slider Background Kaca (Lebarnya 300vw agar bisa digeser tanpa putus) */
+        /* Slider Background Kaca dengan Masking Lengkungan yang Lebih Dangkal (Tidak Menjorok Terlalu Dalam) */
         .nav-bg-glass {
             position: absolute; top: 0; left: -100vw; width: 300vw; height: 100%;
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.02) 100%);
             backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             border-top: 1.5px solid rgba(255, 255, 255, 0.3);
             
-            /* Trik masking SVG untuk potongan kurva yang SUPER MULUS */
+            /* Path SVG disesuaikan agar cekungannya dangkal (tidak tembus ke bawah) */
             -webkit-mask-image: 
                 linear-gradient(black, black),
                 linear-gradient(black, black),
-                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='50'%3E%3Cpath d='M0,0 C20,0 25,45 50,45 C75,45 80,0 100,0 L100,50 L0,50 Z' fill='black'/%3E%3C/svg%3E");
-            -webkit-mask-size: calc(50% - 48px) 100%, calc(50% - 48px) 100%, 100px 50px;
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='50'%3E%3Cpath d='M0,0 C30,0 35,28 60,28 C85,28 90,0 120,0 L120,50 L0,50 Z' fill='black'/%3E%3C/svg%3E");
+            -webkit-mask-size: calc(50% - 60px) 100%, calc(50% - 60px) 100%, 120px 50px;
             -webkit-mask-position: left top, right top, center top;
             -webkit-mask-repeat: no-repeat;
             
@@ -100,26 +99,29 @@
             z-index: 2; pointer-events: none;
         }
 
-        /* TOMBOL MELAYANG GLOSSY */
+        /* TOMBOL MELAYANG GLOSSY (Pop-up Zoom) */
         .nav-floating-icon {
             position: absolute;
-            top: -24px;
-            left: 50%; transform: translateX(-50%);
-            width: 56px; height: 56px;
+            top: -26px;
+            left: 50%; transform: translateX(-50%) scale(1.15); /* Efek zoom membesar */
+            width: 54px; height: 54px;
             border-radius: 50%;
             background: linear-gradient(135deg, var(--theme-1), var(--theme-2));
-            color: #ffffff; font-size: 1.4em;
+            color: #ffffff; font-size: 1.35em;
             display: flex; justify-content: center; align-items: center;
-            /* Efek bercahaya liquid pada tombol */
             box-shadow: 0 8px 20px rgba(14, 165, 233, 0.4), inset 0 2px 5px rgba(255, 255, 255, 0.4);
             border: 1px solid rgba(255, 255, 255, 0.5);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         .nav-item { position: relative; width: 20%; height: 100%; display: flex; justify-content: center; align-items: center; flex-direction: column; cursor: pointer; z-index: 3; }
-        .nav-icon { font-size: 1.3em; transition: 0.3s ease; color: #94a3b8; }
+        
+        /* Ikon menu biasa mengecil & transparan */
+        .nav-icon { font-size: 1.1em; transition: all 0.3s ease; color: #94a3b8; transform: scale(0.9); }
         .nav-text { position: absolute; font-size: 0.65em; font-weight: 600; color: #94a3b8; transform: translateY(22px); opacity: 0; transition: 0.3s; }
         
-        .nav-item.active .nav-icon { transform: translateY(-34px); opacity: 0; }
+        /* State Aktif: Ikon di navbar tersembunyi karena diganti tombol melayang, teks menyala */
+        .nav-item.active .nav-icon { transform: translateY(-34px) scale(0); opacity: 0; }
         .nav-item.active .nav-text { transform: translateY(14px); opacity: 1; color: #ffffff; text-shadow: 0 0 8px rgba(255,255,255,0.4); }
 
         /* MAIN CONTAINERS */
@@ -333,17 +335,17 @@
 <!-- CURVED ANIMATED BOTTOM NAVIGATION -->
 <nav class="bottom-nav" id="bottom-nav">
     
-    <!-- Lapis 1: Kaca Liquid Transparan dengan Masking Potongan Mulus -->
+    <!-- Lapis 1: Kaca Liquid Transparan dengan Masking Kurva Dangkal -->
     <div class="nav-glass-slider-container">
         <div class="nav-bg-glass" id="bg-wrapper"></div>
     </div>
     
-    <!-- Lapis 2: Tombol Bulat Melayang -->
+    <!-- Lapis 2: Tombol Bulat Melayang (Pop-up Zoom) -->
     <div class="nav-indicator-wrapper" id="indicator-wrapper">
         <div class="nav-floating-icon" id="nav-floating-icon"><i class="fa-solid fa-house"></i></div>
     </div>
 
-    <!-- Lapis 3: Menu-menu dengan Ikon FontAwesome (Monokrom) -->
+    <!-- Lapis 3: Menu-menu dengan Efek Mengecil (Scale Down) Saat Tidak Dipilih -->
     <div class="nav-item active" onclick="switchTab(0, 'view-dashboard', '<i class=\'fa-solid fa-house\'></i>')">
         <span class="nav-icon"><i class="fa-solid fa-house"></i></span><span class="nav-text">Home</span>
     </div>
@@ -385,17 +387,22 @@
     // --- NAVIGATION LOGIC ---
     function switchTab(index, viewId, iconSymbol = '<i class="fa-solid fa-house"></i>') {
         if (index >= 0) {
-            // Menggeser tombol melayang
             document.getElementById('indicator-wrapper').style.transform = `translateX(${index * 100}%)`;
             
-            // Rumus matematika untuk menggeser background kaca (slider) agar lubang SVG pas mengikuti tombol
+            // Penyesuaian kalkulasi posisi slider kurva dangkal
             const shiftVw = (index * 20) - 40;
             document.getElementById('bg-wrapper').style.transform = `translateX(${shiftVw}vw)`;
             
             document.getElementById('nav-floating-icon').innerHTML = iconSymbol;
             
             const navItems = document.querySelectorAll('.bottom-nav .nav-item');
-            navItems.forEach((el, i) => { if(i === index) el.classList.add('active'); else el.classList.remove('active'); });
+            navItems.forEach((el, i) => { 
+                if(i === index) {
+                    el.classList.add('active');
+                } else {
+                    el.classList.remove('active'); 
+                }
+            });
         }
         document.querySelectorAll('.view').forEach(v => v.classList.remove('active')); 
         document.getElementById(viewId).classList.add('active');
