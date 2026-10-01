@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sinau</title>
+    <title>sinau bang</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
 
@@ -355,9 +355,9 @@
         { q: "Alenia pembuka surat lamaran pekerjaan yang tepat berdasarkan iklan di koran Kompas tanggal 5 September 2024 adalah...", o: ["Sesuai iklan di Kompas, saya melamar pekerjaan...", "Berdasarkan iklan yang dimuat pada harian Kompas tanggal 5 September 2024, saya mengajukan lamaran...", "Membaca iklan di koran, saya berniat melamar...", "Saya melihat iklan di Kompas dan saya ingin bekerja di perusahaan Bapak."], c: 1, exp: "Penulisan sumber iklan harus mencantumkan nama media dan tanggal terbit secara formal." },
         { q: "Penulisan alamat surat yang benar sesuai dengan EYD/PUEBI adalah...", o: ["Kepada Yth. Bapak Direktur PT Sukses Makmur Jl. Melati 10 Jakarta", "Yth. Direktur PT Sukses Makmur Jalan Melati No. 10 Jakarta", "Yth. Pimpinan PT. Sukses Makmur, Jalan Melati 10, Jakarta.", "Kepada Yth. Pimpinan PT Sukses Makmur di Jakarta"], c: 1, exp: "Alamat surat tidak menggunakan kata 'Kepada', tidak menggunakan titik setelah 'PT', dan menggunakan kata 'Jalan' tanpa disingkat." }
     ];
-    // Saya ubah penomoran/variasinya agar kelihatan saat diacak
+    // Menghapus teks variasi agar hanya tersisa pertanyaannya saja
     for(let i=5; i<40; i++) {
-        psts_indo_questions.push({ q: `(Variasi #${i+1}) Manakah penulisan alamat surat yang salah?`, o: ["Yth. Direktur PT Abadi", "Kepada Yth. Bapak Direktur", "Yth. Pimpinan HRD", "Yth. Kepala HRD PT Makmur"], c: 1, exp: "Penggunaan 'Kepada' dan 'Yth.' secara bersamaan adalah pemborosan kata (salah)." });
+        psts_indo_questions.push({ q: `Manakah penulisan alamat surat yang salah?`, o: ["Yth. Direktur PT Abadi", "Kepada Yth. Bapak Direktur", "Yth. Pimpinan HRD", "Yth. Kepala HRD PT Makmur"], c: 1, exp: "Penggunaan 'Kepada' dan 'Yth.' secara bersamaan adalah pemborosan kata (salah)." });
     }
 
     const psts_bing_questions = [
@@ -365,9 +365,9 @@
         { q: "Which one is NOT a generic structure of News Item?", o: ["Newsworthy Event", "Background Event", "Sources", "Resolution"], c: 3, exp: "Resolution ada di Narrative text, bukan News Item." },
         { q: "The summary of the main event is written in the...", o: ["Orientation", "Newsworthy Event", "Sources", "Background"], c: 1, exp: "Newsworthy event berisi ringkasan/inti kejadian utama." }
     ];
-    // Saya ubah penomoran/variasinya agar kelihatan saat diacak
+    // Menghapus teks variasi agar hanya tersisa pertanyaannya saja
     for(let i=3; i<40; i++) {
-        psts_bing_questions.push({ q: `(Variation #${i+1}) Which of the following is a Past Tense verb?`, o: ["Go", "Went", "Going", "Goes"], c: 1, exp: "'Went' is the past form of 'go'." });
+        psts_bing_questions.push({ q: `Which of the following is a Past Tense verb?`, o: ["Go", "Went", "Going", "Goes"], c: 1, exp: "'Went' is the past form of 'go'." });
     }
 
     const database = {
@@ -419,10 +419,9 @@
         document.getElementById(id).classList.add('active'); 
     }
 
-    // --- KUIS LOGIC (Acak Soal setiap kali Masuk) ---
+    // --- KUIS LOGIC ---
     function startStudySession(modulId) {
         currentModulId = modulId;
-        // Kode di bawah ini yang memastikan soal diacak SETIAP KALI tombol MULAI ditekan
         questions = shuffleArray([...database[modulId].questions]); 
         document.getElementById('quiz-title').innerText = database[modulId].title;
         currentQIndex = 0; score = 0;
@@ -442,7 +441,6 @@
         const optionsContainer = document.getElementById('options-container');
         optionsContainer.innerHTML = '';
         
-        // Pilihan Ganda (A, B, C, D) juga diacak otomatis
         let optionsArr = q.o.map((text, index) => ({ text, isCorrect: index === q.c }));
         optionsArr = shuffleArray(optionsArr);
 
@@ -489,7 +487,6 @@
             const finalScore = Math.round((score / questions.length) * 100);
             document.getElementById('final-score').innerText = finalScore;
             
-            // Simpan ke Histori Berdasarkan Nama
             let historyData = JSON.parse(localStorage.getItem('quizHistory_sinau')) || [];
             let now = new Date();
             let timeString = now.toLocaleString('id-ID', {day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute:'2-digit'});
