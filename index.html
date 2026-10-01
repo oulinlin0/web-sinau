@@ -221,7 +221,6 @@
                 <button class="btn" style="background: linear-gradient(135deg, #8bc34a, #558b2f);" onclick="startStudySession('psts_bing')">Mulai</button>
             </div>
             
-            <!-- MODUL BARU B. JAWA -->
             <div class="history-item" style="border-left-color: #ff9800;">
                 <div class="history-info">
                     <h3 style="color: #e65100;">KISI-KISI PSTS BHS JAWA XII</h3>
@@ -242,7 +241,6 @@
         <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
 
         <div class="question-area">
-            <!-- Teks bacaan akan muncul di sini jika ada -->
             <div id="reading-text" class="reading-box"></div>
             <div id="question-text" class="question-text">Memuat...</div>
             <div id="options-container" class="options"></div>
@@ -496,35 +494,84 @@
     let finalCalculatedScore = 0;
     let answered = false;
 
-    // --- FUNGSI HISTORI ---
-    function updateHistorySidebar() {
+    // --- FUNGSI HISTORI (TERHUBUNG KE FIREBASE DATABASE) ---
+    const FIREBASE_URL = "https://sinaubang-web-a5069-default-rtdb.asia-southeast1.firebasedatabase.app/skor.json";
+
+    async function updateHistorySidebar() {
         const logContainer = document.getElementById('history-log');
-        logContainer.innerHTML = '';
+        logContainer.innerHTML = '<p style="text-align:center; font-size:0.9em;">Memuat data dari server...</p>';
         
-        let historyData = JSON.parse(localStorage.getItem('quizHistory_sinau')) || [];
-        
-        if (historyData.length === 0) {
-            logContainer.innerHTML = "<p style='font-size:0.9em; color:#888; text-align:center;'>Belum ada histori ujian.</p>";
+        try {
+            let response = await fetch(FIREBASE_URL);
+            let data = await response.json();
+            
+            logContainer.innerHTML = ''; 
+            
+            if (!data) {
+                logContainer.innerHTML = "<p style='font-size:0.9em; color:#888; text-align:center;'>Belum ada histori ujian.</p>";
+                return;
+            }
+
+            let historyData = Object.values(data);
+            
+            historyData.reverse().forEach(item => {
+                logContainer.innerHTML += `
+                <div class="log-item">
+                    <b style="color:#00838f;">👤 ${item.nama}</b><br>
+                    <span style="font-size:0.9em;">Modul: ${item.modul}</span><br>
+                    Skor: <b style="font-size:1.1em; color:#e65100;">${item.skor}</b><br>
+                    <span style="font-size:0.75em; color:gray;">📅 ${item.waktu}</span>
+                </div>`;
+            });
+        } catch (error) {
+            logContainer.innerHTML = "<p style='color:red; text-align:center; font-size:0.9em;'>Gagal memuat histori. Cek koneksi internet.</p>";
+        }
+    }
+
+    async function saveScoreToHistory() {
+        const inputName = document.getElementById('result-username').value.trim();
+        if(!inputName) {
+            alert("Harap masukkan nama kamu terlebih dahulu sebelum menyimpan!");
             return;
         }
 
-        historyData.slice().reverse().forEach(item => {
-            logContainer.innerHTML += `
-            <div class="log-item">
-                <b style="color:#00838f;">👤 ${item.nama}</b><br>
-                <span style="font-size:0.9em;">Modul: ${item.modul}</span><br>
-                Skor: <b style="font-size:1.1em; color:#e65100;">${item.skor}</b><br>
-                <span style="font-size:0.75em; color:gray;">📅 ${item.waktu}</span>
-            </div>`;
-        });
+        let now = new Date();
+        let timeString = now.toLocaleString('id-ID', {day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute:'2-digit'});
+
+        const dataBaru = {
+            nama: inputName,
+            modul: database[currentModulId].title,
+            skor: finalCalculatedScore,
+            waktu: timeString
+        };
+        
+        try {
+            let btn = document.querySelector('.result-container .btn');
+            btn.innerText = "Menyimpan ke server...";
+            btn.disabled = true;
+
+            await fetch(FIREBASE_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dataBaru)
+            });
+
+            alert("Skor berhasil disimpan dan bisa dilihat semua orang!");
+            updateHistorySidebar(); 
+            showView('view-dashboard');
+
+            btn.innerText = "Simpan & Selesai";
+            btn.disabled = false;
+        } catch (error) {
+            alert("Gagal menyimpan skor. Pastikan koneksi internet lancar.");
+            let btn = document.querySelector('.result-container .btn');
+            btn.innerText = "Simpan & Selesai";
+            btn.disabled = false;
+        }
     }
 
     function clearHistory() {
-        if(confirm("Apakah kamu yakin ingin menghapus semua data histori belajar?")) {
-            localStorage.removeItem('quizHistory_sinau');
-            updateHistorySidebar();
-            alert("Histori berhasil dihapus!");
-        }
+        alert("Fitur hapus histori dinonaktifkan karena menggunakan database global.");
     }
 
     // --- KONTROL TAMPILAN ---
@@ -534,10 +581,9 @@
         document.getElementById(id).classList.add('active'); 
     }
 
-    // --- KUIS LOGIC (Acak Total Setiap Masuk) ---
+    // --- KUIS LOGIC ---
     function startStudySession(modulId) {
         currentModulId = modulId;
-        // Menduplikasi array asli agar pengacakan benar-benar baru dari awal
         let originalQuestions = JSON.parse(JSON.stringify(database[modulId].questions));
         questions = shuffleArray(originalQuestions); 
         
@@ -551,11 +597,9 @@
         answered = false;
         const q = questions[currentQIndex];
         
-        // Memperbarui UI Tracker
         document.getElementById('question-tracker').innerText = `${currentQIndex + 1}/${questions.length}`;
         document.getElementById('progress-fill').style.width = `${((currentQIndex) / questions.length) * 100}%`;
 
-        // Tampilkan teks bacaan jika soal memiliki property passage
         const readingBox = document.getElementById('reading-text');
         if (q.passage) {
             readingBox.innerHTML = q.passage;
@@ -570,7 +614,6 @@
         const optionsContainer = document.getElementById('options-container');
         optionsContainer.innerHTML = '';
         
-        // Memetakan dan mengacak pilihan ganda
         let optionsArr = q.o.map((text, index) => ({ text, isCorrect: index === q.c }));
         optionsArr = shuffleArray(optionsArr);
 
@@ -619,31 +662,6 @@
             document.getElementById('result-username').value = ""; 
             document.getElementById('result-message').innerText = finalCalculatedScore >= 80 ? "Luar biasa! Pertahankan!" : "Jangan menyerah, coba lagi!";
         }, 300);
-    }
-
-    function saveScoreToHistory() {
-        const inputName = document.getElementById('result-username').value.trim();
-        if(!inputName) {
-            alert("Harap masukkan nama kamu terlebih dahulu sebelum menyimpan!");
-            return;
-        }
-
-        let historyData = JSON.parse(localStorage.getItem('quizHistory_sinau')) || [];
-        let now = new Date();
-        let timeString = now.toLocaleString('id-ID', {day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute:'2-digit'});
-
-        historyData.push({
-            nama: inputName,
-            modul: database[currentModulId].title,
-            skor: finalCalculatedScore,
-            waktu: timeString
-        });
-        
-        localStorage.setItem('quizHistory_sinau', JSON.stringify(historyData));
-        updateHistorySidebar();
-
-        alert("Skor berhasil disimpan ke histori!");
-        showView('view-dashboard');
     }
 
     // --- AI CHATBOX ---
