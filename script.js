@@ -1,21 +1,31 @@
-// --- CUSTOM BACKGROUND LOGIC ---  
+// --- CUSTOM BACKGROUND & THEME LOGIC ---  
 const inputColor1 = document.getElementById('bg-color-1');  
 const inputColor2 = document.getElementById('bg-color-2');  
-
+  
 function updateCustomBackground() {  
     const c1 = inputColor1.value;  
     const c2 = inputColor2.value;  
+      
+    // 1. Ubah background utama
     document.body.style.background = `linear-gradient(135deg, ${c1}, ${c2})`;  
+      
+    // 2. Ubah variabel tema agar tombol putar, ikon aktif, dan aksen ikut berubah warna
+    document.documentElement.style.setProperty('--theme-1', c1);
+    document.documentElement.style.setProperty('--theme-2', c2);
+
+    // 3. Simpan ke local storage
     localStorage.setItem('sinau_bg_1', c1);  
     localStorage.setItem('sinau_bg_2', c2);  
 }  
-
+  
 const savedC1 = localStorage.getItem('sinau_bg_1');  
 const savedC2 = localStorage.getItem('sinau_bg_2');  
 if(savedC1 && savedC2) {  
     inputColor1.value = savedC1;  
     inputColor2.value = savedC2;  
     document.body.style.background = `linear-gradient(135deg, ${savedC1}, ${savedC2})`;  
+    document.documentElement.style.setProperty('--theme-1', savedC1);
+    document.documentElement.style.setProperty('--theme-2', savedC2);
 }  
 
 // --- NAVIGATION LOGIC ---  
