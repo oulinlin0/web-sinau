@@ -16,12 +16,12 @@ body {
 
 /* EFEK LIQUID GLASS TRANSPARAN & BLUR */  
 .glass-panel {  
-    background: rgba(255, 255, 255, 0.05);  
-    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);  
-    border: 1px solid rgba(255, 255, 255, 0.12);  
-    border-top: 1px solid rgba(255, 255, 255, 0.25);  
-    border-left: 1px solid rgba(255, 255, 255, 0.18);  
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3), inset 0 1px 5px rgba(255, 255, 255, 0.08);  
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02));  
+    backdrop-filter: blur(20px) saturate(150%); -webkit-backdrop-filter: blur(20px) saturate(150%);  
+    border: 1px solid rgba(255, 255, 255, 0.15);  
+    border-top: 1px solid rgba(255, 255, 255, 0.3);  
+    border-left: 1px solid rgba(255, 255, 255, 0.2);  
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3), inset 0 1px 2px rgba(255, 255, 255, 0.2);  
     transition: all 0.3s ease; color: #ffffff;  
 }  
 
@@ -44,7 +44,7 @@ body {
 .top-header { position: fixed; top: 0; left: 0; width: 100%; padding: 15px 25px; z-index: 100; display: flex; justify-content: center; align-items: center; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;}  
 .top-header h1 { font-size: 1.4em; color: #ffffff; font-weight: 700; text-shadow: 0 2px 5px rgba(0,0,0,0.3); }  
 
-/* BOTTOM NAVIGATION - TANPA BAYANGAN GLITCH KOTAK */  
+/* BOTTOM NAVIGATION */  
 .bottom-nav {  
     position: fixed; left: 0; bottom: 0; width: 100%; height: 92px; z-index: 1000;  
     display: flex; align-items: flex-end; justify-content: center; padding: 0 12px 12px;  
@@ -74,7 +74,7 @@ body {
     height: 64px; z-index: 4; pointer-events: none; transition: transform 0.45s cubic-bezier(0.25,1,0.5,1);  
 }  
 
-/* BOLA MELAYANG BERCAHAYA (NEON GLOWING SPHERE) */  
+/* BOLA MELAYANG BERCAHAYA */  
 .nav-floating-icon {  
     position: absolute; width: 52px; height: 52px; left: 50%; top: -40px; transform: translateX(-50%);  
     display: flex; align-items: center; justify-content: center; border-radius: 50%;  
@@ -139,42 +139,55 @@ body {
 .folder-content.active { display: flex; flex-direction: column; gap: 10px; }  
 .chevron { transition: transform 0.3s ease; font-size: 1.1em; } .chevron.active { transform: rotate(180deg); }  
 
-/* ITEM DENGAN BORDER KACA HALUS (MENGHILANGKAN WARNA PUTIH TEBAL) */  
+/* KARTU ITEM DENGAN EFEK KACA (TANPA GARIS SAMBUNGAN PUTIH SOLID) */  
 .history-item {  
-    border-radius: 16px;  
-    padding: 15px;  
+    border-radius: 20px;  
+    padding: 15px 20px;  
     display: flex;  
     justify-content: space-between;  
     align-items: center;  
-    border: 1px solid rgba(255, 255, 255, 0.12);  
-    border-left: 3px solid var(--theme-1);  
-    background: rgba(255, 255, 255, 0.04);  
-    backdrop-filter: blur(10px);  
-    -webkit-backdrop-filter: blur(10px);  
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02));  
+    backdrop-filter: blur(20px) saturate(150%);  
+    -webkit-backdrop-filter: blur(20px) saturate(150%);  
+    border: 1px solid rgba(255, 255, 255, 0.15);  
+    border-top: 1px solid rgba(255, 255, 255, 0.3);  
+    box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.2), 0 8px 20px rgba(0, 0, 0, 0.2);  
 }  
 .history-info h3 { font-size: 1em; margin-bottom: 3px; color: #ffffff; }  
 .history-info p { font-size: 0.8em; color: rgba(255,255,255,0.7); }  
 
-/* TOMBOL DENGAN EFEK KACA DAN TRANSPARANSI ELEGAN */  
+/* TOMBOL MURNI EFEK GLASSMORPHISM (TIDAK PADAT/SOLID WHITE) */  
 .btn {  
-    background: var(--theme-1);  
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05));  
     color: #ffffff;  
-    border: 1px solid rgba(255, 255, 255, 0.2);  
-    padding: 10px 20px;  
+    border: 1px solid rgba(255, 255, 255, 0.25);  
+    border-top: 1px solid rgba(255, 255, 255, 0.4);  
+    padding: 10px 22px;  
     border-radius: 30px;  
     font-weight: 600;  
     cursor: pointer;  
-    transition: 0.3s;  
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);  
+    backdrop-filter: blur(15px);  
+    -webkit-backdrop-filter: blur(15px);  
+    transition: all 0.3s ease;  
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2), inset 0 1px 2px rgba(255, 255, 255, 0.3);  
 }  
-.btn:hover { transform: translateY(-2px); filter: brightness(1.15); }  
+.btn:hover {  
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1));  
+    transform: translateY(-2px);  
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);  
+}  
 
 .btn-outline {  
-    background: rgba(255, 255, 255, 0.08);  
+    background: rgba(255, 255, 255, 0.06);  
     color: #ffffff;  
     border: 1px solid rgba(255, 255, 255, 0.2);  
-    backdrop-filter: blur(10px);  
-    -webkit-backdrop-filter: blur(10px);  
+    border-top: 1px solid rgba(255, 255, 255, 0.35);  
+    backdrop-filter: blur(15px);  
+    -webkit-backdrop-filter: blur(15px);  
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.2);  
+}  
+.btn-outline:hover {  
+    background: rgba(255, 255, 255, 0.15);  
 }  
 
 /* CHAT STYLES */  
