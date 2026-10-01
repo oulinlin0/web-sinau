@@ -202,16 +202,29 @@ async function loadChatUsersList() {
             const roomId = getRoomId(currentUser, user);
             
             let metaRes = await fetch(`https://sinaubang-web-a5069-default-rtdb.asia-southeast1.firebasedatabase.app/chat_meta/${roomId}.json`);
-            let meta = await metaRes.json() || { lastMessage: "Ketuk untuk mulai obrolan...", time: "", unreadCount: 0, lastSender: "" };
+            let meta = await metaRes.json() || { lastMessage: "Ketuk untuk mulai obrolan...", time: "", lastSender: "" };
 
-            let previewText = meta.lastMessage;
-            let isUnread = (meta.unreadCount > 0 && meta.lastSender !== currentUser);
+            // Ambil pesan untuk menghitung jumlah unread secara akurat berdasarkan timestamp
+            let msgRes = await fetch(`https://sinaubang-web-a5069-default-rtdb.asia-southeast1.firebasedatabase.app/private_chats/${roomId}.json`);
+            let msgsData = await msgRes.json() || {};
+
+            let lastReadTime = (meta.lastReadTimestamps && meta.lastReadTimestamps[currentUser]) || 0;
+            let unreadCount = 0;
+
+            Object.values(msgsData).forEach(m => {
+                if (m.sender !== currentUser && (m.timestamp || 0) > lastReadTime) {
+                    unreadCount++;
+                }
+            });
+
+            let previewText = meta.lastMessage || "Ketuk untuk mulai obrolan...";
+            let isUnread = (unreadCount > 0);
 
             if (meta.lastSender === currentUser) {
-                previewText = `<i class="fa-solid fa-check-double" style="color:var(--theme-1); font-size:0.8em; margin-right:4px;"></i> ${meta.lastMessage}`; 
+                previewText = `<i class="fa-solid fa-check-double" style="color:var(--theme-1); font-size:0.8em; margin-right:4px;"></i> ${meta.lastMessage || ''}`; 
             }
 
-            let badgeHTML = isUnread ? `<div class="unread-badge">${meta.unreadCount}</div>` : '';
+            let badgeHTML = isUnread ? `<div class="unread-badge">${unreadCount}</div>` : '';
 
             if (activeUsersList) {
                 activeUsersList.innerHTML += `  
@@ -236,7 +249,7 @@ async function loadChatUsersList() {
                             <div class="chat-list-msg">${previewText}</div>  
                         </div>  
                         <div class="chat-list-meta">  
-                            <span style="font-weight: ${isUnread ? '700' : 'normal'}; color: ${isUnread ? '#22c55e' : 'inherit'};">${meta.time}</span>  
+                            <span style="font-weight: ${isUnread ? '700' : 'normal'}; color: ${isUnread ? '#22c55e' : 'inherit'};">${meta.time || ''}</span>  
                             ${badgeHTML}  
                         </div>  
                     </div>  
@@ -259,15 +272,18 @@ async function openPrivateChat(targetUser) {
     
     try {
         let resMeta = await fetch(META_URL);
-        let metaData = await resMeta.json();
-        if (metaData && metaData.lastSender !== currentUser) {
-            metaData.unreadCount = 0;
-            await fetch(META_URL, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(metaData)
-            });
+        let metaData = await resMeta.json() || {};
+        
+        if (!metaData.lastReadTimestamps) {
+            metaData.lastReadTimestamps = {};
         }
+        metaData.lastReadTimestamps[currentUser] = Date.now();
+
+        await fetch(META_URL, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(metaData)
+        });
     } catch(e){}
 
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));  
@@ -328,26 +344,25 @@ async function sendPrivateMessage() {
     let timeString = new Date().toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'});   
     inputField.value = '';  
       
+    // Kirim pesan menyertakan timestamp akurat
     await fetch(PRIVATE_URL, {   
         method: 'POST',   
         headers: { 'Content-Type': 'application/json' },   
-        body: JSON.stringify({ sender: currentUser, message: msg, time: timeString })   
+        body: JSON.stringify({ sender: currentUser, message: msg, time: timeString, timestamp: Date.now() })   
     });  
 
     let resMeta = await fetch(META_URL);
-    let metaData = await resMeta.json() || { unreadCount: 0 };
-    
-    // Perbaikan Logika: Selalu tambahkan 1 dari unreadCount sebelumnya (akumulasi jumlah pesan)
-    let newUnread = (metaData.lastSender !== currentUser) ? (metaData.unreadCount || 0) + 1 : (metaData.unreadCount || 0) + 1;
+    let metaData = await resMeta.json() || {};
 
+    // Perbarui metadata obrolan terakhir
     await fetch(META_URL, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
+            ...metaData,
             lastMessage: msg, 
             time: timeString, 
-            lastSender: currentUser,
-            unreadCount: newUnread 
+            lastSender: currentUser
         })
     });
       
@@ -547,7 +562,7 @@ const tkj_vsat_qs = [
 const mplb_sop_qs = [  
     { q: "Dalam SOP Front Office, sikap melayani tamu dengan ramah, cepat, dan tanggap sering disebut sebagai penerapan prinsip...", o: ["Pelayanan Prima (Service Excellence)", "Manajemen Konflik", "Arsip Dinamis", "Administrasi Keuangan"], c: 0, exp: "Pelayanan prima (Service Excellence) adalah standar tertinggi dalam melayani tamu/pelanggan." },  
     { q: "Langkah pertama yang harus dilakukan resepsionis (Front Office) ketika tamu memasuki area lobi kantor adalah...", o: ["Meminta identitas KTP", "Memberikan salam (Greeting) dengan senyum", "Menyuruh tamu langsung duduk", "Menelepon atasan"], c: 1, exp: "Memberikan salam dengan ramah adalah prosedur paling awal (SOP) di Front Office." },  
-    { q: "Saat menerima telepon keluhan dari tamu, tindakan yang paling tepat sesuai SOP adalah...", o: ["Menutup telepon secara sepihak", "Mendengarkan dengan empati, mencatat, dan menenangkan tamu", "Meminta tamu untuk datang langsung", "Menyalahkan departemen lain"], c: 1, exp: "In pelayanan, keluhan harus didengarkan dengan empati dan dicatat sebelum diberikan solusi." },  
+    { q: "Saat menerima telepon keluhan dari tamu, tindakan yang paling tepat sesuai SOP adalah...", o: ["Menutup telepon secara sepihak", "Mendengarkan dengan empati, mencatat, dan menenangkan tamu", "Meminta tamu untuk datang langsung", "Menyalahkan departemen lain"], c: 1, exp: "Dalam pelayanan, keluhan harus didengarkan dengan empati dan dicatat sebelum diberikan solusi." },  
     { q: "Standar grooming (penampilan) bagi seorang petugas Front Office umumnya meliputi, kecuali...", o: ["Pakaian seragam rapi dan disetrika", "Rambut tertata rapi atau menggunakan hijab yang sesuai standar", "Menggunakan perhiasan mencolok berlebihan", "Memakai tanda pengenal (name tag)"], c: 2, exp: "Perhiasan berlebihan tidak sesuai dengan standar penampilan profesional di perkantoran/perhotelan." },  
     { q: "Jika tamu tidak memiliki janji temu dengan pimpinan yang sedang rapat, resepsionis sebaiknya...", o: ["Mempersilakan tamu masuk menerobos rapat", "Meminta tamu menunggu di luar tanpa penjelasan", "Menjelaskan dengan sopan bahwa pimpinan sedang rapat dan meminta tamu mengisi buku tamu/meninggalkan pesan", "Menyuruh tamu pulang dengan nada kasar"], c: 2, exp: "Penyampaian informasi yang jelas dan sopan serta menawarkan alternatif (meninggalkan pesan) adalah SOP yang benar." }  
 ];  
