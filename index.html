@@ -3,10 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>sinau bang - Smooth Curved Nav UI</title>
+    <title>sinau bang - Liquid Glass UI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Tambahan CDN FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-
         :root {
             --theme-1: #0ea5e9; 
             --theme-2: #0284c7;
@@ -14,20 +16,33 @@
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
 
+        /* 1. BACKGROUND BODY (EFEK LIQUID ABSTRAK) */
         body {
-            background: linear-gradient(135deg, #0f172a, #3b0764);
+            /* Menciptakan efek pancaran cairan biru dan ungu gelap */
+            background: radial-gradient(circle at 10% 20%, rgba(91, 33, 182, 0.7) 0%, transparent 45%),
+                        radial-gradient(circle at 90% 70%, rgba(30, 64, 175, 0.7) 0%, transparent 45%),
+                        radial-gradient(circle at 50% 100%, rgba(15, 23, 42, 1) 0%, transparent 50%),
+                        #020617; /* Warna dasar gelap pekat */
             min-height: 100vh; color: #ffffff; overflow-x: hidden; 
-            transition: background 0.5s ease;
             background-attachment: fixed; padding-bottom: 95px; padding-top: 75px;
             -webkit-tap-highlight-color: transparent;
+            transition: background 0.5s ease;
         }
 
-        /* GLASSMORPHISM UTILITIES */
+        /* 2. GLASSMORPHISM UTILITIES MENJADI LIQUID GLASS */
         .glass-panel {
-            background: rgba(0, 0, 0, 0.35);
-            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+            /* Gradasi sangat tipis untuk isi kaca */
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.01) 100%);
+            backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+            
+            /* Efek cahaya memantul di ujung atas & kiri kaca (Thick Glass Edge) */
+            border-top: 1.5px solid rgba(255, 255, 255, 0.45);
+            border-left: 1.5px solid rgba(255, 255, 255, 0.3);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            
+            /* Bayangan luar pekat untuk kedalaman & bayangan dalam (inset) untuk volume cair */
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), inset 0 2px 15px rgba(255, 255, 255, 0.05);
             transition: all 0.3s ease; color: #ffffff;
         }
 
@@ -64,6 +79,10 @@
             border-radius: 0; /* Ujung kiri dan kanan dibuat rata/tidak melengkung */
             overflow: hidden; 
             z-index: 1; pointer-events: none;
+            /* Tambahan background glass untuk area bar */
+            background: rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
         }
 
         .nav-indicator-wrapper {
@@ -73,7 +92,7 @@
             z-index: 2; pointer-events: none;
         }
 
-        /* EFEK LUBANG CEKUNG TEMBUS PANDANG */
+        /* EFEK LUBANG CEKUNG TEMBUS PANDANG YNG SMOOTH */
         .nav-hole {
             position: absolute;
             top: -35px;
@@ -84,18 +103,22 @@
             box-shadow: 0 0 0 2000px #ffffff;
         }
 
+        /* Lekukan mulus (reverse border-radius) di kiri dan kanan */
         .nav-hole::before, .nav-hole::after {
-            content: ''; position: absolute;
-            top: 35px;
-            width: 24px; height: 24px;
+            content: ''; 
+            position: absolute;
+            top: 35px; /* Sejajar dengan garis atas navbar */
+            width: 30px; height: 30px;
+            border-radius: 50%;
+            background: transparent;
         }
         .nav-hole::before {
-            left: -24px;
-            background: radial-gradient(circle at top left, transparent 23.5px, #ffffff 24px);
+            left: -28px;
+            box-shadow: 15px -15px 0 0 #ffffff;
         }
         .nav-hole::after {
-            right: -24px;
-            background: radial-gradient(circle at top right, transparent 23.5px, #ffffff 24px);
+            right: -28px;
+            box-shadow: -15px -15px 0 0 #ffffff;
         }
 
         /* TOMBOL MELAYANG TERPISAH */
@@ -106,7 +129,7 @@
             width: 52px; height: 52px;
             border-radius: 50%;
             background: linear-gradient(135deg, var(--theme-1), var(--theme-2));
-            color: #ffffff; font-size: 1.4em;
+            color: #ffffff; font-size: 1.2em;
             display: flex; justify-content: center; align-items: center;
             box-shadow: 0 6px 12px rgba(0,0,0,0.3);
             border: none;
@@ -114,7 +137,7 @@
 
         .nav-item { position: relative; width: 20%; height: 100%; display: flex; justify-content: center; align-items: center; flex-direction: column; cursor: pointer; z-index: 3; }
         
-        /* Ikon Navbar diubah jadi 1 warna monokrom agar simpel */
+        /* Ikon Navbar FontAwesome warna monokrom */
         .nav-icon { font-size: 1.3em; transition: 0.3s ease; color: #64748b; }
         .nav-text { position: absolute; font-size: 0.65em; font-weight: 600; color: #64748b; transform: translateY(22px); opacity: 0; transition: 0.3s; }
         
@@ -280,7 +303,7 @@
 
     <!-- 5. PROFILE & CUSTOM BACKGROUND -->
     <main id="view-profile" class="view card glass-panel" style="text-align: center; padding-top: 30px;">
-        <div style="font-size: 4em; margin-bottom: 10px;">🧑‍🎓</div>
+        <div style="font-size: 4em; margin-bottom: 10px;">🧑‍‍🎓</div>
         <h2 id="profile-name-display" style="font-weight: 700; font-size: 1.8em;">User</h2>
         <p style="color: rgba(255,255,255,0.7); font-size: 0.9em; margin-bottom: 25px;">Siswa SMK YAMAS</p>
         
@@ -311,7 +334,7 @@
     <!-- 6. QUIZ -->
     <main id="view-quiz" class="view card glass-panel">
         <div class="quiz-header">
-            <button class="btn btn-outline" style="padding: 5px 12px;" onclick="switchTab(0, 'view-dashboard', '🏠')">⬅ Batal</button>
+            <button class="btn btn-outline" style="padding: 5px 12px;" onclick="switchTab(0, 'view-dashboard', '<i class=\'fa-solid fa-house\'></i>')">⬅ Batal</button>
             <h3 id="quiz-title" style="font-size: 1em;">Judul</h3>
             <span id="question-tracker">0/0</span>
         </div>
@@ -342,15 +365,25 @@
     
     <!-- Lapis 2: Tombol Bulat Melayang -->
     <div class="nav-indicator-wrapper" id="indicator-wrapper" style="z-index: 4;">
-        <div class="nav-floating-icon" id="nav-floating-icon">🏠</div>
+        <div class="nav-floating-icon" id="nav-floating-icon"><i class="fa-solid fa-house"></i></div>
     </div>
 
-    <!-- Lapis 3: Menu-menu dengan Ikon 1 Warna (Monokrom) -->
-    <div class="nav-item active" onclick="switchTab(0, 'view-dashboard', '🏠')"><span class="nav-icon">🏠</span><span class="nav-text">Home</span></div>
-    <div class="nav-item" onclick="switchTab(1, 'view-chat', '💬')"><span class="nav-icon">💬</span><span class="nav-text">Chat</span></div>
-    <div class="nav-item" onclick="switchTab(2, 'view-music', '🎵')"><span class="nav-icon">🎵</span><span class="nav-text">Musik</span></div>
-    <div class="nav-item" onclick="switchTab(3, 'view-history', '📜')"><span class="nav-icon">📜</span><span class="nav-text">Histori</span></div>
-    <div class="nav-item" onclick="switchTab(4, 'view-profile', '👤')"><span class="nav-icon">👤</span><span class="nav-text">Profile</span></div>
+    <!-- Lapis 3: Menu-menu dengan Ikon FontAwesome (Monokrom) -->
+    <div class="nav-item active" onclick="switchTab(0, 'view-dashboard', '<i class=\'fa-solid fa-house\'></i>')">
+        <span class="nav-icon"><i class="fa-solid fa-house"></i></span><span class="nav-text">Home</span>
+    </div>
+    <div class="nav-item" onclick="switchTab(1, 'view-chat', '<i class=\'fa-solid fa-message\'></i>')">
+        <span class="nav-icon"><i class="fa-solid fa-message"></i></span><span class="nav-text">Chat</span>
+    </div>
+    <div class="nav-item" onclick="switchTab(2, 'view-music', '<i class=\'fa-solid fa-music\'></i>')">
+        <span class="nav-icon"><i class="fa-solid fa-music"></i></span><span class="nav-text">Musik</span>
+    </div>
+    <div class="nav-item" onclick="switchTab(3, 'view-history', '<i class=\'fa-solid fa-scroll\'></i>')">
+        <span class="nav-icon"><i class="fa-solid fa-scroll"></i></span><span class="nav-text">Histori</span>
+    </div>
+    <div class="nav-item" onclick="switchTab(4, 'view-profile', '<i class=\'fa-solid fa-user\'></i>')">
+        <span class="nav-icon"><i class="fa-solid fa-user"></i></span><span class="nav-text">Profile</span>
+    </div>
 </nav>
 
 <script>
@@ -366,19 +399,24 @@
         localStorage.setItem('sinau_bg_2', c2);
     }
 
-    const savedC1 = localStorage.getItem('sinau_bg_1') || '#0f172a';
-    const savedC2 = localStorage.getItem('sinau_bg_2') || '#3b0764';
-    inputColor1.value = savedC1;
-    inputColor2.value = savedC2;
-    document.body.style.background = `linear-gradient(135deg, ${savedC1}, ${savedC2})`;
+    // Hanya merender background kustom dari local storage JIKA sebelumnya pengguna sudah mengatur
+    // Jika belum ada di localstorage, kita membiarkan radial-gradient liquid abstrak dari CSS berjalan.
+    const savedC1 = localStorage.getItem('sinau_bg_1');
+    const savedC2 = localStorage.getItem('sinau_bg_2');
+    if(savedC1 && savedC2) {
+        inputColor1.value = savedC1;
+        inputColor2.value = savedC2;
+        document.body.style.background = `linear-gradient(135deg, ${savedC1}, ${savedC2})`;
+    }
 
     // --- NAVIGATION LOGIC ---
-    function switchTab(index, viewId, iconSymbol = '🏠') {
+    function switchTab(index, viewId, iconSymbol = '<i class="fa-solid fa-house"></i>') {
         if (index >= 0) {
             document.getElementById('indicator-wrapper').style.transform = `translateX(${index * 100}%)`;
             document.getElementById('bg-wrapper').style.transform = `translateX(${index * 100}%)`;
             
-            document.getElementById('nav-floating-icon').innerText = iconSymbol;
+            // Catatan: Menggunakan innerHTML agar tag <i> FontAwesome dapat dirender
+            document.getElementById('nav-floating-icon').innerHTML = iconSymbol;
             
             const navItems = document.querySelectorAll('.bottom-nav .nav-item');
             navItems.forEach((el, i) => { if(i === index) el.classList.add('active'); else el.classList.remove('active'); });
@@ -407,7 +445,7 @@
         if (currentUser) {
             document.getElementById('view-auth').style.display = 'none';
             document.getElementById('profile-name-display').innerText = currentUser;
-            switchTab(0, 'view-dashboard', '🏠');
+            switchTab(0, 'view-dashboard', '<i class=\'fa-solid fa-house\'></i>');
         } else { document.getElementById('view-auth').style.display = 'flex'; }
     });
 
@@ -432,7 +470,7 @@
             currentUser = u; localStorage.setItem('sinau_active_user', currentUser);
             document.getElementById('view-auth').style.display = 'none';
             document.getElementById('profile-name-display').innerText = currentUser;
-            switchTab(0, 'view-dashboard', '🏠');
+            switchTab(0, 'view-dashboard', '<i class=\'fa-solid fa-house\'></i>');
         } catch (error) { alert("Koneksi gagal."); } finally { btn.innerText = isRegisterMode ? "Daftar & Masuk" : "Masuk"; btn.disabled = false; }
     }
 
@@ -724,7 +762,7 @@
         try {
             let btn = document.querySelector('#view-result .btn'); btn.innerText = "Menyimpan..."; btn.disabled = true;
             await fetch(FIREBASE_SKOR_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dataBaru) });
-            alert("Skor berhasil disimpan ke akun online-mu!"); loadHistoryView(); switchTab(0, 'view-dashboard', '🏠');
+            alert("Skor berhasil disimpan ke akun online-mu!"); loadHistoryView(); switchTab(0, 'view-dashboard', '<i class=\'fa-solid fa-house\'></i>');
             btn.innerText = "💾 Simpan & Kembali"; btn.disabled = false;
         } catch (error) { alert("Gagal menyimpan data."); }
     }
