@@ -77,7 +77,7 @@ function switchTab(index, viewId, iconSymbol = '<i class="fa-solid fa-house"></i
         targetView.classList.add('active');  
     }  
 
-    if (viewId === 'view-quiz' || viewId === 'view-result' || viewId === 'view-private-room' || viewId === 'view-call') {  
+    if (viewId === 'view-quiz' || viewId === 'view-result' || viewId === 'view-private-room') {  
         document.getElementById('bottom-nav').style.display = 'none';  
         document.getElementById('top-header').style.display = 'none';  
     } else {  
@@ -102,7 +102,7 @@ function switchTab(index, viewId, iconSymbol = '<i class="fa-solid fa-house"></i
     if (viewId === 'view-chat') {  
         loadChatUsersList();  
         if (!chatListInterval) {
-            chatListInterval = setInterval(loadChatUsersList, 1500);
+            chatListInterval = setInterval(loadChatUsersList, 2000);
         }
     }  
 }  
@@ -170,7 +170,7 @@ function toggleFolder(folderId, headerElement) {
     headerElement.querySelector('.chevron').classList.toggle('active'); 
 }  
 
-// --- MUSIC ---  
+// --- MUSIC & YOUTUBE SEARCH ---  
 let isMusicPlaying = false; 
 const bgMusic = document.getElementById('bg-music');  
 function playSelectedTrack(src, index) {  
@@ -178,7 +178,8 @@ function playSelectedTrack(src, index) {
     bgMusic.play().then(() => { 
         isMusicPlaying = true; 
         document.getElementById('main-music-toggle').innerText = "⏸ Jeda Musik"; 
-        document.getElementById(`btn-play-${index}`).innerText = "Sedang Diputar 🎶"; 
+        const btn = document.getElementById(`btn-play-${index}`);
+        if(btn) btn.innerText = "Sedang Diputar 🎶"; 
     }).catch(e=>console.log(e));  
 }  
 function toggleMusicPlayback() { 
@@ -186,82 +187,34 @@ function toggleMusicPlayback() {
     else { bgMusic.play(); isMusicPlaying = true; document.getElementById('main-music-toggle').innerText = "⏸ Jeda"; } 
 }  
 
-// --- CALL SYSTEM (PANGGILAN SUARA & VIDEO) ---
-let activeCallInterval = null;
-let callDurationSeconds = 0;
-let isMicMuted = false;
-let isCameraOff = false;
-
-function startCall(isVideo = false) {
-    const targetName = activeGroup ? "Grup Diskusi Sinau Bang" : activeChatUser;
-    if (!targetName) return;
-
-    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-    document.getElementById('view-call').classList.add('active');
-
-    document.getElementById('call-target-name').innerText = targetName;
-    document.getElementById('call-type-label').innerText = isVideo ? "Memanggil (Video Call)..." : "Memanggil (Voice Call)...";
-    document.getElementById('call-avatar').src = activeGroup ? `https://ui-avatars.com/api/?name=Grup&background=0284c7&color=fff&bold=true` : getAvatarUrl(targetName);
+function searchYouTubeMusic() {
+    const query = document.getElementById('yt-search-input').value.trim();
+    if(!query) { alert("Masukkan judul lagu atau artis!"); return; }
     
-    const videoContainer = document.getElementById('video-stream-container');
-    if (isVideo) {
-        videoContainer.style.display = 'block';
-    } else {
-        videoContainer.style.display = 'none';
-    }
-
-    callDurationSeconds = 0;
-    isMicMuted = false;
-    isCameraOff = false;
-    document.getElementById('mic-btn-icon').className = "fa-solid fa-microphone";
-    document.getElementById('video-btn-icon').className = "fa-solid fa-video";
-
+    const resultsContainer = document.getElementById('yt-search-results');
+    resultsContainer.innerHTML = `<p style="text-align:center; color:rgba(255,255,255,0.6); font-size:0.85em;">Mencari di YouTube...</p>`;
+    
     setTimeout(() => {
-        document.getElementById('call-type-label').innerText = "Menyambungkan...";
-        setTimeout(() => {
-            document.getElementById('call-type-label').innerText = "00:00";
-            if (activeCallInterval) clearInterval(activeCallInterval);
-            activeCallInterval = setInterval(() => {
-                callDurationSeconds++;
-                let mins = Math.floor(callDurationSeconds / 60).toString().padStart(2, '0');
-                let secs = (callDurationSeconds % 60).toString().padStart(2, '0');
-                document.getElementById('call-type-label').innerText = `${mins}:${secs}`;
-            }, 1000);
-        }, 1500);
-    }, 2000);
-}
-
-function endCall() {
-    if (activeCallInterval) {
-        clearInterval(activeCallInterval);
-        activeCallInterval = null;
-    }
-    if (activeGroup) {
-        openGroupChat(activeGroup, "Grup Diskusi Sinau Bang");
-    } else if (activeChatUser) {
-        openPrivateChat(activeChatUser);
-    } else {
-        switchTab(1, 'view-chat', '<i class=\'fa-solid fa-message\'></i>');
-    }
-}
-
-function toggleMuteMic() {
-    isMicMuted = !isMicMuted;
-    const icon = document.getElementById('mic-btn-icon');
-    icon.className = isMicMuted ? "fa-solid fa-microphone-slash" : "fa-solid fa-microphone";
-}
-
-function toggleVideoCamera() {
-    isCameraOff = !isCameraOff;
-    const icon = document.getElementById('video-btn-icon');
-    icon.className = isCameraOff ? "fa-solid fa-video-slash" : "fa-solid fa-video";
-    const videoBox = document.getElementById('video-stream-container');
-    videoBox.style.opacity = isCameraOff ? "0.2" : "1";
+        const encodedQ = encodeURIComponent(query);
+        resultsContainer.innerHTML = `
+            <div class="history-item glass-panel" style="display:flex; flex-direction:column; gap:10px; align-items:stretch;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <b>🎵 Hasil: ${query}</b>
+                    <span style="font-size:0.75em; color:var(--theme-accent);">YouTube Player</span>
+                </div>
+                <div style="position:relative; width:100%; height:180px; border-radius:12px; overflow:hidden; background:#000;">
+                    <iframe width="100%" height="100%" src="https://www.youtube.com/embed?listType=search&list=${encodedQ}" frameborder="0" allowfullscreen></iframe>
+                </div>
+                <p style="font-size:0.75em; color:rgba(255,255,255,0.6);">Putar video musik pilihanmu langsung di atas atau kunjungi YouTube resmi.</p>
+                <a href="https://www.youtube.com/results?search_query=${encodedQ}" target="_blank" class="btn btn-outline" style="text-align:center; font-size:0.85em; padding:8px;">🔍 Cari & Tonton di YouTube Resmi</a>
+            </div>
+        `;
+    }, 600);
 }
 
 // --- REAL-TIME PRIVATE & GROUP CHAT SYSTEM ---  
 function getAvatarUrl(name) {
-    return `https://ui-avatars.com/api/?name=${name}&background=random&color=fff&bold=true`;
+    return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random&color=fff&bold=true`;
 }
 
 function getRoomId(user1, user2) {
@@ -271,15 +224,6 @@ function getRoomId(user1, user2) {
 async function loadChatUsersList() {  
     const activeUsersList = document.getElementById('active-users-list');  
     const recentChatList = document.getElementById('chat-recent-list');  
-      
-    if (activeUsersList && activeUsersList.innerHTML.trim() === "") {
-        activeUsersList.innerHTML = `  
-            <div class="active-user-item">  
-                <div class="avatar-wrapper new-chat"><i class="fa-solid fa-plus"></i></div>  
-                <span>New</span>  
-            </div>  
-        `;  
-    }
 
     try {  
         let res = await fetch(FIREBASE_USERS_URL);  
@@ -325,7 +269,7 @@ async function loadChatUsersList() {
             isGroup: true,
             groupId,
             groupName,
-            avatarPath: `https://ui-avatars.com/api/?name=${groupName}&background=0284c7&color=fff&bold=true`,
+            avatarPath: `https://ui-avatars.com/api/?name=Grup&background=0284c7&color=fff&bold=true`,
             meta: groupMeta,
             maxTimestamp: groupMaxTimestamp,
             unreadCount: isGroupUnread ? 1 : 0,
@@ -374,7 +318,6 @@ async function loadChatUsersList() {
 
         chatItems.sort((a, b) => b.maxTimestamp - a.maxTimestamp);
 
-        // Update Notification Bell Badge in Header
         const bellBadge = document.getElementById('global-bell-badge');
         if (bellBadge) {
             if (totalUnreadGlobal > 0) {
@@ -495,7 +438,7 @@ function openPrivateChat(targetUser) {
     loadPrivateMessages();  
       
     if(currentChatInterval) clearInterval(currentChatInterval);  
-    currentChatInterval = setInterval(loadPrivateMessages, 1000);  
+    currentChatInterval = setInterval(loadPrivateMessages, 1500);  
 }  
 
 function openGroupChat(groupId, groupName) {
@@ -522,13 +465,13 @@ function openGroupChat(groupId, groupName) {
     document.getElementById('view-private-room').classList.add('active');  
       
     document.getElementById('private-chat-name').innerText = groupName;  
-    document.getElementById('private-chat-avatar').src = `https://ui-avatars.com/api/?name=${groupName}&background=0284c7&color=fff&bold=true`;  
+    document.getElementById('private-chat-avatar').src = `https://ui-avatars.com/api/?name=Grup&background=0284c7&color=fff&bold=true`;  
     document.getElementById('bottom-nav').style.display = 'none';  
       
     loadPrivateMessages();  
       
     if(currentChatInterval) clearInterval(currentChatInterval);  
-    currentChatInterval = setInterval(loadPrivateMessages, 1000);  
+    currentChatInterval = setInterval(loadPrivateMessages, 1500);  
 }
 
 async function loadPrivateMessages() {  
@@ -749,7 +692,7 @@ function openHistoryDetail(id) {
 }  
 function closeModal() { document.getElementById('history-modal').style.display = 'none'; }  
 
-// --- FULL DATABASE (120+ QUESTIONS & QUIZ LOGIC) ---  
+// --- FULL DATABASE & QUIZ LOGIC ---  
 function shuffleArray(arr) { let c = arr.length, t, r; while (c !== 0) { r = Math.floor(Math.random() * c); c -= 1; t = arr[c]; arr[c] = arr[r]; arr[r] = t; } return arr; }  
   
 const readingTexts = {  
@@ -982,4 +925,4 @@ async function saveScoreToHistory() {
         alert("Skor berhasil disimpan ke akun online-mu!"); loadHistoryView(); switchTab(0, 'view-dashboard', '<i class=\'fa-solid fa-house\'></i>');  
         btn.innerText = "💾 Simpan & Kembali"; btn.disabled = false;  
     } catch (error) { alert("Gagal menyimpan data."); }  
-                }
+}
