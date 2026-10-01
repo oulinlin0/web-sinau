@@ -214,6 +214,7 @@ async function loadChatUsersList() {
           
         let otherUsers = Object.keys(usersDB).filter(u => u !== currentUser);  
         let chatItems = [];
+        let totalUnreadGlobal = 0;
 
         const groupId = "grup_diskusi_umum";
         const groupName = "Grup Diskusi Sinau Bang";
@@ -231,6 +232,15 @@ async function loadChatUsersList() {
         });
 
         let groupReadTimestamps = groupMeta.lastReadTimestamps || {};
+        let groupLastReadUser = groupReadTimestamps[currentUser] || 0;
+        let isGroupUnread = false;
+        Object.values(groupMsgsData).forEach(m => {
+            if (m.sender !== currentUser && (m.timestamp || 0) > groupLastReadUser) {
+                isGroupUnread = true;
+                totalUnreadGlobal++;
+            }
+        });
+
         let isGroupMsgRead = false;
         Object.keys(groupReadTimestamps).forEach(u => {
             if (u !== currentUser && groupReadTimestamps[u] >= (groupMeta.timestamp || 0)) {
@@ -245,7 +255,8 @@ async function loadChatUsersList() {
             avatarPath: `https://ui-avatars.com/api/?name=${groupName}&background=0284c7&color=fff&bold=true`,
             meta: groupMeta,
             maxTimestamp: groupMaxTimestamp,
-            unreadCount: 0,
+            unreadCount: isGroupUnread ? 1 : 0,
+            isUnread: isGroupUnread,
             isRead: isGroupMsgRead
         });
 
@@ -270,6 +281,7 @@ async function loadChatUsersList() {
                 }
                 if (m.sender !== currentUser && (m.timestamp || 0) > lastReadTime) {
                     unreadCount++;
+                    totalUnreadGlobal++;
                 }
             });
 
@@ -288,6 +300,32 @@ async function loadChatUsersList() {
         }  
 
         chatItems.sort((a, b) => b.maxTimestamp - a.maxTimestamp);
+
+        // Update Bell Notification Real-time Badge
+        const bellIconContainer = document.querySelector('.chat-header-top');
+        if (bellIconContainer) {
+            let bellBadge = document.getElementById('global-bell-badge');
+            if (totalUnreadGlobal > 0) {
+                if (!bellBadge) {
+                    bellIconContainer.innerHTML = `
+                        <h2 style="font-size: 1.6em; font-weight: 700;">Chat</h2>
+                        <div style="position: relative; display: inline-block; cursor: pointer;">
+                            <i class="fa-regular fa-bell" style="font-size: 1.2em;"></i>
+                            <span id="global-bell-badge" style="position: absolute; top: -5px; right: -8px; background: #22c55e; color: white; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; font-size: 0.65em; font-weight: 700;">${totalUnreadGlobal}</span>
+                        </div>
+                    `;
+                } else {
+                    bellBadge.innerText = totalUnreadGlobal;
+                }
+            } else {
+                if (bellBadge) {
+                    bellIconContainer.innerHTML = `
+                        <h2 style="font-size: 1.6em; font-weight: 700;">Chat</h2>
+                        <i class="fa-regular fa-bell" style="font-size: 1.2em;"></i>
+                    `;
+                }
+            }
+        }
 
         let activeUsersHTML = `  
             <div class="active-user-item" onclick="openGroupChat('${groupId}', '${groupName}')">  
@@ -319,6 +357,7 @@ async function loadChatUsersList() {
                 if (item.meta.lastSender === currentUser) {
                     previewText = `${checkIcon} ${item.meta.lastMessage || ''}`; 
                 }
+                let badgeHTML = item.isUnread ? `<div class="unread-badge">1</div>` : '';
                 recentChatHTML += `  
                     <div class="chat-list-item" onclick="openGroupChat('${item.groupId}', '${item.groupName}')">  
                         <div class="avatar-wrapper" style="width: 50px; height: 50px; margin-bottom: 0; flex-shrink: 0;">  
@@ -330,6 +369,7 @@ async function loadChatUsersList() {
                         </div>  
                         <div class="chat-list-meta">  
                             <span>${item.meta.time || ''}</span>  
+                            ${badgeHTML}
                         </div>  
                     </div>  
                 `;  
@@ -349,7 +389,7 @@ async function loadChatUsersList() {
                             <div class="chat-list-msg">${previewText}</div>  
                         </div>  
                         <div class="chat-list-meta">  
-                            <span style="font-weight: ${item.isUnread ? '700' : 'normal'}; color: ${item.isUnread ? '#8EB69B' : 'inherit'};">${item.meta.time || ''}</span>  
+                            <span style="font-weight: ${item.isUnread ? '700' : 'normal'}; color: ${item.isUnread ? '#22c55e' : 'inherit'};">${item.meta.time || ''}</span>  
                             ${badgeHTML}  
                         </div>  
                     </div>  
