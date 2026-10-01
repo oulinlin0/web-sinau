@@ -196,7 +196,7 @@
 
 <div class="container">
 
-    <!-- DASHBOARD (Langsung Muncul Pertama Tanpa Input Nama) -->
+    <!-- DASHBOARD -->
     <main id="view-dashboard" class="view active card">
         <h2 class="section-title">Modul Belajar</h2>
         <div class="history-list">
@@ -242,7 +242,7 @@
         </div>
     </main>
 
-    <!-- RESULT VIEW (Input Nama Dilakukan di Sini Sebelum Simpan Histori) -->
+    <!-- RESULT VIEW -->
     <main id="view-result" class="view card result-container">
         <h2 class="section-title">Selesai! 🎉</h2>
         <div class="score-circle" id="final-score">100</div>
@@ -313,13 +313,15 @@
         }
     }
 
-    // Fungsi Pengacak Array
+    // Algoritma Pengacak Fisher-Yates yang Lebih Kuat dan Valid
     function shuffleArray(array) {
-        let currentIndex = array.length, randomIndex;
+        let currentIndex = array.length, temporaryValue, randomIndex;
         while (currentIndex !== 0) {
             randomIndex = Math.floor(Math.random() * currentIndex);
-            currentIndex--;
-            [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+            currentIndex -= 1;
+            temporaryValue = array[currentIndex];
+            array[currentIndex] = array[randomIndex];
+            array[randomIndex] = temporaryValue;
         }
         return array;
     }
@@ -333,7 +335,7 @@
         { q: "Penulisan alamat surat yang benar sesuai dengan EYD/PUEBI adalah...", o: ["Kepada Yth. Bapak Direktur PT Sukses Makmur Jl. Melati 10 Jakarta", "Yth. Direktur PT Sukses Makmur Jalan Melati No. 10 Jakarta", "Yth. Pimpinan PT. Sukses Makmur, Jalan Melati 10, Jakarta.", "Kepada Yth. Pimpinan PT Sukses Makmur di Jakarta"], c: 1, exp: "Alamat surat tidak menggunakan kata 'Kepada', tidak menggunakan titik setelah 'PT', dan menggunakan kata 'Jalan' tanpa disingkat." }
     ];
     for(let i=5; i<40; i++) {
-        psts_indo_questions.push({ q: `Manakah penulisan alamat surat yang salah?`, o: ["Yth. Direktur PT Abadi", "Kepada Yth. Bapak Direktur", "Yth. Pimpinan HRD", "Yth. Kepala HRD PT Makmur"], c: 1, exp: "Penggunaan 'Kepada' dan 'Yth.' secara bersamaan adalah pemborosan kata (salah)." });
+        psts_indo_questions.push({ q: `Manakah penulisan alamat surat yang salah? (${i+1})`, o: ["Yth. Direktur PT Abadi", "Kepada Yth. Bapak Direktur", "Yth. Pimpinan HRD", "Yth. Kepala HRD PT Makmur"], c: 1, exp: "Penggunaan 'Kepada' dan 'Yth.' secara bersamaan adalah pemborosan kata (salah)." });
     }
 
     const psts_bing_questions = [
@@ -342,7 +344,7 @@
         { q: "The summary of the main event is written in the...", o: ["Orientation", "Newsworthy Event", "Sources", "Background"], c: 1, exp: "Newsworthy event berisi ringkasan/inti kejadian utama." }
     ];
     for(let i=3; i<40; i++) {
-        psts_bing_questions.push({ q: `Which of the following is a Past Tense verb?`, o: ["Go", "Went", "Going", "Goes"], c: 1, exp: "'Went' is the past form of 'go'." });
+        psts_bing_questions.push({ q: `Which of the following is a Past Tense verb? (${i+1})`, o: ["Go", "Went", "Going", "Goes"], c: 1, exp: "'Went' is the past form of 'go'." });
     }
 
     const database = {
@@ -395,11 +397,13 @@
         document.getElementById(id).classList.add('active'); 
     }
 
-    // --- KUIS LOGIC (Acak Soal Setiap Kali Mulai) ---
+    // --- KUIS LOGIC (Acak Total Setiap Masuk) ---
     function startStudySession(modulId) {
         currentModulId = modulId;
-        // Mengacak urutan soal secara total setiap kali sesi dimulai
-        questions = shuffleArray([...database[modulId].questions]); 
+        // Menduplikasi array asli menggunakan JSON.parse(JSON.stringify(...)) agar pengacakan benar-benar baru dari awal
+        let originalQuestions = JSON.parse(JSON.stringify(database[modulId].questions));
+        questions = shuffleArray(originalQuestions); 
+        
         document.getElementById('quiz-title').innerText = database[modulId].title;
         currentQIndex = 0; score = 0;
         showView('view-quiz');
@@ -418,7 +422,7 @@
         const optionsContainer = document.getElementById('options-container');
         optionsContainer.innerHTML = '';
         
-        // Mengacak posisi pilihan ganda (A, B, C, D)
+        // Memetakan dan mengacak pilihan ganda (A, B, C, D)
         let optionsArr = q.o.map((text, index) => ({ text, isCorrect: index === q.c }));
         optionsArr = shuffleArray(optionsArr);
 
@@ -464,7 +468,7 @@
             showView('view-result');
             finalCalculatedScore = Math.round((score / questions.length) * 100);
             document.getElementById('final-score').innerText = finalCalculatedScore;
-            document.getElementById('result-username').value = ""; // Kosongkan input nama
+            document.getElementById('result-username').value = ""; 
             document.getElementById('result-message').innerText = finalCalculatedScore >= 80 ? "Luar biasa! Pertahankan!" : "Jangan menyerah, coba lagi!";
         }, 300);
     }
