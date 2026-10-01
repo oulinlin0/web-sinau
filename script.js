@@ -26,10 +26,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // --- VARIABEL PRIVATE & GROUP CHAT ---
 let activeChatUser = null;
-let activeGroup = null; // Menyimpan ID grup yang sedang dibuka
+let activeGroup = null; 
 let currentChatInterval = null;
 let chatListInterval = null; 
-let lastMessageCount = 0; // Pengaman anti kedip-kedip
+let lastMessageCount = 0; 
+
+// --- WHATSAPP CHECKMARK HELPER (Rapat & Dinamis Abu/Biru) ---
+function getWhatsAppCheckmark(isRead) {
+    let color = isRead ? "#53bdeb" : "#8696a7"; // #53bdeb = Biru WA, #8696a7 = Abu-abu WA
+    return `<span style="display: inline-block; position: relative; width: 13px; height: 10px; margin-left: 4px; vertical-align: baseline;">
+        <i class="fa-solid fa-check" style="position: absolute; left: 0; top: 0; font-size: 0.75em; color: ${color};"></i>
+        <i class="fa-solid fa-check" style="position: absolute; left: 4px; top: 0; font-size: 0.75em; color: ${color};"></i>
+    </span>`;
+}
 
 // --- NAVIGATION LOGIC ---  
 function switchTab(index, viewId, iconSymbol = '<i class="fa-solid fa-house"></i>') {  
@@ -196,7 +205,6 @@ async function loadChatUsersList() {
         let usersDB = await res.json() || {};  
           
         let otherUsers = Object.keys(usersDB).filter(u => u !== currentUser);  
-        
         let chatItems = [];
 
         // 1. Ambil Data Grup Chat Utama ("Grup Diskusi Sinau Bang")
@@ -215,6 +223,14 @@ async function loadChatUsersList() {
             }
         });
 
+        let groupReadTimestamps = groupMeta.lastReadTimestamps || {};
+        let isGroupMsgRead = false;
+        Object.keys(groupReadTimestamps).forEach(u => {
+            if (u !== currentUser && groupReadTimestamps[u] >= (groupMeta.timestamp || 0)) {
+                isGroupMsgRead = true;
+            }
+        });
+
         chatItems.push({
             isGroup: true,
             groupId,
@@ -222,7 +238,8 @@ async function loadChatUsersList() {
             avatarPath: `https://ui-avatars.com/api/?name=${groupName}&background=0284c7&color=fff&bold=true`,
             meta: groupMeta,
             maxTimestamp: groupMaxTimestamp,
-            unreadCount: 0
+            unreadCount: 0,
+            isRead: isGroupMsgRead
         });
 
         // 2. Ambil Data Chat Pribadi
@@ -237,6 +254,7 @@ async function loadChatUsersList() {
             let msgsData = await msgRes.json() || {};
 
             let lastReadTime = (meta.lastReadTimestamps && meta.lastReadTimestamps[currentUser]) || 0;
+            let otherReadTime = (meta.lastReadTimestamps && meta.lastReadTimestamps[user]) || 0;
             let unreadCount = 0;
             let maxTimestamp = meta.timestamp || 0;
 
@@ -249,6 +267,8 @@ async function loadChatUsersList() {
                 }
             });
 
+            let isMsgRead = (meta.timestamp || 0) <= otherReadTime;
+
             chatItems.push({
                 isGroup: false,
                 user,
@@ -256,11 +276,12 @@ async function loadChatUsersList() {
                 meta,
                 unreadCount,
                 maxTimestamp,
-                isUnread: unreadCount > 0
+                isUnread: unreadCount > 0,
+                isRead: isMsgRead
             });
         }  
 
-        // 3. URUTKAN BERDASARKAN WAKTU TERBARU (Pesan terbaru otomatis naik ke atas seperti WhatsApp)
+        // 3. URUTKAN BERDASARKAN WAKTU TERBARU
         chatItems.sort((a, b) => b.maxTimestamp - a.maxTimestamp);
 
         // 4. Render Tampilan Aktif Atas & Daftar Chat
@@ -287,10 +308,12 @@ async function loadChatUsersList() {
 
         let recentChatHTML = '';
         for (let item of chatItems) {
+            let checkIcon = getWhatsAppCheckmark(item.isRead);
+            
             if (item.isGroup) {
                 let previewText = item.meta.lastMessage || "Ketuk untuk gabung diskusi grup...";
                 if (item.meta.lastSender === currentUser) {
-                    previewText = `<i class="fa-solid fa-check-double" style="color:var(--theme-1); font-size:0.8em; margin-right:4px;"></i> ${item.meta.lastMessage || ''}`; 
+                    previewText = `${checkIcon} ${item.meta.lastMessage || ''}`; 
                 }
                 recentChatHTML += `  
                     <div class="chat-list-item" onclick="openGroupChat('${item.groupId}', '${item.groupName}')" style="background: rgba(2, 132, 199, 0.04);">  
@@ -309,7 +332,7 @@ async function loadChatUsersList() {
             } else {
                 let previewText = item.meta.lastMessage || "Ketuk untuk mulai obrolan...";
                 if (item.meta.lastSender === currentUser) {
-                    previewText = `<i class="fa-solid fa-check-double" style="color:var(--theme-1); font-size:0.8em; margin-right:4px;"></i> ${item.meta.lastMessage || ''}`; 
+                    previewText = `${checkIcon} ${item.meta.lastMessage || ''}`; 
                 }
                 let badgeHTML = item.isUnread ? `<div class="unread-badge">${item.unreadCount}</div>` : '';
                 recentChatHTML += `  
@@ -340,7 +363,7 @@ async function loadChatUsersList() {
 
 function openPrivateChat(targetUser) {  
     activeChatUser = targetUser;  
-    activeGroup = null; // Reset grup
+    activeGroup = null;  
     lastMessageCount = 0;   
     
     const roomId = getRoomId(currentUser, targetUser);
@@ -374,9 +397,23 @@ function openPrivateChat(targetUser) {
 
 function openGroupChat(groupId, groupName) {
     activeGroup = groupId;
-    activeChatUser = null; // Reset chat pribadi
+    activeChatUser = null;  
     lastMessageCount = 0;
     
+    const META_URL = `https://sinaubang-web-a5069-default-rtdb.asia-southeast1.firebasedatabase.app/group_meta/${groupId}.json`;
+    try {
+        fetch(META_URL).then(res => res.json()).then(metaData => {
+            if (!metaData) metaData = {};
+            if (!metaData.lastReadTimestamps) metaData.lastReadTimestamps = {};
+            metaData.lastReadTimestamps[currentUser] = Date.now();
+            fetch(META_URL, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(metaData)
+            });
+        });
+    } catch(e){}
+
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));  
     document.getElementById('view-private-room').classList.add('active');  
       
@@ -390,7 +427,6 @@ function openGroupChat(groupId, groupName) {
     currentChatInterval = setInterval(loadPrivateMessages, 500);  
 }
 
-// Dispatcher Load Pesan (Bisa untuk Pribadi atau Grup tanpa kedip)
 async function loadPrivateMessages() {  
     if (activeGroup) {
         await loadGroupMessages();
@@ -402,11 +438,17 @@ async function loadPrivateMessages() {
 async function loadUserPrivateMessages() {
     const roomId = getRoomId(currentUser, activeChatUser);
     const PRIVATE_URL = `https://sinaubang-web-a5069-default-rtdb.asia-southeast1.firebasedatabase.app/private_chats/${roomId}.json`;  
+    const META_URL = `https://sinaubang-web-a5069-default-rtdb.asia-southeast1.firebasedatabase.app/chat_meta/${roomId}.json`;
     const chatBox = document.getElementById('private-messages-box');  
     
     try {  
-        let res = await fetch(PRIVATE_URL);  
-        let data = await res.json();  
+        let [resMsg, resMeta] = await Promise.all([
+            fetch(PRIVATE_URL),
+            fetch(META_URL)
+        ]);
+        let data = await resMsg.json();  
+        let meta = await resMeta.json() || {};
+        let otherReadTime = (meta.lastReadTimestamps && meta.lastReadTimestamps[activeChatUser]) || 0;
         
         if(!data) {  
             if (lastMessageCount !== 0) {
@@ -417,16 +459,19 @@ async function loadUserPrivateMessages() {
         }  
         
         let messagesArray = Object.values(data);
-        if (messagesArray.length === lastMessageCount) return; // Anti Kedip
+        if (messagesArray.length === lastMessageCount) return; 
         lastMessageCount = messagesArray.length;
         
         let htmlContent = '';
         messagesArray.forEach(c => {  
             let isMe = (c.sender === currentUser);  
             let bClass = isMe ? 'chat-bubble-me' : 'chat-bubble-other';  
+            let isRead = (c.timestamp || 0) <= otherReadTime;
+            let checkmarkHTML = isMe ? getWhatsAppCheckmark(isRead) : '';
+            
             htmlContent += `  
                 <div class="chat-bubble ${bClass}">  
-                    ${c.message}<br><small style="opacity:0.7; font-size:0.75em; float:right; margin-left:10px; margin-top:3px;">${c.time} ${isMe ? '<i class="fa-solid fa-check" style="margin-left:2px;"></i>' : ''}</small>  
+                    ${c.message}<br><small style="opacity:0.7; font-size:0.75em; float:right; margin-left:10px; margin-top:3px;">${c.time} ${checkmarkHTML}</small>  
                 </div>`;  
         });  
         
@@ -437,11 +482,17 @@ async function loadUserPrivateMessages() {
 
 async function loadGroupMessages() {
     const GROUP_URL = `https://sinaubang-web-a5069-default-rtdb.asia-southeast1.firebasedatabase.app/group_chats/${activeGroup}.json`;
+    const META_URL = `https://sinaubang-web-a5069-default-rtdb.asia-southeast1.firebasedatabase.app/group_meta/${activeGroup}.json`;
     const chatBox = document.getElementById('private-messages-box');  
     
     try {  
-        let res = await fetch(GROUP_URL);  
-        let data = await res.json();  
+        let [resMsg, resMeta] = await Promise.all([
+            fetch(GROUP_URL),
+            fetch(META_URL)
+        ]);
+        let data = await resMsg.json();  
+        let meta = await resMeta.json() || {};
+        let readTimestamps = meta.lastReadTimestamps || {};
         
         if(!data) {  
             if (lastMessageCount !== 0) {
@@ -452,17 +503,27 @@ async function loadGroupMessages() {
         }  
         
         let messagesArray = Object.values(data);
-        if (messagesArray.length === lastMessageCount) return; // Anti Kedip
+        if (messagesArray.length === lastMessageCount) return; 
         lastMessageCount = messagesArray.length;
         
         let htmlContent = '';
         messagesArray.forEach(c => {  
             let isMe = (c.sender === currentUser);  
             let bClass = isMe ? 'chat-bubble-me' : 'chat-bubble-other';  
-            let senderLabel = !isMe ? `<b style="color:var(--theme-1); font-size:0.8em; display:block; margin-bottom:2px;">~ ${c.sender}</b>` : '';
+            let senderLabel = !isMe ? `<b style="color:var(--theme-1); font-size:0.85em; display:block; margin-bottom:2px;">${c.sender}</b>` : '';
+            
+            let isReadByAnyone = false;
+            Object.keys(readTimestamps).forEach(u => {
+                if (u !== currentUser && readTimestamps[u] >= (c.timestamp || 0)) {
+                    isReadByAnyone = true;
+                }
+            });
+
+            let checkmarkHTML = isMe ? getWhatsAppCheckmark(isReadByAnyone) : '';
+            
             htmlContent += `  
                 <div class="chat-bubble ${bClass}">  
-                    ${senderLabel}${c.message}<br><small style="opacity:0.7; font-size:0.75em; float:right; margin-left:10px; margin-top:3px;">${c.time} ${isMe ? '<i class="fa-solid fa-check" style="margin-left:2px;"></i>' : ''}</small>  
+                    ${senderLabel}${c.message}<br><small style="opacity:0.7; font-size:0.75em; float:right; margin-left:10px; margin-top:3px;">${c.time} ${checkmarkHTML}</small>  
                 </div>`;  
         });  
         
@@ -471,7 +532,6 @@ async function loadGroupMessages() {
     } catch(e) { console.error(e); }  
 }
 
-// Dispatcher Kirim Pesan
 async function sendPrivateMessage() {  
     if (activeGroup) {
         await sendGroupMessage();
@@ -535,10 +595,14 @@ async function sendGroupMessage() {
         body: JSON.stringify({ sender: currentUser, message: msg, time: timeString, timestamp: currentTime })   
     });  
 
+    let resMeta = await fetch(META_URL);
+    let metaData = await resMeta.json() || {};
+
     await fetch(META_URL, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
+            ...metaData,
             lastMessage: msg, 
             time: timeString, 
             lastSender: currentUser,
@@ -743,7 +807,7 @@ const mplb_sop_qs = [
     { q: "Dalam SOP Front Office, sikap melayani tamu dengan ramah, cepat, dan tanggap sering disebut sebagai penerapan prinsip...", o: ["Pelayanan Prima (Service Excellence)", "Manajemen Konflik", "Arsip Dinamis", "Administrasi Keuangan"], c: 0, exp: "Pelayanan prima (Service Excellence) adalah standar tertinggi dalam melayani tamu/pelanggan." },  
     { q: "Langkah pertama yang harus dilakukan resepsionis (Front Office) ketika tamu memasuki area lobi kantor adalah...", o: ["Meminta identitas KTP", "Memberikan salam (Greeting) dengan senyum", "Menyuruh tamu langsung duduk", "Menelepon atasan"], c: 1, exp: "Memberikan salam dengan ramah adalah prosedur paling awal (SOP) di Front Office." },  
     { q: "Saat menerima telepon keluhan dari tamu, tindakan yang paling tepat sesuai SOP adalah...", o: ["Menutup telepon secara sepihak", "Mendengarkan dengan empati, mencatat, dan menenangkan tamu", "Meminta tamu untuk datang langsung", "Menyalahkan departemen lain"], c: 1, exp: "Dalam pelayanan, keluhan harus didengarkan dengan empati dan dicatat sebelum diberikan solusi." },  
-    { q: "Standar grooming (penampilan) bagi seorang petugas Front Office umumnya meliputi, kecuali...", o: ["Pakaian seragam rapi dan disetrika", "Rambut tertata rapi atau menggunakan hijab yang sesuai standar", "Menggunakan perhiasan mencolok berlebihan", "Memakai tanda pengenal (name tag)"], c: 2, exp: "Perhiasan berlebihan tidak sesuai dengan standar penampilan profesional di perkantoran/perhotelan." },  
+    { q: "Standar grooming (penampilan) bagi seorang petugas Front Office umumnya meliputi, kecuali...", o: ["Pakaian seragam rapi dan disetrika", "Rambut tertata rapi atau menggunakan hijab yang sesuai standar", "Menggunakan perhiasan mencolok berlebihan", "Memakai tanda pengenal (name tag)"], c: 2, exp: "Perhiasan berlebihan tidak sesuai dengan standar penampilan profesional di perkontoran/perhotelan." },  
     { q: "Jika tamu tidak memiliki janji temu dengan pimpinan yang sedang rapat, resepsionis sebaiknya...", o: ["Mempersilakan tamu masuk menerobos rapat", "Meminta tamu menunggu di luar tanpa penjelasan", "Menjelaskan dengan sopan bahwa pimpinan sedang rapat dan meminta tamu mengisi buku tamu/meninggalkan pesan", "Menyuruh tamu pulang dengan nada kasar"], c: 2, exp: "Penyampaian informasi yang jelas dan sopan serta menawarkan alternatif (meninggalkan pesan) adalah SOP yang benar." }  
 ];  
 
