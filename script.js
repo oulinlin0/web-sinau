@@ -180,7 +180,7 @@ async function loadChatUsersList() {
     }
     
     if (recentChatList) {
-        recentChatList.innerHTML = '<p style="text-align:center; color:rgba(255,255,255,0.5);">Memuat kontak...</p>';  
+        recentChatList.innerHTML = '<p style="text-align:center; opacity:0.5;">Memuat kontak...</p>';  
     }
 
     try {  
@@ -192,7 +192,7 @@ async function loadChatUsersList() {
 
         if (otherUsers.length === 0) {  
             if (recentChatList) {
-                recentChatList.innerHTML = '<p style="text-align:center; color:rgba(255,255,255,0.5);">Belum ada teman yang terdaftar.</p>';  
+                recentChatList.innerHTML = '<p style="text-align:center; opacity:0.5;">Belum ada teman terdaftar.</p>';  
             }
             return;  
         }  
@@ -383,7 +383,7 @@ function openHistoryDetail(id) {
 }  
 function closeModal() { document.getElementById('history-modal').style.display = 'none'; }  
 
-// --- FULL DATABASE (120+ QUESTIONS) ---  
+// --- FULL DATABASE (120+ QUESTIONS LENGKAP) ---  
 function shuffleArray(arr) { let c = arr.length, t, r; while (c !== 0) { r = Math.floor(Math.random() * c); c -= 1; t = arr[c]; arr[c] = arr[r]; arr[r] = t; } return arr; }  
   
 const readingTexts = {  
