@@ -80,7 +80,10 @@
         <main id="view-chat" class="view card glass-panel" style="padding: 20px 15px;">  
             <div class="chat-header-top">
                 <h2 style="font-size: 1.6em; font-weight: 700;">Chat</h2>
-                <i class="fa-regular fa-bell" style="font-size: 1.2em;"></i>
+                <div style="position: relative; display: flex; align-items: center; justify-content: center;">
+                    <i class="fa-regular fa-bell" style="font-size: 1.2em;"></i>
+                    <div id="global-bell-badge" style="display: none; position: absolute; top: -5px; right: -8px; background: #22c55e; color: white; font-size: 0.65rem; font-weight: 700; padding: 1px 5px; border-radius: 50%; border: 2px solid var(--bg-dark-1);">0</div>
+                </div>
             </div>
 
             <div class="chat-search">
@@ -107,10 +110,6 @@
                     <img id="private-chat-avatar" src="" style="width:100%; border-radius:50%;" alt="">
                 </div>
                 <h3 id="private-chat-name" style="font-size: 1.1em; flex: 1;">Nama</h3>
-                <div style="display: flex; gap: 12px; font-size: 1.1em; color: var(--theme-accent); cursor: pointer;">
-                    <i class="fa-solid fa-phone" onclick="startCall(false)" title="Voice Call"></i>
-                    <i class="fa-solid fa-video" onclick="startCall(true)" title="Video Call"></i>
-                </div>
             </div>
             
             <div class="chat-container">  
@@ -121,34 +120,6 @@
                     <input type="text" id="private-input-field" class="chat-input" placeholder="Ketik pesan..." onkeypress="handlePrivateKeyPress(event)">  
                     <button class="btn" style="padding: 10px 15px;" onclick="sendPrivateMessage()">🚀</button>  
                 </div>  
-            </div>
-        </main>
-
-        <!-- 2C. LAYAR TELEPON / PANGGILAN -->
-        <main id="view-call" class="view card glass-panel" style="display: none; flex-direction: column; align-items: center; justify-content: space-between; height: 85vh; text-align: center; padding: 40px 20px;">
-            <div style="margin-top: 20px;">
-                <div id="video-stream-container" style="display: none; width: 120px; height: 160px; background: #000; border-radius: 12px; margin: 0 auto 20px auto; border: 2px solid var(--theme-accent); overflow: hidden; position: relative;">
-                    <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle, #333, #111);">
-                        <i class="fa-solid fa-user" style="font-size: 3em; color: rgba(255,255,255,0.4);"></i>
-                    </div>
-                </div>
-                <div class="avatar-wrapper" style="width: 100px; height: 100px; margin: 0 auto 15px auto; border: 3px solid var(--theme-accent);">
-                    <img id="call-avatar" src="" style="width:100%; height:100%; object-fit: cover;" alt="Caller">
-                </div>
-                <h2 id="call-target-name" style="font-size: 1.5em; font-weight: 700; margin-bottom: 5px;">Nama Teman</h2>
-                <p id="call-type-label" style="font-size: 0.9em; color: var(--theme-accent);">Memanggil...</p>
-            </div>
-
-            <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 30px;">
-                <button onclick="toggleMuteMic()" class="glass-panel" style="width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; background: rgba(255,255,255,0.1); color: white; font-size: 1.2em;">
-                    <i id="mic-btn-icon" class="fa-solid fa-microphone"></i>
-                </button>
-                <button onclick="endCall()" class="glass-panel" style="width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; background: #ef4444; color: white; font-size: 1.5em; box-shadow: 0 5px 20px rgba(239, 68, 68, 0.5);">
-                    <i class="fa-solid fa-phone-slash"></i>
-                </button>
-                <button onclick="toggleVideoCamera()" class="glass-panel" style="width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; background: rgba(255,255,255,0.1); color: white; font-size: 1.2em;">
-                    <i id="video-btn-icon" class="fa-solid fa-video"></i>
-                </button>
             </div>
         </main>
 
@@ -172,7 +143,7 @@
 
         <!-- 5. PROFILE & SETTING TEMA -->  
         <main id="view-profile" class="view card glass-panel" style="text-align: center; padding-top: 30px;">  
-            <div style="font-size: 4em; margin-bottom: 10px;">🧑‍🎓</div>  
+            <div style="font-size: 4em; margin-bottom: 10px;">🧑‍‍🎓</div>  
             <h2 id="profile-name-display" style="font-weight: 700; font-size: 1.8em; margin-bottom: 25px;">User</h2>  
               
             <!-- TOMBOL TEMA TERANG / GELAP -->  
@@ -243,4 +214,4 @@
     <!-- Menghubungkan File JavaScript Eksternal -->  
     <script src="script.js"></script>  
 </body>  
-                        </html>
+</html>
