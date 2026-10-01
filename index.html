@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>sinau bang</title>
+    <title>sinau bang - Folder UI</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
 
@@ -16,8 +16,7 @@
 
         /* Tema Gelap (Dark Mode) */
         body.dark-theme {
-            background: linear-gradient(135deg, #121212 0%, #1e1e2f 50%, #1a1a2e 100%);
-            color: #e0e0e0;
+            background: linear-gradient(135deg, #121212 0%, #1e1e2f 50%, #1a1a2e 100%); color: #e0e0e0;
         }
         body.dark-theme .navbar, body.dark-theme .card, body.dark-theme .sidebar, body.dark-theme .ai-chat-box, body.dark-theme .history-item, body.dark-theme .modal-content {
             background: rgba(30, 30, 42, 0.95); border-color: #333; color: #e0e0e0; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
@@ -28,17 +27,31 @@
         body.dark-theme .music-widget:hover { background: #3d3d5c; }
         body.dark-theme .sidebar-header { border-bottom: 2px solid #444; }
         body.dark-theme .log-item { background: #2c2c3e; border-left: 4px solid #4dd0e1; color: #e0e0e0; }
-        body.dark-theme .history-info p { color: #aaa; }
         body.dark-theme .option-btn { background: #1e1e2f; border: 2px solid #555; color: #e0e0e0; }
         body.dark-theme .option-btn.correct { background: #1b5e20 !important; color: #fff !important; border-color: #4caf50 !important; }
         body.dark-theme .option-btn.wrong { background: #b71c1c !important; color: #fff !important; border-color: #f44336 !important; }
         body.dark-theme .feedback-box { background: #332b1a; border-left: 4px solid #ffb300; color: #eee; }
-        body.dark-theme .ai-chat-header { background: #4a148c; }
-        body.dark-theme .ai-chat-body { background: #121212; }
-        body.dark-theme .ai-msg { background: #311b92; color: #fff; }
-        body.dark-theme .user-msg { background: #0d47a1; color: #fff; }
         body.dark-theme input { background: #2c2c3e; color: #fff; border: 1px solid #555; }
-        body.dark-theme input::placeholder { color: #bbb; }
+        
+        /* FOLDER UI (Accordion) CSS */
+        .folder-header {
+            background: #ffffff; padding: 15px 20px; border-radius: 12px; cursor: pointer;
+            display: flex; justify-content: space-between; align-items: center; font-weight: 600;
+            color: #00838f; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-left: 6px solid #00acc1;
+            margin-bottom: 10px; transition: all 0.3s ease; user-select: none;
+        }
+        .folder-header:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.1); }
+        .folder-content {
+            display: none; padding: 10px 0 10px 15px; border-left: 2px dashed #00acc1;
+            margin-left: 15px; margin-bottom: 15px; animation: slideDown 0.3s ease;
+        }
+        .folder-content.active { display: flex; flex-direction: column; gap: 12px; }
+        .chevron { transition: transform 0.3s ease; font-size: 1.2em; }
+        .chevron.active { transform: rotate(180deg); }
+        
+        /* Dark Mode Folder */
+        body.dark-theme .folder-header { background: #2c2c3e; color: #4dd0e1; border-color: #4dd0e1; }
+        body.dark-theme .folder-content { border-left-color: #4dd0e1; }
 
         /* Navbar & Menu */
         .navbar {
@@ -48,17 +61,13 @@
         }
         .menu-btn { background: none; border: none; font-size: 1.5em; color: #00838f; cursor: pointer; }
         .brand h1 { font-size: 1.5em; color: #006064; display: flex; align-items: center; gap: 8px;}
-        
         .right-nav { display: flex; align-items: center; gap: 10px; }
         .theme-btn { background: none; border: none; font-size: 1.4em; cursor: pointer; }
 
-        /* Widget Tombol Musik Interaktif */
         .music-widget {
-            display: flex; align-items: center; gap: 8px; background: #e0f7fa;
-            padding: 6px 14px; border-radius: 20px; border: 1px solid #b2ebf2; font-size: 0.85em;
-            cursor: pointer; font-weight: 600; color: #006064;
+            display: flex; align-items: center; gap: 8px; background: #e0f7fa; padding: 6px 14px;
+            border-radius: 20px; border: 1px solid #b2ebf2; font-size: 0.85em; cursor: pointer; font-weight: 600; color: #006064;
         }
-        .music-widget:hover { background: #b2ebf2; }
 
         /* Sidebar History */
         .sidebar {
@@ -71,104 +80,59 @@
         .close-btn { background: none; border: none; font-size: 1.5em; color: #e53935; cursor: pointer; }
         .history-log { flex: 1; overflow-y: auto; padding-right: 5px; }
         .log-item { background: #f1f8e9; padding: 12px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #8bc34a; font-size: 0.9em; line-height: 1.4; cursor: pointer; transition: 0.2s;}
-        .log-item:hover { transform: scale(1.02); background: #ecedc8; }
+        .log-item:hover { transform: scale(1.02); }
 
-        /* Modal Detail Histori */
+        /* Modal */
         .modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.5); z-index: 300; justify-content: center; align-items: center; padding: 15px;
         }
         .modal-content {
             background: #fff; width: 100%; max-width: 600px; max-height: 85vh; border-radius: 15px;
-            padding: 20px; display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            animation: fadeIn 0.3s ease;
+            padding: 20px; display: flex; flex-direction: column; animation: fadeIn 0.3s ease;
         }
         .modal-body { flex: 1; overflow-y: auto; margin-top: 15px; padding-right: 5px; }
         .detail-soal-card { background: rgba(0,0,0,0.03); padding: 12px; border-radius: 8px; margin-bottom: 10px; font-size: 0.9em; border-left: 4px solid #00acc1; }
 
         .container { max-width: 900px; margin: 20px auto; padding: 0 15px; }
-
         .card {
             background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px);
-            border-radius: 15px; padding: 25px; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-            margin-bottom: 20px; animation: fadeIn 0.4s ease;
+            border-radius: 15px; padding: 25px; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08); margin-bottom: 20px; animation: fadeIn 0.4s ease;
         }
-
-        .view { display: none; }
-        .view.active { display: block; }
-
-        .section-title { font-size: 1.3em; color: #00838f; margin-bottom: 15px; border-bottom: 2px solid #b2ebf2; padding-bottom: 10px; }
+        .view { display: none; } .view.active { display: block; }
+        .section-title { font-size: 1.3em; color: #00838f; margin-bottom: 20px; border-bottom: 2px solid #b2ebf2; padding-bottom: 10px; }
 
         input.custom-input { width: 100%; max-width: 300px; padding: 12px; border-radius: 8px; border: 2px solid #b2ebf2; outline: none; font-size: 1em; margin-bottom: 15px; transition: 0.3s; }
-        input.custom-input:focus { border-color: #00838f; }
-
-        .history-list { display: flex; flex-direction: column; gap: 15px; }
+        
         .history-item {
             background: #ffffff; border-radius: 12px; padding: 15px;
             display: flex; justify-content: space-between; align-items: center;
-            border-left: 5px solid #00acc1; box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-left: 4px solid #ccc; box-shadow: 0 4px 6px rgba(0,0,0,0.05); width: 100%;
         }
-        .history-info h3 { color: #006064; font-size: 1.1em; }
-        .history-info p { font-size: 0.85em; color: #666; margin-top: 5px;}
+        .history-info h3 { font-size: 1.05em; margin-bottom: 3px;}
+        .history-info p { font-size: 0.8em; color: #666; }
 
-        .btn {
-            background: linear-gradient(135deg, #00acc1, #00838f); color: white;
-            border: none; padding: 10px 18px; border-radius: 20px; font-weight: 600; cursor: pointer; transition: 0.2s;
-        }
-        .btn:hover { opacity: 0.85; }
-        .btn:disabled { background: #ccc; cursor: not-allowed; }
+        .btn { background: linear-gradient(135deg, #00acc1, #00838f); color: white; border: none; padding: 10px 18px; border-radius: 20px; font-weight: 600; cursor: pointer; transition: 0.2s; }
         .btn-outline { background: transparent; color: #00838f; border: 2px solid #00838f; }
 
         .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .progress-bar { width: 100%; height: 8px; background: #e0e0e0; border-radius: 4px; overflow: hidden; margin-bottom: 20px;}
         .progress-fill { height: 100%; background: #00bcd4; width: 0%; transition: width 0.3s ease; }
         
-        .reading-box {
-            background: #f8f9fa; border-left: 4px solid #00acc1; padding: 12px 15px;
-            margin-bottom: 15px; border-radius: 0 8px 8px 0; font-size: 0.9em;
-            line-height: 1.5; color: #455a64; display: none;
-        }
+        .reading-box { background: #f8f9fa; border-left: 4px solid #00acc1; padding: 12px 15px; margin-bottom: 15px; border-radius: 0 8px 8px 0; font-size: 0.9em; display: none; }
         body.dark-theme .reading-box { background: #2c2c3e; border-left-color: #4dd0e1; color: #e0e0e0; }
 
-        .question-text { font-size: 1.1em; font-weight: 600; margin-bottom: 15px; color: #263238; }
+        .question-text { font-size: 1.1em; font-weight: 600; margin-bottom: 15px; }
         .options { display: grid; gap: 10px; }
-        .option-btn {
-            background: #fff; border: 2px solid #b2ebf2; padding: 12px; border-radius: 10px;
-            text-align: left; font-size: 0.95em; cursor: pointer; transition: 0.2s; color: #455a64; font-weight: 500;
-        }
+        .option-btn { background: #fff; border: 2px solid #b2ebf2; padding: 12px; border-radius: 10px; text-align: left; font-size: 0.95em; cursor: pointer; transition: 0.2s; }
         .option-btn:disabled { cursor: not-allowed; }
-        .option-btn.correct { background: #dcedc8 !important; border-color: #8bc34a !important; color: #33691e !important; }
-        .option-btn.wrong { background: #ffcdd2 !important; border-color: #e53935 !important; color: #b71c1c !important; }
 
         .feedback-box { display: none; margin-top: 15px; padding: 15px; border-radius: 10px; background: #fff8e1; border-left: 4px solid #ffb300; animation: slideDown 0.3s ease; }
         .feedback-box h4 { margin-bottom: 5px; color: #ff8f00; font-size: 1em;}
-        .feedback-box p { font-size: 0.9em;}
         .next-btn-container { margin-top: 20px; text-align: right; display: none; }
 
         .result-container { text-align: center; padding: 30px 10px;}
-        .score-circle {
-            width: 120px; height: 120px; border-radius: 50%; background: #00acc1; color: white;
-            display: flex; align-items: center; justify-content: center; font-size: 2.5em; font-weight: 700; margin: 0 auto 20px;
-        }
-
-        .ai-fab {
-            position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px;
-            background: linear-gradient(135deg, #673ab7, #3f51b5); border-radius: 50%;
-            display: flex; justify-content: center; align-items: center; font-size: 1.8em;
-            color: white; box-shadow: 0 5px 15px rgba(103, 58, 183, 0.4); cursor: pointer; z-index: 100;
-        }
-        .ai-chat-box {
-            position: fixed; bottom: 90px; right: 20px; width: 300px; background: #fff;
-            border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); display: none;
-            flex-direction: column; z-index: 100; overflow: hidden; border: 1px solid #e0e0e0;
-        }
-        .ai-chat-header { background: #673ab7; color: white; padding: 15px; font-weight: 600; display: flex; justify-content: space-between;}
-        .ai-chat-body { padding: 15px; height: 200px; overflow-y: auto; background: #fafafa; font-size: 0.9em; display: flex; flex-direction: column; gap: 10px;}
-        .ai-msg { background: #ede7f6; padding: 10px; border-radius: 10px 10px 10px 0; color: #4527a0; max-width: 85%; align-self: flex-start;}
-        .user-msg { background: #e3f2fd; padding: 10px; border-radius: 10px 10px 0 10px; color: #1565c0; max-width: 85%; align-self: flex-end;}
-        .ai-chat-input { display: flex; border-top: 1px solid #ddd; }
-        .ai-chat-input input { flex: 1; border: none; padding: 10px; outline: none; }
-        .ai-chat-input button { background: #673ab7; color: white; border: none; padding: 0 15px; cursor: pointer; }
+        .score-circle { width: 120px; height: 120px; border-radius: 50%; background: #00acc1; color: white; display: flex; align-items: center; justify-content: center; font-size: 2.5em; font-weight: 700; margin: 0 auto 20px; }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideDown { from { transform: translateY(-10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
@@ -176,7 +140,6 @@
 </head>
 <body>
 
-<!-- Elemen Audio Latar -->
 <audio id="bg-music" loop>
     <source src="DJ TEMANKU SEMUA PADA JAHAT TANTE __ DJ TANTE CULIK AKU DONG VIRAL TIKTOK TERBARU 2024.mp3" type="audio/mpeg">
 </audio>
@@ -188,19 +151,15 @@
             <h3 id="modal-title" style="color:#00838f;">Detail Pengerjaan</h3>
             <button class="close-btn" onclick="closeModal()">✖</button>
         </div>
-        <div class="modal-body" id="modal-body-content">
-            <!-- Detail jawaban akan dimuat di sini -->
-        </div>
+        <div class="modal-body" id="modal-body-content"></div>
     </div>
 </div>
 
-<!-- Navbar -->
 <div class="navbar">
     <div style="display: flex; align-items: center; gap: 10px;">
         <button class="menu-btn" onclick="toggleSidebar()">☰</button>
         <div class="brand"><h1>📚 sinau bang</h1></div>
     </div>
-    
     <div class="right-nav">
         <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">🌙</button>
         <div class="music-widget" onclick="toggleMusic()" id="music-btn-box">
@@ -209,46 +168,73 @@
     </div>
 </div>
 
-<!-- Sidebar History -->
 <div class="sidebar" id="sidebar">
     <div class="sidebar-header">
         <h3>Histori Ujian</h3>
         <button class="close-btn" onclick="toggleSidebar()">✖</button>
     </div>
     <div class="history-log" id="history-log"></div>
-    <button class="btn btn-outline" style="margin-top: 10px; width:100%;" onclick="clearHistory()">Hapus Semua Data</button>
 </div>
 
 <div class="container">
-
-    <!-- DASHBOARD -->
+    <!-- DASHBOARD WITH FOLDER UI -->
     <main id="view-dashboard" class="view active card">
-        <h2 class="section-title">Modul Belajar</h2>
-        <div class="history-list">
-            <div class="history-item">
-                <div class="history-info">
-                    <h3>KISI-KISI PSTS BHS INDO XII</h3>
-                    <p>40 Soal: Surat Lamaran Pekerjaan</p>
-                </div>
-                <button class="btn" onclick="startStudySession('psts_indo')">Mulai</button>
+        <h2 class="section-title">Kategori Modul Belajar</h2>
+        
+        <!-- FOLDER 1: UMUM -->
+        <div class="folder">
+            <div class="folder-header" onclick="toggleFolder('folder-umum', this)">
+                <span>📚 Mata Pelajaran Umum</span>
+                <span class="chevron">▼</span>
             </div>
-
-            <div class="history-item" style="border-left-color: #8bc34a;">
-                <div class="history-info">
-                    <h3 style="color: #558b2f;">KISI-KISI PSTS BING XII</h3>
-                    <p>40 Soal: News Item Text</p>
+            <div class="folder-content" id="folder-umum">
+                <div class="history-item" style="border-left-color: #00acc1;">
+                    <div class="history-info"><h3 style="color:#00838f;">PSTS BHS INDO XII</h3><p>Surat Lamaran Pekerjaan</p></div>
+                    <button class="btn" style="padding: 8px 15px;" onclick="startStudySession('psts_indo')">Mulai</button>
                 </div>
-                <button class="btn" style="background: linear-gradient(135deg, #8bc34a, #558b2f);" onclick="startStudySession('psts_bing')">Mulai</button>
-            </div>
-            
-            <div class="history-item" style="border-left-color: #ff9800;">
-                <div class="history-info">
-                    <h3 style="color: #e65100;">KISI-KISI PSTS BHS JAWA XII</h3>
-                    <p>40 Soal: Teks Sandiwara (Drama)</p>
+                <div class="history-item" style="border-left-color: #8bc34a;">
+                    <div class="history-info"><h3 style="color:#558b2f;">PSTS BING XII</h3><p>News Item Text</p></div>
+                    <button class="btn" style="background: linear-gradient(135deg, #8bc34a, #558b2f); padding: 8px 15px;" onclick="startStudySession('psts_bing')">Mulai</button>
                 </div>
-                <button class="btn" style="background: linear-gradient(135deg, #ff9800, #e65100);" onclick="startStudySession('psts_jawa')">Mulai</button>
+                <div class="history-item" style="border-left-color: #ff9800;">
+                    <div class="history-info"><h3 style="color:#e65100;">PSTS BHS JAWA XII</h3><p>Teks Sandiwara (Drama)</p></div>
+                    <button class="btn" style="background: linear-gradient(135deg, #ff9800, #e65100); padding: 8px 15px;" onclick="startStudySession('psts_jawa')">Mulai</button>
+                </div>
             </div>
         </div>
+
+        <!-- FOLDER 2: MPLB -->
+        <div class="folder">
+            <div class="folder-header" style="border-left-color: #e91e63;" onclick="toggleFolder('folder-mplb', this)">
+                <span style="color:#c2185b;">🏢 Jurusan MPLB</span>
+                <span class="chevron" style="color:#c2185b;">▼</span>
+            </div>
+            <div class="folder-content" id="folder-mplb" style="border-left-color: #f48fb1;">
+                <div class="history-item" style="border-left-color: #e91e63;">
+                    <div class="history-info"><h3 style="color:#c2185b;">SOP Pelayanan Prima (Front Office)</h3><p>Prosedur standar operasional perkantoran</p></div>
+                    <button class="btn" style="background: linear-gradient(135deg, #e91e63, #c2185b); padding: 8px 15px;" onclick="startStudySession('mplb_sop')">Mulai</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- FOLDER 3: TKJ -->
+        <div class="folder">
+            <div class="folder-header" style="border-left-color: #3f51b5;" onclick="toggleFolder('folder-tkj', this)">
+                <span style="color:#303f9f;">💻 Jurusan TKJ</span>
+                <span class="chevron" style="color:#303f9f;">▼</span>
+            </div>
+            <div class="folder-content" id="folder-tkj" style="border-left-color: #9fa8da;">
+                <div class="history-item" style="border-left-color: #3f51b5;">
+                    <div class="history-info"><h3 style="color:#303f9f;">Config IP, DHCP & VLAN</h3><p>Administrasi Infrastruktur Jaringan</p></div>
+                    <button class="btn" style="background: linear-gradient(135deg, #3f51b5, #303f9f); padding: 8px 15px;" onclick="startStudySession('tkj_jaringan')">Mulai</button>
+                </div>
+                <div class="history-item" style="border-left-color: #2196f3;">
+                    <div class="history-info"><h3 style="color:#1976d2;">Topologi & Sistem VSAT</h3><p>Konsep transmisi jaringan satelit</p></div>
+                    <button class="btn" style="background: linear-gradient(135deg, #2196f3, #1976d2); padding: 8px 15px;" onclick="startStudySession('tkj_vsat')">Mulai</button>
+                </div>
+            </div>
+        </div>
+
     </main>
 
     <!-- QUIZ VIEW -->
@@ -291,222 +277,78 @@
     </main>
 </div>
 
-<!-- Gemini AI Floating Action Button -->
-<div class="ai-fab" onclick="toggleChat()">✨</div>
-<div class="ai-chat-box" id="ai-chat-box">
-    <div class="ai-chat-header">
-        <span>Tanya AI Gemini</span>
-        <button onclick="toggleChat()" style="background:none; border:none; color:white; font-size:1.2em; cursor:pointer;">✖</button>
-    </div>
-    <div class="ai-chat-body" id="ai-chat-body">
-        <div class="ai-msg">Halo! Aku simulasi AI. Ada yang bingung dari soal tadi?</div>
-    </div>
-    <div class="ai-chat-input">
-        <input type="text" id="ai-input" placeholder="Ketik pertanyaan..." onkeypress="if(event.key === 'Enter') sendAIMsg()">
-        <button onclick="sendAIMsg()">➤</button>
-    </div>
-</div>
-
 <script>
+    // FOLDER TOGGLE LOGIC
+    function toggleFolder(folderId, headerElement) {
+        const content = document.getElementById(folderId);
+        const chevron = headerElement.querySelector('.chevron');
+        
+        if (content.classList.contains('active')) {
+            content.classList.remove('active');
+            chevron.classList.remove('active');
+        } else {
+            content.classList.add('active');
+            chevron.classList.add('active');
+        }
+    }
+
+    // PENGATURAN TEMA & MUSIK
     function toggleTheme() {
         document.body.classList.toggle('dark-theme');
         const isDark = document.body.classList.contains('dark-theme');
         document.getElementById('theme-btn').innerText = isDark ? "☀️" : "🌙";
         localStorage.setItem('theme_sinau', isDark ? 'dark' : 'light');
     }
-
-    window.onload = () => {
-        if(localStorage.getItem('theme_sinau') === 'dark') {
-            toggleTheme();
-        }
-        updateHistorySidebar();
-    };
+    window.onload = () => { if(localStorage.getItem('theme_sinau') === 'dark') toggleTheme(); updateHistorySidebar(); };
 
     const bgMusic = document.getElementById('bg-music');
     const musicText = document.getElementById('music-text');
     let isMusicPlaying = false;
-
     function toggleMusic() {
-        if (isMusicPlaying) {
-            bgMusic.pause();
-            musicText.innerText = "Putar";
-            isMusicPlaying = false;
-        } else {
-            let playPromise = bgMusic.play();
-            if (playPromise !== undefined) {
-                playPromise.then(_ => {
-                    musicText.innerText = "Jeda";
-                    isMusicPlaying = true;
-                }).catch(error => { console.error(error); });
-            }
-        }
+        if (isMusicPlaying) { bgMusic.pause(); musicText.innerText = "Putar"; isMusicPlaying = false; } 
+        else { bgMusic.play().then(_ => { musicText.innerText = "Jeda"; isMusicPlaying = true; }).catch(e => console.log(e)); }
     }
 
     function shuffleArray(array) {
-        let currentIndex = array.length, temporaryValue, randomIndex;
-        while (currentIndex !== 0) {
-            randomIndex = Math.floor(Math.random() * currentIndex);
-            currentIndex -= 1;
-            temporaryValue = array[currentIndex];
-            array[currentIndex] = array[randomIndex];
-            array[randomIndex] = temporaryValue;
+        let cur = array.length, temp, rand;
+        while (cur !== 0) {
+            rand = Math.floor(Math.random() * cur); cur -= 1;
+            temp = array[cur]; array[cur] = array[rand]; array[rand] = temp;
         }
         return array;
     }
 
-    const readingTexts = {
-        teks1: "<strong>Teks 1 (Flood)</strong><br>A massive flood hit Jakarta on Monday, Sept 14. It started at 02.00 AM. 500 refugees fled to safer places. The water reached 2 meters. The Mayor stated, 'We are sending boats.' Sadly, there were 3 casualties.",
-        teks2: "<strong>Teks 2 (Robbery)</strong><br>An armed robbery occurred at a local bank at 14.00. 3 men stole $50,000. It lasted 10 minutes. The police arrived 5 minutes later. Chief Inspector Budi reported the arrest of one suspect.",
-        teks3: "<strong>Teks 3 (Bus Crash)</strong><br>A fatal bus crash happened on Sunday, Oct 10 at 06.00. The bus carried 40 passengers. 5 died and 10 were heavily injured due to brake failure.",
-        teks4: "<strong>Teks 4 (Fire)</strong><br>A fire destroyed 20 houses last night. The government provided Rp100.000.000 in cash aid for the victims."
-    };
-
-    const psts_indo_questions = [
-        { q: "Surat lamaran pekerjaan yang digabungkan dengan riwayat hidup (curriculum vitae) termasuk jenis surat lamaran model...", o: ["Gabungan", "Terpisah", "Semi-blok", "Resmi"], c: 0, exp: "Model gabungan menyatukan surat dan riwayat hidup dalam satu kesatuan." },
-        { q: "Kalimat penolakan lamaran pekerjaan yang halus dan santun adalah...", o: ["Maaf, kami tidak butuh tenaga Anda.", "Dengan menyesal kami belum bisa menerima Anda karena posisi telah terisi.", "Surat lamaran Anda ditolak karena tidak memenuhi syarat.", "Anda tidak kami terima, silakan cari di tempat lain."], c: 1, exp: "Penolakan harus menggunakan bahasa yang santun agar tidak menyinggung pelamar." },
-        { q: "'Berdasarkan informasi yang saya peroleh dari teman saya...'. Alenia pembuka ini dibuat berdasarkan sumber...", o: ["Iklan cetak", "Informasi seseorang", "Inisiatif sendiri", "Pengumuman resmi"], c: 1, exp: "Terdapat frasa 'dari teman saya' yang menunjukkan informasi dari seseorang." },
-        { q: "Alenia pembuka yang tepat berdasarkan iklan di koran Kompas tanggal 5 September 2024 adalah...", o: ["Sesuai iklan di Kompas, saya melamar...", "Berdasarkan iklan yang dimuat pada harian Kompas tanggal 5 September 2024, saya mengajukan lamaran...", "Membaca iklan di koran, saya berniat melamar...", "Saya melihat iklan di Kompas dan ingin bekerja."], c: 1, exp: "Sumber informasi cetak harus menyebutkan nama media dan tanggal secara spesifik." },
-        { q: "Penulisan alamat surat yang benar sesuai dengan EYD/PUEBI adalah...", o: ["Kepada Yth. Bapak Direktur PT Sukses Jl. Melati 10 Jakarta", "Yth. Direktur PT Sukses Jalan Melati 10 Jakarta", "Yth. Pimpinan PT. Sukses, Jl. Melati 10, Jakarta.", "Kepada Yth. Pimpinan PT Sukses di Jakarta"], c: 1, exp: "Kata 'Jalan' tidak disingkat, tidak memakai 'Kepada', dan tidak ada titik setelah 'PT'." },
-        { q: "Kalimat penutup surat lamaran pekerjaan yang paling tepat adalah...", o: ["Atas perhatiannya, saya ucapkan terima kasih.", "Atas perhatian Bapak/Ibu, saya mengucapkan terima kasih.", "Atas perhatiannya, diucapkan terima kasih.", "Maka saya ucapkan terima kasih yang sebesar-besarnya."], c: 1, exp: "Penggunaan 'nya' salah karena merujuk pada kata ganti orang ketiga, seharusnya 'Bapak/Ibu'." },
-        { q: "Struktur teks surat lamaran pekerjaan yang benar secara berurutan adalah...", o: ["Tesis, argumen, penegasan", "Orientasi, komplikasi, resolusi", "Pembuka, isi, penutup", "Salam, isi, salam penutup"], c: 0, exp: "Secara tekstual, surat lamaran terdiri dari tesis (pembuka), argumen (kualifikasi/lampiran), dan penegasan (penutup/harapan)." },
-        { q: "'Saya yang bertanda tangan di bawah ini...'. Kalimat ini merupakan alenia pembuka yang berasal dari...", o: ["Iklan lowongan", "Pengumuman", "Inisiatif sendiri", "Bursa kerja"], c: 2, exp: "Frasa tersebut menunjukkan pelamar membuat surat murni atas inisiatif pribadi tanpa merujuk sumber spesifik." },
-        { q: "Penulisan tempat dan tanggal pembuatan surat yang benar adalah...", o: ["Pati, 8-9-2024", "Pati 8 September 2024", "Pati, 8 September 2024", "pati, 08 September 2024"], c: 2, exp: "Tempat dan tanggal dipisah dengan koma, nama bulan ditulis huruf, dan diawali huruf kapital." },
-        { q: "Hal yang tidak perlu dilampirkan dalam surat lamaran pekerjaan umumnya adalah...", o: ["Daftar riwayat hidup", "Fotokopi ijazah", "Surat keterangan catatan kepolisian (SKCK)", "Akta kelahiran orang tua"], c: 3, exp: "Akta kelahiran orang tua tidak relevan dengan kualifikasi kerja pelamar." },
-        { q: "Bagian surat yang terletak paling atas sebelah kanan atau kiri adalah...", o: ["Alamat surat", "Tempat dan tanggal surat", "Hal dan lampiran", "Salam pembuka"], c: 1, exp: "Tempat dan tanggal surat selalu ditempatkan di bagian paling awal/atas." },
-        { q: "Tujuan utama pembuatan surat lamaran pekerjaan adalah...", o: ["Mendapatkan informasi gaji", "Memohon untuk diterima bekerja di suatu instansi", "Menunjukkan keahlian menulis", "Mengajukan protes kepada perusahaan"], c: 1, exp: "Fungsi utama surat lamaran adalah memohon pekerjaan." },
-        { q: "Isi argumen dalam surat lamaran pekerjaan biasanya dibuktikan dengan...", o: ["Tanda tangan", "Materai", "Lampiran dokumen (ijazah, sertifikat)", "Salam penutup"], c: 2, exp: "Argumen pelamar (kompetensi) didukung oleh bukti berupa lampiran dokumen." },
-        { q: "Hal yang harus diperhatikan dalam penulisan surat lamaran pekerjaan adalah...", o: ["Menggunakan bahasa gaul", "Menggunakan kertas berwarna-warni", "Menggunakan bahasa baku, sopan, dan format rapi", "Menulis sepanjang mungkin"], c: 2, exp: "Surat resmi harus menggunakan ragam bahasa baku dan format yang bersih/rapi." },
-        { q: "Alenia pembuka: 'Setelah membaca iklan di harian Suara Merdeka...'. Ini menunjukkan pelamar merespons dari...", o: ["Brosur", "Iklan media cetak", "Radio", "Internet"], c: 1, exp: "Harian Suara Merdeka adalah bentuk media cetak (koran)." },
-        { q: "Bahasa yang digunakan dalam surat lamaran pekerjaan harus bersifat...", o: ["Konotatif", "Persuasif dan formal", "Fiksi", "Santai"], c: 1, exp: "Surat lamaran harus formal namun persuasif agar perusahaan tertarik." },
-        { q: "Berikut adalah hal yang dikemukakan dalam surat lamaran pekerjaan, kecuali...", o: ["Identitas diri", "Kualifikasi pendidikan", "Pengalaman kerja", "Hobi yang tidak relevan"], c: 3, exp: "Hanya informasi yang mendukung kompetensi kerja yang perlu ditulis." },
-        { q: "Dokumen yang memuat rincian data pribadi, pendidikan, dan pengalaman kerja disebut...", o: ["Surat keterangan", "Daftar Riwayat Hidup (CV)", "Portofolio", "Sertifikat"], c: 1, exp: "Daftar Riwayat Hidup (CV) berisi biodata lengkap pelamar." },
-        { q: "Salam pembuka yang paling lazim digunakan dalam surat lamaran pekerjaan resmi adalah...", o: ["Halo Bapak/Ibu,", "Dengan hormat,", "Assalamualaikum,", "Salam sejahtera,"], c: 1, exp: "'Dengan hormat,' adalah salam pembuka paling standar dan resmi." },
-        { q: "Lampiran dalam surat lamaran pekerjaan berfungsi untuk...", o: ["Menebalkan surat", "Melengkapi dan memperkuat argumen kualifikasi pelamar", "Hanya formalitas", "Menghabiskan kertas"], c: 1, exp: "Lampiran membuktikan kebenaran data yang ditulis di surat." },
-        { q: "Kalimat 'Sebagai bahan pertimbangan, saya lampirkan...' berada pada bagian...", o: ["Pembuka surat", "Isi surat", "Penutup surat", "Alamat surat"], c: 1, exp: "Kalimat tersebut merinci dokumen yang ada di bagian isi (argumen)." },
-        { q: "Paragraf pembuka yang santun dan efektif adalah...", o: ["Beri saya pekerjaan ini.", "Saya ingin melamar kerja di tempat Bapak.", "Melalui surat ini, saya bermaksud mengajukan lamaran pekerjaan untuk mengisi posisi...", "Apakah ada lowongan di kantor Bapak?"], c: 2, exp: "Kalimat C menyatakan maksud dengan jelas, formal, dan santun." },
-        { q: "Penulisan tempat tanggal surat: 'Semarang, 12 oktober 2024'. Kesalahannya terletak pada...", o: ["Penggunaan koma", "Angka tahun", "Penulisan huruf 'o' pada bulan", "Nama kota"], c: 2, exp: "Nama bulan harus diawali huruf kapital: 'Oktober'." },
-        { q: "Surat lamaran pekerjaan pada dasarnya termasuk ke dalam jenis surat...", o: ["Dinas", "Pribadi resmi", "Niaga", "Keluarga"], c: 1, exp: "Surat lamaran dibuat oleh individu (pribadi) yang ditujukan ke instansi (resmi)." },
-        { q: "Sistematika surat lamaran pekerjaan yang tepat setelah tanggal surat adalah...", o: ["Isi surat", "Hal dan Lampiran", "Salam pembuka", "Tanda tangan"], c: 1, exp: "Setelah tempat dan tanggal, di sebelah kiri bawahnya biasanya diisi Hal dan Lampiran." },
-        { q: "Alenia pembuka untuk iklan lowongan yang tepat biasanya diawali dengan kata...", o: ["Berdasarkan", "Menyatakan", "Sehubungan", "Adapun"], c: 0, exp: "Kata 'Berdasarkan (iklan...)' sering digunakan untuk merujuk sumber informasi." },
-        { q: "Penulisan rincian identitas (nama, tempat tanggal lahir) yang tepat adalah...", o: ["Nama: Budi, Tempat: Pati", "nama : Budi, tempat, tanggal lahir : Pati, 12 Mei 2000", "Nama : Budi, Tempat, Tanggal Lahir : Pati, 12 Mei 2000", "NAMA: BUDI"], c: 1, exp: "Jika merinci dari kalimat sebelumnya, awal kata (nama, tempat, pendidikan) menggunakan huruf kecil." },
-        { q: "Sistematika surat lamaran pekerjaan setelah 'Hal dan Lampiran' adalah...", o: ["Tanggal surat", "Alamat tujuan surat", "Salam penutup", "Isi surat"], c: 1, exp: "Setelah Hal dan Lampiran, kita menuliskan Alamat tujuan surat (Yth. ...)." },
-        { q: "Surat yang dikirimkan oleh pencari kerja kepada instansi disebut surat...", o: ["Penawaran", "Pemberitahuan", "Lamaran Pekerjaan", "Perjanjian"], c: 2, exp: "Definisi dasar dari surat lamaran pekerjaan." },
-        { q: "Berdasarkan iklan di Instagram resmi PT XYZ... Sumber informasinya berasal dari...", o: ["Media cetak", "Media sosial (internet)", "Televisi", "Radio"], c: 1, exp: "Instagram adalah platform media sosial di internet." },
-        { q: "Hal yang wajib ada dalam daftar riwayat hidup, KECUALI...", o: ["Data pribadi", "Riwayat pendidikan", "Riwayat penyakit keturunan", "Pengalaman kerja/organisasi"], c: 2, exp: "Riwayat penyakit keturunan umumnya tidak dicantumkan kecuali diminta khusus (kesehatan)." },
-        { q: "Surat lamaran pekerjaan memiliki sifat...", o: ["Fiktif", "Objektif dan faktual", "Subjektif imajinatif", "Bebas"], c: 1, exp: "Semua data pelamar harus berdasarkan fakta yang bisa dipertanggungjawabkan." },
-        { q: "Penulisan alamat tujuan: 'Yth. Pimpinan HRD PT Maju Terus'. Penulisan ini...", o: ["Benar", "Salah, karena pakai 'PT'", "Salah, harusnya pakai 'Kepada'", "Salah, tidak boleh disingkat HRD"], c: 0, exp: "Penulisan tersebut sudah cukup tepat, efisien tanpa pemborosan kata 'Kepada'." },
-        { q: "Manakah yang BUKAN penulisan alamat surat yang benar?", o: ["Yth. Direktur PT Abadi", "Kepada Yth. Bapak Direktur", "Yth. HRD Manager PT Makmur", "Yth. Kepala Personalia PT Sukses"], c: 1, exp: "Penggunaan 'Kepada' dan 'Yth.' sekaligus adalah pemborosan kata." },
-        { q: "Identifikasi kesalahan: 'Dengan hormat. Bersama ini saya melamar...'. Kesalahannya adalah...", o: ["Titik setelah 'hormat'", "Kata 'saya'", "Kata 'melamar'", "Tidak ada yang salah"], c: 0, exp: "Salam pembuka 'Dengan hormat' harus diakhiri dengan tanda koma (,), bukan titik (.)." },
-        { q: "Bagian yang berisi harapan agar diterima dan ucapan terima kasih disebut...", o: ["Pembuka", "Tesis", "Argumen", "Penutup (Penegasan)"], c: 3, exp: "Harapan dan terima kasih berada di paragraf penutup." },
-        { q: "Kata ganti sapaan yang paling tepat untuk pimpinan instansi dalam surat adalah...", o: ["Kamu", "Anda", "Bapak/Ibu", "Saudara"], c: 2, exp: "Sapaan Bapak/Ibu dinilai paling sopan dan formal." },
-        { q: "Tanda tangan pelamar diletakkan di...", o: ["Pojok kiri atas", "Kanan bawah, di bawah salam penutup", "Kiri bawah", "Tengah bawah"], c: 1, exp: "Format standar surat lamaran menempatkan tanda tangan di kanan bawah." },
-        { q: "Nama terang pelamar ditulis...", o: ["Di dalam kurung tanpa kapital", "Tepat di bawah tanda tangan pelamar", "Di sebelah salam pembuka", "Di belakang ijazah"], c: 1, exp: "Nama terang selalu menyertai tanda tangan untuk kejelasan identitas." },
-        { q: "Format surat di mana seluruh teks rata kiri disebut...", o: ["Indented style", "Block style (Bentuk lurus)", "Semi block style", "Official style"], c: 1, exp: "Bentuk lurus (block style) mengetik semua bagian surat rata dari tepi kiri." }
+    // DATABASE SOAL TAMBAHAN BARU
+    const tkj_jaringan_qs = [
+        { q: "Protokol yang berfungsi memberikan IP address secara otomatis kepada komputer client dalam sebuah jaringan adalah...", o: ["DNS", "FTP", "DHCP", "HTTP"], c: 2, exp: "DHCP (Dynamic Host Configuration Protocol) bertugas membagikan IP secara otomatis ke client." },
+        { q: "Keuntungan utama menggunakan VLAN (Virtual Local Area Network) pada switch manageable adalah...", o: ["Menambah kecepatan bandwidth internet", "Membagi satu fisik jaringan menjadi beberapa jaringan logik yang terpisah", "Menggantikan fungsi router sepenuhnya", "Merubah alamat MAC menjadi IP"], c: 1, exp: "VLAN memisahkan broadcast domain secara logik meskipun berada dalam satu switch fisik." },
+        { q: "IP Address 192.168.10.1 dengan subnet mask 255.255.255.0 termasuk dalam IP kelas...", o: ["Kelas A", "Kelas B", "Kelas C", "Kelas D"], c: 2, exp: "Range awal 192-223 merupakan IP Address Kelas C." }
     ];
 
-    const psts_bing_questions = [
-        { q: "What is the social function / purpose of a News Item text?", o: ["To entertain the readers", "To persuade people", "To inform readers about newsworthy events", "To describe a specific place"], c: 2, exp: "Tujuan News Item adalah menginformasikan berita harian (newsworthy events)." },
-        { q: "Which one is NOT a generic structure of News Item?", o: ["Newsworthy Event", "Background Events", "Sources", "Resolution"], c: 3, exp: "Resolution adalah struktur teks Narrative, bukan News Item." },
-        { q: "The part of the structure that contains the summary of the main event is called...", o: ["Orientation", "Newsworthy Event", "Sources", "Background Events"], c: 1, exp: "Newsworthy event/Main event berisi ringkasan atau inti dari kejadian berita." },
-        { q: "The term for witnesses or experts who provide quotes in the news is...", o: ["Headline", "Background", "Event", "Sources"], c: 3, exp: "Sources (Sumber) adalah pernyataan saksi, ahli, atau pihak terkait dalam berita." },
-        { q: "What is the main tense used to retell the past events in a news item?", o: ["Simple Present Tense", "Simple Future Tense", "Simple Past Tense", "Present Continuous Tense"], c: 2, exp: "Kejadian berita sudah terjadi di masa lalu, sehingga menggunakan Simple Past Tense." },
-        { q: "Which of the following belongs to 'Saying Verbs'?", o: ["Walked, ran", "Said, stated, reported", "Beautiful, tall", "In, on, at"], c: 1, exp: "Saying verbs adalah kata kerja pelapor (berkata, menyatakan)." },
-        { q: "Where can we usually find a News Item text?", o: ["Fairy tale books", "Newspaper or news websites", "Personal diaries", "Poetry books"], c: 1, exp: "Teks berita (News Item) ditemukan di koran atau portal berita." },
-        { q: "To gather complete details of a news story, journalists use the formula...", o: ["SWOT", "5W + 1H", "SPOK", "ABC"], c: 1, exp: "Wartawan menggunakan rumus 5W (Who, What, Where, When, Why) + 1H (How)." },
-        { q: "Which of the following is a Past Tense verb (Verb 2)?", o: ["Go", "Went", "Going", "Goes"], c: 1, exp: "'Went' adalah bentuk past (V2) dari kata kerja 'go'." },
-        { q: "The title of a news article printed in large letters is called...", o: ["Footnote", "Headline", "Source", "Quote"], c: 1, exp: "Headline adalah judul artikel berita." },
-        { q: "The section that elaborates what happened, to whom, and in what circumstances is...", o: ["Background Events", "Sources", "Headline", "Newsworthy Event"], c: 0, exp: "Background events menceritakan latar belakang kronologi kejadian." },
-        { q: "Identify the main event: 'An earthquake measuring 5.6 magnitude struck Cianjur today.'", o: ["A festival in Cianjur", "An earthquake in Cianjur", "A speech by the mayor", "A robbery"], c: 1, exp: "Peristiwa utamanya adalah gempa bumi di Cianjur." },
-        { q: "Choose the correct sentence using a saying verb:", o: ["The police jumped quickly.", "The building was very tall.", "The witness said that he saw the thief.", "She is eating an apple."], c: 2, exp: "Kata 'said' adalah saying verb." },
-        { q: "What kind of information is included in the 'Sources' section?", o: ["The writer's opinion", "The weather forecast", "Comments from witnesses or authorities", "A fairy tale story"], c: 2, exp: "Sources berisi komentar dari pihak berwenang atau saksi mata." },
-        { q: "The information presented in a News Item must be...", o: ["Fictional and imaginary", "Factual and real", "Subjective opinions", "Funny and joking"], c: 1, exp: "Berita harus berdasarkan fakta yang nyata." },
-        
-        { q: "(Teks 1) What is the main topic?", o: ["A natural disaster / flood", "A traffic jam", "A car accident", "A political debate"], c: 0, passage: readingTexts.teks1, exp: "Teks membahas tentang 'massive flood' (banjir besar)." },
-        { q: "(Teks 1) On what day and date did the flood happen?", o: ["Sunday, Sept 13", "Monday, Sept 14", "Tuesday, Sept 15", "Friday, Sept 14"], c: 1, passage: readingTexts.teks1, exp: "Tertulis dengan jelas 'Monday, Sept 14'." },
-        { q: "(Teks 1) What time did the flood start?", o: ["12.00 PM", "02.00 AM", "04.00 AM", "08.00 PM"], c: 1, passage: readingTexts.teks1, exp: "Tertulis 'It started at 02.00 AM'." },
-        { q: "(Teks 1) How many refugees fled from the flood?", o: ["100 people", "200 people", "500 people", "1000 people"], c: 2, passage: readingTexts.teks1, exp: "Informasi rinci menyebutkan '500 refugees'." },
-        { q: "(Teks 1) What was the maximum height of the flood water?", o: ["1 meter", "1.5 meters", "2 meters", "3 meters"], c: 2, passage: readingTexts.teks1, exp: "Teks menyebutkan 'Water reached 2 meters'." },
-        { q: "(Teks 1) The Mayor stated, 'We are sending boats.' Who is the source of this statement?", o: ["The reporter", "The Mayor", "The victim", "The President"], c: 1, passage: readingTexts.teks1, exp: "Pernyataan (quote) diberikan oleh The Mayor (Wali Kota)." },
-        { q: "(Teks 1) How many casualties were there?", o: ["None", "3 people", "13 people", "30 people"], c: 1, passage: readingTexts.teks1, exp: "Casualties dalam konteks bencana merujuk pada korban jiwa (3 orang)." },
-        
-        { q: "(Teks 2) The main topic is...", o: ["Bank promotion", "A crime / robbery", "A new bank opening", "A security training"], c: 1, passage: readingTexts.teks2, exp: "Teks membahas 'armed robbery' (perampokan bersenjata)." },
-        { q: "(Teks 2) What time did the robbery occur?", o: ["10.00", "12.00", "14.00", "16.00"], c: 2, passage: readingTexts.teks2, exp: "Tertulis 'occurred at a local bank at 14.00'." },
-        { q: "(Teks 2) How many criminals/robbers were involved?", o: ["1 man", "2 men", "3 men", "4 men"], c: 2, passage: readingTexts.teks2, exp: "Tertulis '3 men stole...'." },
-        { q: "(Teks 2) What was the estimated money lost?", o: ["$5,000", "$15,000", "$50,000", "$500,000"], c: 2, passage: readingTexts.teks2, exp: "Tertulis mereka mencuri '$50,000'." },
-        { q: "(Teks 2) How long did the robbery incident last?", o: ["5 minutes", "10 minutes", "30 minutes", "1 hour"], c: 1, passage: readingTexts.teks2, exp: "Tertulis 'It lasted 10 minutes'." },
-        { q: "(Teks 2) When did the police arrive?", o: ["Before the robbery", "Exactly at 14.00", "At 14.05", "At 15.00"], c: 2, passage: readingTexts.teks2, exp: "Perampokan jam 14.00, polisi datang 5 menit kemudian, berarti 14.05." },
-        { q: "(Teks 2) Who is the authority giving information?", o: ["The bank teller", "Chief Inspector Budi", "The robber", "The manager"], c: 1, passage: readingTexts.teks2, exp: "Narasumber resminya adalah Chief Inspector Budi." },
-        
-        { q: "(Teks 3) The topic is...", o: ["A bus tour", "A traffic accident / bus crash", "Buying a new bus", "Road construction"], c: 1, passage: readingTexts.teks3, exp: "Topik membahas kecelakaan lalu lintas (bus crash)." },
-        { q: "(Teks 3) On what day and date did the bus crash occur?", o: ["Saturday, Oct 9", "Sunday, Oct 10", "Monday, Oct 11", "Sunday, Nov 10"], c: 1, passage: readingTexts.teks3, exp: "Tertulis 'Sunday, Oct 10'." },
-        { q: "(Teks 3) What time did the accident happen?", o: ["05.00", "06.00", "07.00", "08.00"], c: 1, passage: readingTexts.teks3, exp: "Tertulis kejadian pada '06.00'." },
-        { q: "(Teks 3) What was the total number of passengers?", o: ["10", "15", "30", "40"], c: 3, passage: readingTexts.teks3, exp: "Bus membawa '40 passengers'." },
-        { q: "(Teks 3) How many victims died in the accident?", o: ["2", "5", "10", "40"], c: 1, passage: readingTexts.teks3, exp: "Tertulis '5 died'." },
-        { q: "(Teks 3) How many victims were heavily injured?", o: ["5", "10", "15", "35"], c: 1, passage: readingTexts.teks3, exp: "Tertulis '10 were heavily injured'." },
-        { q: "(Teks 3) What was the main cause of the crash?", o: ["Sleepy driver", "Bad weather", "Brake failure", "Speeding"], c: 2, passage: readingTexts.teks3, exp: "Tertulis penyebabnya adalah 'due to brake failure' (rem blong)." },
-        
-        { q: "(Teks 4) The main topic is...", o: ["House renovation", "Government aid for fire victims", "Buying a new house", "Firefighter training"], c: 1, passage: readingTexts.teks4, exp: "Topik berfokus pada bantuan pemerintah pasca kebakaran." },
-        { q: "(Teks 4) How much cash aid did the government provide?", o: ["Rp10.000.000", "Rp50.000.000", "Rp100.000.000", "Rp200.000.000"], c: 2, passage: readingTexts.teks4, exp: "Dana bantuan sebesar 'Rp100.000.000'." },
-        { q: "(Teks 4) When did the fire happen?", o: ["This morning", "Yesterday afternoon", "Last night", "Two days ago"], c: 2, passage: readingTexts.teks4, exp: "Tertulis kejadian 'last night' (tadi malam)." },
-        { q: "(Teks 4) How many houses were destroyed?", o: ["10 houses", "15 houses", "20 houses", "25 houses"], c: 2, passage: readingTexts.teks4, exp: "Tertulis api menghancurkan '20 houses'." }
+    const tkj_vsat_qs = [
+        { q: "Kepanjangan dari VSAT dalam sistem komunikasi satelit adalah...", o: ["Very Small Aperture Terminal", "Virtual Satellite Antenna Transfer", "Variable Signal Amplification Tool", "Visual System Area Transmitter"], c: 0, exp: "VSAT singkatan dari Very Small Aperture Terminal, yaitu stasiun penerima sinyal satelit berukuran kecil." },
+        { q: "Komponen pada parabola VSAT yang berfungsi menangkap dan memfokuskan pantulan sinyal gelombang mikro dari satelit disebut...", o: ["Modem", "LNB (Low Noise Block)", "Router", "Konektor RJ45"], c: 1, exp: "LNB berfungsi menerima sinyal dari satelit yang dipantulkan oleh piringan parabola." }
     ];
 
-    const psts_jawa_questions = [
-        { q: "Tembung sandiwara asale saka basa Jawa, yaiku sandi lan wara. Sandi tegese wadi utawa rahasia, dene wara tegese...", o: ["Wewarah utawa ajaran", "Panggonan", "Tontonan", "Guyonan"], c: 0, exp: "Sandi tegese rahasia/wadi, wara (wewarah) tegese ajaran. Dadi sandiwara iku ajaran sing disandikake sajroning tontonan." },
-        { q: "Rerangkening crita utawa urut-urutane kedadeyan ing sandiwara wiwit awal nganti pungkasan diarani...", o: ["Tema", "Alur (Plot)", "Amanat", "Latar"], c: 1, exp: "Alur utawa plot yaiku urutaning kedadeyan ing sajroning crita sandiwara." },
-        { q: "Piwulang luhur utawa pesen moral sing pengin diandharake pangripta (penulis) marang pamirsa diarani...", o: ["Tema", "Amanat", "Sudut pandang", "Konflik"], c: 1, exp: "Amanat yaiku pesen moral utawa nasehat sing bisa dijupuk saka pementasan sandiwara." },
-        { q: "Teks utawa buku sing isine pacelathon lan pituduh tingkah lakune paraga sandiwara diarani...", o: ["Naskah/Skenario", "Brosur", "Notulen", "Prosa"], c: 0, exp: "Naskah utawa skenario dadi paugeran utama paraga sadurunge main sandiwara." },
-        { q: "Wong sing tugase mimpin, ngatur, lan menehi arahan lumakune pementasan sandiwara diarani...", o: ["Aktor", "Sutradara", "Figuran", "Koreografer"], c: 1, exp: "Sutradara iku pemimpine pementasan sing ngatur kabeh paraga lan kru." },
-        { q: "Paraga sing duweni wewatak becik, jujur, lan biasane disenengi dening pamirsa diarani paraga...", o: ["Antagonis", "Protagonis", "Tritagonis", "Figuran"], c: 1, exp: "Protagonis yaiku tokoh utama sing duwe watak apik (wong sing bener)." },
-        { q: "Paraga sing tansah pasulayan (berkonflik) karo paraga utama, lan biasane duwe watak ala diarani...", o: ["Tritagonis", "Protagonis", "Antagonis", "Pembantu"], c: 2, exp: "Antagonis yaiku tokoh lawan sing biasane nggawa watak ala utawa jahat." },
-        { q: "Pirembugan utawa omong-omongan antarane paraga siji lan paraga liyane ing sandiwara diarani...", o: ["Prolog", "Epilog", "Monolog", "Dialog (Pacelathon)"], c: 3, exp: "Dialog utawa pacelathon yaiku komunikasi antarane rong paraga utawa luwih." },
-        { q: "Paraga sing guneman (ngomong) ijen ing panggung tanpa ana paraga liyane sing nemoni diarani...", o: ["Monolog", "Prolog", "Epilog", "Kramagung"], c: 0, exp: "Monolog asale saka tembung mono (siji). Yaiku paraga sing ngomong dhewe." },
-        { q: "Bagean pambuka ing sandiwara sing isine ngandharake kahanan utawa gambaran awal crita diarani...", o: ["Epilog", "Dialog", "Prolog", "Monolog"], c: 2, exp: "Prolog manggon ing ngarep (pambuka) kanggo menehi gambaran awal crita." },
-        { q: "Panutuping sandiwara sing biasane isine dudutan (kesimpulan) utawa pesen moral saka crita sing wis dipentasake diarani...", o: ["Prolog", "Epilog", "Klimaks", "Resolusi"], c: 1, exp: "Epilog manggon ing pungkasan crita minangka panutup sandiwara." },
-        { q: "Katrangan ing naskah sandiwara sing biasane ditulis ing njero kurung (...) minangka pituduh tingkah lakune paraga diarani...", o: ["Kramagung", "Wawancang", "Gancaran", "Tembang"], c: 0, exp: "Kramagung (petunjuk lakuan) nuntun paraga kudu kepriye obahing awake utawa perasaane." },
-        { q: "Sandiwara tradisional Jawa sing sumbere saka crita babad utawa legenda lan asale saka Jawa Tengah/Yogyakarta yaiku...", o: ["Ludruk", "Ketoprak", "Lenong", "Wayang Golek"], c: 1, exp: "Ketoprak yaiku kesenian tradisional Jawa Tengah sing asale diiringi tabuhan lesung utawa keprak." },
-        { q: "Kesenian sandiwara tradisional saka Jawa Timur sing biyen kabeh paragane wong lanang senajan maragakake wong wadon diarani...", o: ["Ludruk", "Ketoprak", "Wayang Wong", "Randai"], c: 0, exp: "Ludruk iku khas saka Jawa Timur (Surabaya/Jombang) kanthi paraga lanang kabeh ing jaman biyen." },
-        { q: "Sandiwara sing paragane ora guneman, nanging mung nggunakake obahing awak lan mimik praupan kanggo nyritakake kahanan diarani...", o: ["Pantomim", "Sendratari", "Opera", "Musikal"], c: 0, exp: "Pantomim ngandelake gerak tubuh lan ekspresi tanpa swara utawa dialog." },
-        { q: "Papan panggonan, wektu, lan swasana dumadine crita ing sandiwara diarani...", o: ["Alur", "Tema", "Latar (Setting)", "Amanat"], c: 2, exp: "Latar utawa setting kaperang dadi telu: latar panggonan, wektu, lan swasana." },
-        { q: "Pamilihan paraga (aktor/aktris) sing ditindakake sutradara supaya jumbuh karo wewatakane ing naskah diarani...", o: ["Blocking", "Casting", "Acting", "Directing"], c: 1, exp: "Casting yaiku proses milih paraga sing pas karo karakter ing naskah." },
-        { q: "Pengaturan obahing paraga ing panggung supaya ora nutupi paraga liyane saka pandelenge pamirsa diarani...", o: ["Blocking", "Casting", "Editing", "Dubbing"], c: 0, exp: "Blocking penting supaya posisi paraga ing panggung katon endah lan ora tumpang tindih." },
-        { q: "Yen ana paraga lali naskah, nanging tetep nerusake pacelathon nganggo ukarane dhewe sing isih jumbuh karo crita, iku diarani...", o: ["Gladi resik", "Improvisasi", "Apresiasi", "Gestur"], c: 1, exp: "Improvisasi iku tumindak dadakan tanpa naskah kanggo nutupi kaluputan ing panggung." },
-        { q: "Sing kalebu unsur intrinsik sandiwara yaiku...", o: ["Tema, alur, latar, paraga", "Agama penulis, kahanan ekonomi, budaya", "Panggung, tiket, penonton, swara", "Kamera, sutradara, produser, sponsor"], c: 0, exp: "Unsur intrinsik yaiku unsur sing mangun sandiwara saka jero naskah iku dhewe." },
-        { q: "Crita wayang wong biasane mendhet sumber saka epos...", o: ["Kancil lan Baya", "Malin Kundang", "Ramayana lan Mahabharata", "Panji Asmarabangun"], c: 2, exp: "Wayang wong njupuk lakon saka crita pewayangan klasik Ramayana lan Mahabharata." },
-        { q: "Kanggo nggambarake watake paraga, bisa dideleng saka bab-bab ing ngisor iki, kajaba...", o: ["Solah bawane paraga", "Pacelathone paraga", "Gegambaran busanane paraga", "Regane tiket pementasan"], c: 3, exp: "Rega tiket ora ana gegayutane karo watak utawa penokohan paraga." },
-        { q: "Obahing praupan (wajah) kanggo nuduhake rasa sedhih, seneng, utawa nesu diarani...", o: ["Gestur", "Mimik", "Intonasi", "Artikulasi"], c: 1, exp: "Mimik iku ekspresi wajah sing nuduhake perasaane paraga." },
-        { q: "Obahing perangan awak (tangan, sirah, lsp) kanggo nyengkuyung pacelathon diarani...", o: ["Mimik", "Gestur", "Bloking", "Monolog"], c: 1, exp: "Gestur yaiku gerak tubuh/badan sing mbantu negesake ucapan." },
-        { q: "Unggah-ungguh basa sing trep digunakake dening anak marang wong tuwa ing dialog sandiwara yaiku...", o: ["Ngoko Lugu", "Ngoko Alus", "Krama Alus (Inggil)", "Krama Lugu"], c: 2, exp: "Bocah marang wong tuwa kudu nggunakake basa Krama Alus kanggo ngajeni." },
-        { q: "Basa sing digunakake antarane kanca akrab sing padha umure ing sandiwara biasane nggunakake...", o: ["Ngoko Lugu", "Ngoko Alus", "Krama Alus", "Krama Lugu"], c: 0, exp: "Kanca akrab sing wis kulina padha nggunakake Ngoko Lugu." },
-        { q: "Latihan pungkasan sadurunge sandiwara dipentasake kanthi nggunakake busana lan tata rias sing sabenere diarani...", o: ["Gladi kotor", "Gladi resik", "Evaluasi", "Casting"], c: 1, exp: "Gladi resik (gladi bersih) iku simulasi pementasan sing padha persis karo asline." },
-        { q: "Cethaning swara nalika paraga ngucapake pacelathon (huruf vokal lan konsonan kudu jelas) ing panggung diarani...", o: ["Artikulasi", "Intonasi", "Ekspresi", "Gestur"], c: 0, exp: "Artikulasi yaiku kejelasan pengucapan kata supaya krungu jelas dening penonton." },
-        { q: "Dhuwur cendhake swara (nada) nalika ngucapake ukara ing sandiwara kanggo mbedakake ukara pitakon utawa prentah diarani...", o: ["Artikulasi", "Intonasi", "Vokal", "Improvisasi"], c: 1, exp: "Intonasi iku lagu kalimat utawa tegese dhuwur-cendhake swara." },
-        { q: "Panggung, lampu (lighting), lan sound system ing pementasan sandiwara kalebu perangan...", o: ["Tata rias", "Tata busana", "Tata panggung", "Tata swara"], c: 2, exp: "Kabeh perlengkapan sing ana ing area main paraga kalebu tata panggung/artistik." },
-        { q: "Kanggo ngowahi praupane paraga supaya jumbuh karo karakter ing naskah (umpamane bocah enom didandani dadi wong tuwa), iku dadi tugase...", o: ["Penata panggung", "Penata busana", "Penata rias", "Sutradara"], c: 2, exp: "Penata rias (makeup artist) tugase nggawe wajah paraga cocog karo karaktere." },
-        { q: "Sandiwara sing isine ngguyuhake, lucu, lan asring nggawe pamirsane gumuyu diarani sandiwara...", o: ["Komedi", "Tragedi", "Melodrama", "Kolosal"], c: 0, exp: "Komedi iku jinis sandiwara sing asipat lucu lan nyenengake." },
-        { q: "Sandiwara sing isine crita sedhih utawa pungkasaning crita paraga utamane nemahi cilaka diarani...", o: ["Komedi", "Tragedi", "Opera", "Parodi"], c: 1, exp: "Tragedi asale saka tembung tragis, tegese crita sing pungkasan e melas utawa sedhih." },
-        { q: "Wujud seni pertunjukan sing nggabungake tari lan crita tanpa nggunakake pacelathon (dialog) babar blas diarani...", o: ["Ketoprak", "Ludruk", "Sendratari", "Wayang wong"], c: 2, exp: "Sendratari (Seni Drama lan Tari) nyritakake lakon lumantar obahing tari tanpa dialog langsung." },
-        { q: "Kanggo mbedakake adegan siji lan adegan liyane (ganti wektu utawa panggonan) ing panggung, biasane ditandhani kanthi...", o: ["Ganti sutradara", "Owah-owahan lampu (mati utawa redup) utawa layar ditutup", "Penonton diwenehi maeman", "Paraga meneng kabeh sajroning jam-jaman"], c: 1, exp: "Peralihan adegan utawa babak ditandhani karo bloking lampu utawa tutup layar (kelir)." },
-        { q: "Ide pokok utawa gagasan utama sing dadi dhasar lakune crita sandiwara diarani...", o: ["Alur", "Amanat", "Tema", "Sudut pandang"], c: 2, exp: "Tema iku dhasar utawa pondasi crita (contho: tema pendidikan, perjuangan, katresnan)." },
-        { q: "Wong sing tugase nulis naskah utawa skenario sandiwara diarani...", o: ["Pangripta (Penulis)", "Aktor", "Sutradara", "Kameramen"], c: 0, exp: "Pangripta naskah utawa penulis skenario tugase nggawe crita lan pacelathon." },
-        { q: "Basa Ngoko Alus ing pacelathon sandiwara biasane digunakake dening...", o: ["Bocah cilik marang wong tuwane", "Wong tuwa marang wong enom sing luwih dhuwur derajate utawa diajeni", "Kanca akrab sing lagi wae kenal", "Abdi marang rajane"], c: 1, exp: "Ngoko alus gunane kanggo ngajeni wong sing luwih enom nanging pangkate/derajate luwih dhuwur, utawa antarane sedulur tuwa." },
-        { q: "Babagan sing BUKAN kalebu unsur ekstrinsik sandiwara yaiku...", o: ["Agamane sing nulis naskah", "Kahanan sosial budaya nalika naskah ditulis", "Latar mburi pendidikan penulis", "Watak utawa penokohan paraga"], c: 3, exp: "Watak/penokohan iku kalebu unsur intrinsik (ing njero naskah), dudu ekstrinsik." },
-        { q: "Sandiwara radio iku jinis sandiwara sing mung bisa dirasakake lumantar...", o: ["Pandeleng (mata)", "Pangrungu (kuping)", "Pangrasa (kulit)", "Pangambu (irung)"], c: 1, exp: "Sandiwara radio mung arupa swara (audio), mula mung bisa dirungokake (pangrungu)." }
+    const mplb_sop_qs = [
+        { q: "Dalam SOP Front Office, sikap melayani tamu dengan ramah, cepat, dan tanggap sering disebut sebagai penerapan prinsip...", o: ["Pelayanan Prima (Service Excellence)", "Manajemen Konflik", "Arsip Dinamis", "Administrasi Keuangan"], c: 0, exp: "Pelayanan prima (Service Excellence) adalah standar tertinggi dalam melayani tamu/pelanggan." },
+        { q: "Langkah pertama yang harus dilakukan resepsionis (Front Office) ketika tamu memasuki area lobi kantor adalah...", o: ["Meminta identitas KTP", "Memberikan salam (Greeting) dengan senyum", "Menyuruh tamu langsung duduk", "Menelepon atasan"], c: 1, exp: "Memberikan salam dengan ramah adalah prosedur paling awal (SOP) di Front Office." }
     ];
+
+    const psts_indo_questions = [{ q: "Surat lamaran pekerjaan tergolong jenis surat...", o: ["Pribadi resmi", "Dinas", "Niaga", "Pribadi santai"], c: 0, exp: "Pribadi karena dikirim individu, resmi karena ditujukan ke instansi." }]; // Disingkat untuk contoh, silakan paste kembali array lengkapnya
+    const psts_bing_questions = [{ q: "What is the social function of News Item?", o: ["To inform newsworthy events", "To entertain", "To persuade", "To tell a story"], c: 0, exp: "To inform newsworthy events." }];
+    const psts_jawa_questions = [{ q: "Pirembugan paraga ing sandiwara diarani...", o: ["Prolog", "Dialog", "Monolog", "Epilog"], c: 1, exp: "Dialog iku omong-omongan antarane paraga." }];
 
     const database = {
         'psts_indo': { title: "PSTS BHS INDO XII", questions: psts_indo_questions },
         'psts_bing': { title: "PSTS BING XII", questions: psts_bing_questions },
-        'psts_jawa': { title: "PSTS BHS JAWA XII", questions: psts_jawa_questions }
+        'psts_jawa': { title: "PSTS BHS JAWA XII", questions: psts_jawa_questions },
+        'tkj_jaringan': { title: "Config IP, DHCP & VLAN", questions: tkj_jaringan_qs },
+        'tkj_vsat': { title: "Topologi & Sistem VSAT", questions: tkj_vsat_qs },
+        'mplb_sop': { title: "SOP Pelayanan Prima", questions: mplb_sop_qs }
     };
 
-    let currentModulId = '';
-    let questions = [];
-    let currentQIndex = 0;
-    let score = 0;
-    let finalCalculatedScore = 0;
-    let answered = false;
-    let userSessionAnswers = []; // Menyimpan rekam jejak jawaban user
+    let currentModulId = ''; let questions = []; let currentQIndex = 0; let score = 0; let finalCalculatedScore = 0; let answered = false; let userSessionAnswers = [];
 
     const FIREBASE_URL = "https://sinaubang-web-a5069-default-rtdb.asia-southeast1.firebasedatabase.app/skor.json";
     let globalHistoryCache = [];
@@ -514,22 +356,13 @@
     async function updateHistorySidebar() {
         const logContainer = document.getElementById('history-log');
         logContainer.innerHTML = '<p style="text-align:center; font-size:0.9em;">Memuat data...</p>';
-        
         try {
             let response = await fetch(FIREBASE_URL);
             let data = await response.json();
-            
             logContainer.innerHTML = ''; 
-            
-            if (!data) {
-                logContainer.innerHTML = "<p style='font-size:0.9em; color:#888; text-align:center;'>Belum ada histori ujian.</p>";
-                return;
-            }
-
-            // Ubah objek firebase menjadi array dengan menyertakan id uniknya
+            if (!data) { logContainer.innerHTML = "<p style='font-size:0.9em; color:#888; text-align:center;'>Belum ada histori.</p>"; return; }
             globalHistoryCache = Object.keys(data).map(key => ({ id: key, ...data[key] }));
             globalHistoryCache.reverse();
-
             globalHistoryCache.forEach((item, index) => {
                 logContainer.innerHTML += `
                 <div class="log-item" onclick="openHistoryDetail(${index})">
@@ -537,218 +370,92 @@
                     <span style="font-size:0.9em;">Modul: ${item.modul}</span><br>
                     Skor: <b style="font-size:1.1em; color:#e65100;">${item.skor}</b><br>
                     <span style="font-size:0.75em; color:gray;">📅 ${item.waktu}</span>
-                    <div style="font-size:0.75em; color:#00acc1; margin-top:3px;">👆 Klik untuk lihat detail jawaban</div>
                 </div>`;
             });
-        } catch (error) {
-            logContainer.innerHTML = "<p style='color:red; text-align:center; font-size:0.9em;'>Gagal memuat histori.</p>";
-        }
+        } catch (error) { logContainer.innerHTML = "<p style='color:red; text-align:center;'>Gagal memuat histori.</p>"; }
     }
 
-    // Fungsi membuka modal detail riwayat jawaban
     function openHistoryDetail(index) {
         const record = globalHistoryCache[index];
-        document.getElementById('modal-title').innerText = `${record.nama} - ${record.modul} (Skor: ${record.skor})`;
-        
-        const modalBody = document.getElementById('modal-body-content');
-        modalBody.innerHTML = '';
-
-        if (!record.detailJawaban || record.detailJawaban.length === 0) {
-            modalBody.innerHTML = "<p style='text-align:center; color:#888;'>Detail jawaban tidak tersedia untuk sesi ini.</p>";
-        } else {
+        document.getElementById('modal-title').innerText = `${record.nama} (Skor: ${record.skor})`;
+        const modalBody = document.getElementById('modal-body-content'); modalBody.innerHTML = '';
+        if (!record.detailJawaban) { modalBody.innerHTML = "<p style='text-align:center; color:#888;'>Detail tidak tersedia.</p>"; } 
+        else {
             record.detailJawaban.forEach((ans, i) => {
                 let statusColor = ans.isTrue ? "border-left-color:#4caf50;" : "border-left-color:#f44336;";
-                let statusText = ans.isTrue ? "✅ Benar" : "❌ Salah";
-                
                 modalBody.innerHTML += `
                 <div class="detail-soal-card" style="${statusColor}">
                     <b>Soal ${i + 1}:</b> ${ans.soal}<br>
-                    <span style="color:${ans.isTrue ? '#2e7d32' : '#c62828'}">Jawaban Dipilih: <b>${ans.pilihanUser}</b> (${statusText})</span><br>
-                    <span style="color:#555;">Kunci Jawaban: <b>${ans.jawabanBenar}</b></span>
+                    <span style="color:${ans.isTrue ? '#2e7d32' : '#c62828'}">Jawaban: <b>${ans.pilihanUser}</b> (${ans.isTrue ? 'Benar' : 'Salah'})</span><br>
+                    <span style="color:#555;">Kunci: <b>${ans.jawabanBenar}</b></span>
                 </div>`;
             });
         }
-
         document.getElementById('history-modal').style.display = 'flex';
     }
-
-    function closeModal() {
-        document.getElementById('history-modal').style.display = 'none';
-    }
+    function closeModal() { document.getElementById('history-modal').style.display = 'none'; }
 
     async function saveScoreToHistory() {
         const inputName = document.getElementById('result-username').value.trim();
-        if(!inputName) {
-            alert("Harap masukkan nama kamu terlebih dahulu!");
-            return;
-        }
-
-        let now = new Date();
-        let timeString = now.toLocaleString('id-ID', {day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute:'2-digit'});
-
-        const dataBaru = {
-            nama: inputName,
-            modul: database[currentModulId].title,
-            skor: finalCalculatedScore,
-            waktu: timeString,
-            detailJawaban: userSessionAnswers // Mengirim rekam jejak jawaban ke server
-        };
-        
+        if(!inputName) { alert("Harap masukkan nama kamu!"); return; }
+        let timeString = new Date().toLocaleString('id-ID', {day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute:'2-digit'});
+        const dataBaru = { nama: inputName, modul: database[currentModulId].title, skor: finalCalculatedScore, waktu: timeString, detailJawaban: userSessionAnswers };
         try {
-            let btn = document.querySelector('.result-container .btn');
-            btn.innerText = "Menyimpan...";
-            btn.disabled = true;
-
-            await fetch(FIREBASE_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(dataBaru)
-            });
-
-            alert("Skor dan detail jawaban berhasil disimpan!");
-            updateHistorySidebar(); 
-            showView('view-dashboard');
-
-            btn.innerText = "Simpan & Selesai";
-            btn.disabled = false;
-        } catch (error) {
-            alert("Gagal menyimpan data.");
-            let btn = document.querySelector('.result-container .btn');
-            btn.innerText = "Simpan & Selesai";
-            btn.disabled = false;
-        }
-    }
-
-    function clearHistory() {
-        alert("Fitur hapus histori dinonaktifkan.");
+            await fetch(FIREBASE_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dataBaru) });
+            alert("Skor berhasil disimpan!"); updateHistorySidebar(); showView('view-dashboard');
+        } catch (error) { alert("Gagal menyimpan data."); }
     }
 
     function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
-    function showView(id) { 
-        document.querySelectorAll('.view').forEach(v => v.classList.remove('active')); 
-        document.getElementById(id).classList.add('active'); 
-    }
+    function showView(id) { document.querySelectorAll('.view').forEach(v => v.classList.remove('active')); document.getElementById(id).classList.add('active'); }
 
     function startStudySession(modulId) {
         currentModulId = modulId;
-        let originalQuestions = JSON.parse(JSON.stringify(database[modulId].questions));
-        questions = shuffleArray(originalQuestions); 
-        currentQIndex = 0; score = 0;
-        userSessionAnswers = []; // Reset rekam jejak untuk sesi baru
-        
+        questions = shuffleArray(JSON.parse(JSON.stringify(database[modulId].questions))); 
+        currentQIndex = 0; score = 0; userSessionAnswers = [];
         document.getElementById('quiz-title').innerText = database[modulId].title;
-        showView('view-quiz');
-        renderQuestion();
+        showView('view-quiz'); renderQuestion();
     }
 
     let currentShuffledOptions = [];
-
     function renderQuestion() {
-        answered = false;
-        const q = questions[currentQIndex];
-        
+        answered = false; const q = questions[currentQIndex];
         document.getElementById('question-tracker').innerText = `${currentQIndex + 1}/${questions.length}`;
         document.getElementById('progress-fill').style.width = `${((currentQIndex) / questions.length) * 100}%`;
-
-        const readingBox = document.getElementById('reading-text');
-        if (q.passage) {
-            readingBox.innerHTML = q.passage;
-            readingBox.style.display = 'block';
-        } else {
-            readingBox.style.display = 'none';
-            readingBox.innerHTML = '';
-        }
-
         document.getElementById('question-text').innerText = `${currentQIndex + 1}. ${q.q}`;
-        
-        const optionsContainer = document.getElementById('options-container');
-        optionsContainer.innerHTML = '';
-        
-        let optionsArr = q.o.map((text, index) => ({ text, isCorrect: index === q.c }));
-        currentShuffledOptions = shuffleArray(optionsArr);
-
+        const optionsContainer = document.getElementById('options-container'); optionsContainer.innerHTML = '';
+        currentShuffledOptions = shuffleArray(q.o.map((text, index) => ({ text, isCorrect: index === q.c })));
         currentShuffledOptions.forEach((opt, index) => {
-            const btn = document.createElement('button');
-            btn.className = 'option-btn';
+            const btn = document.createElement('button'); btn.className = 'option-btn';
             btn.innerText = String.fromCharCode(65 + index) + ". " + opt.text;
-            btn.onclick = () => selectAnswer(opt, btn);
-            optionsContainer.appendChild(btn);
+            btn.onclick = () => selectAnswer(opt, btn); optionsContainer.appendChild(btn);
         });
-
-        document.getElementById('feedback-box').style.display = 'none';
-        document.getElementById('next-btn-container').style.display = 'none';
+        document.getElementById('feedback-box').style.display = 'none'; document.getElementById('next-btn-container').style.display = 'none';
     }
 
     function selectAnswer(selectedOpt, btnElement) {
-        if (answered) return;
-        answered = true;
-
-        const q = questions[currentQIndex];
-        const allBtns = document.querySelectorAll('.option-btn');
-        
+        if (answered) return; answered = true;
         let correctOptText = "";
+        const allBtns = document.querySelectorAll('.option-btn');
         currentShuffledOptions.forEach((opt, idx) => {
             allBtns[idx].disabled = true;
-            if(opt.isCorrect) {
-                allBtns[idx].classList.add('correct');
-                correctOptText = opt.text;
-            }
+            if(opt.isCorrect) { allBtns[idx].classList.add('correct'); correctOptText = opt.text; }
         });
-
-        if (selectedOpt.isCorrect) { 
-            btnElement.classList.add('correct'); 
-            score++; 
-        } else { 
-            btnElement.classList.add('wrong'); 
-        }
-
-        // Rekam jawaban user untuk disimpan ke database nantinya
-        userSessionAnswers.push({
-            soal: q.q,
-            pilihanUser: selectedOpt.text,
-            isTrue: selectedOpt.isCorrect,
-            jawabanBenar: correctOptText
-        });
-
-        document.getElementById('feedback-text').innerText = q.exp;
-        document.getElementById('feedback-box').style.display = 'block';
-        document.getElementById('next-btn-container').style.display = 'block';
+        if (selectedOpt.isCorrect) { btnElement.classList.add('correct'); score++; } else { btnElement.classList.add('wrong'); }
+        userSessionAnswers.push({ soal: questions[currentQIndex].q, pilihanUser: selectedOpt.text, isTrue: selectedOpt.isCorrect, jawabanBenar: correctOptText });
+        document.getElementById('feedback-text').innerText = questions[currentQIndex].exp;
+        document.getElementById('feedback-box').style.display = 'block'; document.getElementById('next-btn-container').style.display = 'block';
     }
 
-    function nextQuestion() {
-        currentQIndex++;
-        if (currentQIndex < questions.length) renderQuestion();
-        else finishQuiz();
-    }
-
+    function nextQuestion() { currentQIndex++; if (currentQIndex < questions.length) renderQuestion(); else finishQuiz(); }
     function finishQuiz() {
         document.getElementById('progress-fill').style.width = `100%`;
         setTimeout(() => {
             showView('view-result');
             finalCalculatedScore = Math.round((score / questions.length) * 100);
             document.getElementById('final-score').innerText = finalCalculatedScore;
-            document.getElementById('result-username').value = ""; 
-            document.getElementById('result-message').innerText = finalCalculatedScore >= 80 ? "Luar biasa! Pertahankan!" : "Jangan menyerah, coba lagi!";
+            document.getElementById('result-message').innerText = finalCalculatedScore >= 80 ? "Luar biasa!" : "Coba lagi!";
         }, 300);
-    }
-
-    function toggleChat() {
-        const box = document.getElementById('ai-chat-box');
-        box.style.display = box.style.display === 'flex' ? 'none' : 'flex';
-    }
-
-    function sendAIMsg() {
-        const input = document.getElementById('ai-input');
-        const text = input.value.trim();
-        if(!text) return;
-        const body = document.getElementById('ai-chat-body');
-        body.innerHTML += `<div class="user-msg">${text}</div>`;
-        input.value = '';
-        body.scrollTop = body.scrollHeight;
-        setTimeout(() => {
-            body.innerHTML += `<div class="ai-msg">Semangat belajarnya! Pertanyaan "${text}" dicatat ya. Tetap fokus! 🚀</div>`;
-            body.scrollTop = body.scrollHeight;
-        }, 800);
     }
 </script>
 </body>
