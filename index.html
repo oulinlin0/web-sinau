@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>sinau bang - Full Complete</title>
+    <title>sinau bang - Online Account Firebase</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
 
@@ -164,7 +164,7 @@
     <source src="DJ TEMANKU SEMUA PADA JAHAT TANTE __ DJ TANTE CULIK AKU DONG VIRAL TIKTOK TERBARU 2024.mp3" type="audio/mpeg">
 </audio>
 
-<!-- SCREEN 1: LOGIN & REGISTER AUTHENTICATION -->
+<!-- SCREEN 1: LOGIN & REGISTER AUTHENTICATION (ONLINE FIREBASE) -->
 <div id="view-auth">
     <div class="auth-card" id="auth-box">
         <h2 id="auth-title">Masuk Akun</h2>
@@ -312,9 +312,12 @@
 </div>
 
 <script>
-    // --- AUTENTIKASI AKUN LOKAL (USERNAME & PASSWORD) ---
+    // --- AUTENTIKASI AKUN ONLINE (FIREBASE DATABASE) ---
     let isRegisterMode = false;
     let currentUser = localStorage.getItem('sinau_active_user') || null;
+
+    const FIREBASE_USERS_URL = "https://sinaubang-web-a5069-default-rtdb.asia-southeast1.firebasedatabase.app/users.json";
+    const FIREBASE_SKOR_URL = "https://sinaubang-web-a5069-default-rtdb.asia-southeast1.firebasedatabase.app/skor.json";
 
     window.addEventListener('DOMContentLoaded', () => {
         if (currentUser) {
@@ -341,24 +344,50 @@
         const p = document.getElementById('auth-pass').value.trim();
         if(!u || !p) { alert("Username dan password tidak boleh kosong!"); return; }
 
-        let usersDB = JSON.parse(localStorage.getItem('sinau_users_db')) || {};
+        let btn = document.getElementById('auth-main-btn');
+        btn.innerText = "Memproses...";
+        btn.disabled = true;
 
-        if (isRegisterMode) {
-            if (usersDB[u]) { alert("Username sudah terpakai! Gunakan nama lain."); return; }
-            usersDB[u] = p;
-            localStorage.setItem('sinau_users_db', JSON.stringify(usersDB));
-            alert("Pendaftaran berhasil! Akun kamu telah dibuat.");
-        } else {
-            if (!usersDB[u] || usersDB[u] !== p) { alert("Username atau password salah!"); return; }
+        try {
+            let res = await fetch(FIREBASE_USERS_URL);
+            let usersDB = await res.json() || {};
+
+            if (isRegisterMode) {
+                if (usersDB[u]) {
+                    alert("Username sudah terpakai di database online! Gunakan nama lain.");
+                    btn.innerText = "Daftar & Masuk";
+                    btn.disabled = false;
+                    return;
+                }
+                // Simpan akun baru ke Firebase Database
+                await fetch(`https://sinaubang-web-a5069-default-rtdb.asia-southeast1.firebasedatabase.app/users/${u}.json`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password: p })
+                });
+                alert("Pendaftaran berhasil! Akun tersimpan di database online.");
+            } else {
+                if (!usersDB[u] || usersDB[u].password !== p) {
+                    alert("Username tidak ditemukan atau password salah!");
+                    btn.innerText = "Masuk";
+                    btn.disabled = false;
+                    return;
+                }
+            }
+
+            currentUser = u;
+            localStorage.setItem('sinau_active_user', currentUser);
+            document.getElementById('view-auth').style.display = 'none';
+            document.getElementById('nav-user-badge').innerText = `👤 ${currentUser}`;
+            updateHistorySidebar();
+            document.getElementById('auth-user').value = '';
+            document.getElementById('auth-pass').value = '';
+        } catch (error) {
+            alert("Gagal terhubung ke database online. Periksa koneksi internetmu.");
+        } finally {
+            btn.innerText = isRegisterMode ? "Daftar & Masuk" : "Masuk";
+            btn.disabled = false;
         }
-
-        currentUser = u;
-        localStorage.setItem('sinau_active_user', currentUser);
-        document.getElementById('view-auth').style.display = 'none';
-        document.getElementById('nav-user-badge').innerText = `👤 ${currentUser}`;
-        updateHistorySidebar();
-        document.getElementById('auth-user').value = '';
-        document.getElementById('auth-pass').value = '';
     }
 
     function logoutUser() {
@@ -517,7 +546,7 @@
         { q: "Katrangan ing naskah sandiwara sing biasane ditulis ing njero kurung (...) minangka pituduh tingkah lakune paraga diarani...", o: ["Kramagung", "Wawancang", "Gancaran", "Tembang"], c: 0, exp: "Kramagung (petunjuk lakuan) nuntun paraga kudu kepriye obahing awake utawa perasaane." },
         { q: "Sandiwara tradisional Jawa sing sumbere saka crita babad utawa legenda lan asale saka Jawa Tengah/Yogyakarta yaiku...", o: ["Ludruk", "Ketoprak", "Lenong", "Wayang Golek"], c: 1, exp: "Ketoprak yaiku kesenian tradisional Jawa Tengah sing asale diiringi tabuhan lesung utawa keprak." },
         { q: "Kesenian sandiwara tradisional saka Jawa Timur sing biyen kabeh paragane wong lanang senajan maragakake wong wadon diarani...", o: ["Ludruk", "Ketoprak", "Wayang Wong", "Randai"], c: 0, exp: "Ludruk iku khas saka Jawa Timur (Surabaya/Jombang) kanthi paraga lanang kabeh ing jaman biyen." },
-        { q: "Sandiwara sing paragane ora guneman, nanging mung nggunakake obahing awak lan mimik praupan kanggo nyritakake kahanan diarani...", o: ["Pantomim", "Sendratari", "Opera", "Musikal"], c: 0, exp: "Pantomim ngandelake gerak tubuh lan ekspresi tanpa swara utawa dialog." },
+        { q: "Sandiwara sing paragane ora guneman, nanging mung nggunakake obahing awak lan mimik praupan kanggo nyritakake kahanan diarani...", o: ["Pantomim", "Sendratari", "Opera", "Musikal"], c: 0, exp: "Pantomim ngandelake gerak tubuh dan ekspresi tanpa swara utawa dialog." },
         { q: "Papan panggonan, wektu, lan swasana dumadine crita ing sandiwara diarani...", o: ["Alur", "Tema", "Latar (Setting)", "Amanat"], c: 2, exp: "Latar utawa setting kaperang dadi telu: latar panggonan, wektu, lan swasana." },
         { q: "Pamilihan paraga (aktor/aktris) sing ditindakake sutradara supaya jumbuh karo wewatakane ing naskah diarani...", o: ["Blocking", "Casting", "Acting", "Directing"], c: 1, exp: "Casting yaiku proses milih paraga sing pas karo karakter ing naskah." },
         { q: "Pengaturan obahing paraga ing panggung supaya ora nutupi paraga liyane saka pandelenge pamirsa diarani...", o: ["Blocking", "Casting", "Editing", "Dubbing"], c: 0, exp: "Blocking penting supaya posisi paraga ing panggung katon endah lan ora tumpang tindih." },
@@ -578,16 +607,13 @@
         'mplb_sop': { title: "SOP Pelayanan Prima", questions: mplb_sop_qs }
     };
 
-    let currentModulId = ''; let questions = []; let currentQIndex = 0; let score = 0; let finalCalculatedScore = 0; let answered = false; let userSessionAnswers = [];
-
-    const FIREBASE_URL = "https://sinaubang-web-a5069-default-rtdb.asia-southeast1.firebasedatabase.app/skor.json";
     let globalHistoryCache = [];
 
     async function updateHistorySidebar() {
         const logContainer = document.getElementById('history-log');
         logContainer.innerHTML = '<p style="text-align:center; font-size:0.9em;">Memuat data...</p>';
         try {
-            let response = await fetch(FIREBASE_URL);
+            let response = await fetch(FIREBASE_SKOR_URL);
             let data = await response.json();
             logContainer.innerHTML = ''; 
             if (!data) { logContainer.innerHTML = "<p style='font-size:0.9em; color:#888; text-align:center;'>Belum ada histori.</p>"; return; }
@@ -601,7 +627,7 @@
                 return;
             }
 
-            myHistory.forEach((item, index) => {
+            myHistory.forEach((item) => {
                 logContainer.innerHTML += `
                 <div class="log-item" onclick="openHistoryDetail('${item.id}')">
                     <span style="font-size:0.9em; font-weight:600; color:#00838f;">Modul: ${item.modul}</span><br>
@@ -639,14 +665,16 @@
         const dataBaru = { nama: currentUser, modul: database[currentModulId].title, skor: finalCalculatedScore, waktu: timeString, detailJawaban: userSessionAnswers };
         try {
             let btn = document.querySelector('.result-container .btn'); btn.innerText = "Menyimpan..."; btn.disabled = true;
-            await fetch(FIREBASE_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dataBaru) });
-            alert("Skor berhasil disimpan ke akunmu!"); updateHistorySidebar(); showView('view-dashboard');
+            await fetch(FIREBASE_SKOR_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dataBaru) });
+            alert("Skor berhasil disimpan ke akun online-mu!"); updateHistorySidebar(); showView('view-dashboard');
             btn.innerText = "Simpan ke Histori Akun"; btn.disabled = false;
         } catch (error) { alert("Gagal menyimpan data."); }
     }
 
     function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
     function showView(id) { document.querySelectorAll('.view').forEach(v => v.classList.remove('active')); document.getElementById(id).classList.add('active'); }
+
+    let currentModulId = ''; let questions = []; let currentQIndex = 0; let score = 0; let finalCalculatedScore = 0; let answered = false; let userSessionAnswers = [];
 
     function startStudySession(modulId) {
         currentModulId = modulId;
