@@ -54,19 +54,29 @@ body {
     /* filter: drop-shadow dihapus agar tidak menyebabkan glitch bayangan kotak */
 }  
 
+/* Wadah luar (Kita pindahkan bayangan luar ke sini agar tidak terpotong blur) */
 .nav-glass-slider-container {  
     position: absolute; left: 12px; right: 12px; bottom: 12px; height: 64px;  
     pointer-events: none; z-index: 1;  
-    /* overflow: hidden; dihapus agar bayangan navbar melengkung bisa menyebar halus ke luar */
+    border-radius: 24px; 
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28); 
 }  
 
+/* Efek Kaca / Glassmorphism */
 .nav-bg-glass {  
     position: absolute; inset: 0;  
     background: linear-gradient(135deg, rgba(255,255,255,0.16), rgba(255,255,255,0.045));  
     backdrop-filter: blur(24px) saturate(150%); -webkit-backdrop-filter: blur(24px) saturate(150%);  
     border: 1px solid rgba(255,255,255,0.18); border-top: 1px solid rgba(255,255,255,0.35);  
-    border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.28), inset 0 1px 2px rgba(255,255,255,0.22), inset 0 -1px 2px rgba(0,0,0,0.08);  
-}  
+    border-radius: 24px; 
+    
+    /* Hanya simpan bayangan DALAM (inset) di sini */
+    box-shadow: inset 0 1px 2px rgba(255,255,255,0.22), inset 0 -1px 2px rgba(0,0,0,0.08); 
+    
+    /* Hack anti-glitch tambahan untuk browser HP */
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+}
 .nav-bg-glass::before {  
     content: ""; position: absolute; left: 15px; right: 15px; top: 1px; height: 1px;  
     background: linear-gradient(90deg, transparent, rgba(255,255,255,0.45), transparent); border-radius: 50%;  
