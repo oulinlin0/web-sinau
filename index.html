@@ -50,11 +50,11 @@
         .top-header { position: fixed; top: 0; left: 0; width: 100%; padding: 15px 25px; z-index: 100; display: flex; justify-content: center; align-items: center; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;}
         .top-header h1 { font-size: 1.4em; color: #ffffff; font-weight: 700; text-shadow: 0 2px 5px rgba(0,0,0,0.3); }
 
-        /* --- SMOOTH CURVED BOTTOM NAVIGATION (FLUTTER STYLE FIX) --- */
+        /* --- PERFECT CURVED BOTTOM NAVIGATION (FLUTTER STYLE) --- */
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; width: 100%; height: 75px;
             background: #ffffff; display: flex; border-radius: 30px 30px 0 0; z-index: 1000;
-            box-shadow: 0 -10px 30px rgba(0,0,0,0.2);
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.15); /* Shadow lebih halus */
             padding-bottom: env(safe-area-inset-bottom);
         }
         
@@ -64,31 +64,52 @@
             z-index: 2; pointer-events: none;
         }
 
-        /* Lingkaran Ikon Melayang yang Bersih Tanpa Bug Bayangan Samping */
+        /* Lingkaran Ikon Melayang */
         .nav-indicator {
-            position: absolute; top: -24px; left: 50%; transform: translateX(-50%);
-            width: 54px; height: 54px; border-radius: 50%;
+            position: absolute; 
+            top: -30px; /* Jarak pas agar melayang setengah */
+            left: 50%; 
+            transform: translateX(-50%);
+            width: 56px; 
+            height: 56px; 
+            border-radius: 50%;
             background: linear-gradient(135deg, var(--theme-1), var(--theme-2));
-            border: 4px solid #ffffff;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border: 6px solid #ffffff; /* Garis putih pemotong */
             display: flex; justify-content: center; align-items: center;
-            color: #ffffff; font-size: 1.3em;
+            color: #ffffff; font-size: 1.4em;
         }
 
-        /* Cekungan Lembut (Notch Effect) yang Diperbaiki */
-        .nav-indicator::before, .nav-indicator::after {
-            content: ''; position: absolute; top: 22px; width: 20px; height: 20px;
-            background: transparent; border-radius: 50%;
+        /* Trik Pemotong Cekungan (Notch Curve) Bebas Bug */
+        .nav-indicator::before, 
+        .nav-indicator::after {
+            content: ''; 
+            position: absolute; 
+            top: 2px; /* Setara dengan garis atas navbar */
+            width: 22px; 
+            height: 22px;
+            background: transparent;
         }
-        .nav-indicator::before { left: -24px; box-shadow: 10px -10px 0 0 #ffffff; }
-        .nav-indicator::after { right: -24px; box-shadow: -10px -10px 0 0 #ffffff; }
+        
+        /* Lengkungan Kiri */
+        .nav-indicator::before { 
+            left: -27px; /* Rapat ke sisi luar border */
+            border-bottom-right-radius: 22px; 
+            box-shadow: 0 24px 0 0 #ffffff; /* Didorong murni ke BAWAH agar atasnya lurus sempurna */
+        }
+        
+        /* Lengkungan Kanan */
+        .nav-indicator::after { 
+            right: -27px; /* Rapat ke sisi luar border */
+            border-bottom-left-radius: 22px; 
+            box-shadow: 0 24px 0 0 #ffffff; /* Didorong murni ke BAWAH agar atasnya lurus sempurna */
+        }
 
         .nav-item { position: relative; width: 20%; height: 100%; display: flex; justify-content: center; align-items: center; flex-direction: column; cursor: pointer; z-index: 3; }
-        .nav-icon { font-size: 1.3em; transition: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); color: #94a3b8; }
+        .nav-icon { font-size: 1.4em; transition: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); color: #94a3b8; }
         .nav-text { position: absolute; font-size: 0.65em; font-weight: 600; color: #64748b; transform: translateY(22px); opacity: 0; transition: 0.3s; }
         
         /* Active States */
-        .nav-item.active .nav-icon { transform: translateY(-32px); opacity: 0; }
+        .nav-item.active .nav-icon { transform: translateY(-34px); opacity: 0; }
         .nav-item.active .nav-text { transform: translateY(14px); opacity: 1; color: var(--theme-2); }
 
         /* MAIN CONTAINERS */
@@ -471,7 +492,7 @@
         { q: "Penulisan tempat dan tanggal pembuatan surat yang benar adalah...", o: ["Pati, 8-9-2024", "Pati 8 September 2024", "Pati, 8 September 2024", "pati, 08 September 2024"], c: 2, exp: "Tempat dan tanggal dipisah dengan koma, nama bulan ditulis huruf, dan diawali huruf kapital." },
         { q: "Hal yang tidak perlu dilampirkan dalam surat lamaran pekerjaan umumnya adalah...", o: ["Daftar riwayat hidup", "Fotokopi ijazah", "Surat keterangan catatan kepolisian (SKCK)", "Akta kelahiran orang tua"], c: 3, exp: "Akta kelahiran orang tua tidak relevan dengan kualifikasi kerja pelamar." },
         { q: "Bagian surat yang terletak paling atas sebelah kanan atau kiri adalah...", o: ["Alamat surat", "Tempat dan tanggal surat", "Hal dan lampiran", "Salam pembuka"], c: 1, exp: "Tempat dan tanggal surat selalu ditempatkan di bagian paling awal/atas." },
-        { q: "Tujuan utama pembuatan surat lamaran pekerjaan adalah...", o: ["Mendapatkan informasi gaji", "Memohon untuk diterima bekerja di suatu instansi", "Menunjukkan keahlian menulis", "Mengajukan protes kepada perusahaan"], c: 1, exp: "Fungsi utama surat lamaran adalah memohon pekerjaan." },
+        { q: "Tujuan utama pembuatan surat lamaran pekerjaan adalah...", o: ["Mendapatkan informasi gaji", "Memohon untuk diterima bekerja di suatu instansi", "Menunjukkan keahlian menulis", "Mengajukan protes kepada perusahaan"], c: 1, exp: "Fungsi utama surat lamaran pekerjaan adalah memohon pekerjaan." },
         { q: "Isi argumen dalam surat lamaran pekerjaan biasanya dibuktikan dengan...", o: ["Tanda tangan", "Materai", "Lampiran dokumen (ijazah, sertifikat)", "Salam penutup"], c: 2, exp: "Argumen pelamar (kompetensi) didukung oleh bukti berupa lampiran dokumen." },
         { q: "Hal yang harus diperhatikan dalam penulisan surat lamaran pekerjaan adalah...", o: ["Menggunakan bahasa gaul", "Menggunakan kertas berwarna-warni", "Menggunakan bahasa baku, sopan, dan format rapi", "Menulis sepanjang mungkin"], c: 2, exp: "Surat resmi harus menggunakan ragam bahasa baku dan format yang bersih/rapi." },
         { q: "Alenia pembuka: 'Setelah membaca iklan di harian Suara Merdeka...'. Ini menunjukkan pelamar merespons dari...", o: ["Brosur", "Iklan media cetak", "Radio", "Internet"], c: 1, exp: "Harian Suara Merdeka adalah bentuk media cetak (koran)." },
