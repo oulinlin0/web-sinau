@@ -196,23 +196,9 @@
 
 <div class="container">
 
-    <!-- LOGIN VIEW (Halaman Awal) -->
-    <main id="view-login" class="view active card" style="text-align: center; padding-top: 40px; padding-bottom: 40px;">
-        <h2 class="section-title" style="border:none;">Selamat Datang! 👋</h2>
-        <p style="margin-bottom: 20px; font-size: 0.95em;">Silakan masukkan nama kamu sebelum mulai belajar agar histori dapat tersimpan.</p>
-        <input type="text" id="username-input" class="custom-input" placeholder="Ketik nama kamu di sini..." onkeypress="if(event.key === 'Enter') masukDashboard()">
-        <br>
-        <button class="btn" style="padding: 12px 30px; font-size: 1.1em;" onclick="masukDashboard()">Masuk 🚀</button>
-    </main>
-
-    <!-- DASHBOARD -->
-    <main id="view-dashboard" class="view card">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h2 class="section-title" style="border:none; margin:0;">Modul Belajar</h2>
-            <span id="welcome-name" style="font-weight: 600; color: #00838f; font-size: 0.9em;"></span>
-        </div>
-        <hr style="border: 1px solid #b2ebf2; margin: 10px 0 20px;">
-        
+    <!-- DASHBOARD (Langsung Muncul Pertama Tanpa Input Nama) -->
+    <main id="view-dashboard" class="view active card">
+        <h2 class="section-title">Modul Belajar</h2>
         <div class="history-list">
             <div class="history-item">
                 <div class="history-info">
@@ -256,12 +242,18 @@
         </div>
     </main>
 
-    <!-- RESULT VIEW -->
+    <!-- RESULT VIEW (Input Nama Dilakukan di Sini Sebelum Simpan Histori) -->
     <main id="view-result" class="view card result-container">
         <h2 class="section-title">Selesai! 🎉</h2>
         <div class="score-circle" id="final-score">100</div>
-        <p id="result-message" style="margin-bottom: 20px;">Luar biasa!</p>
-        <button class="btn" onclick="showView('view-dashboard')">Ke Dashboard</button>
+        <p id="result-message" style="margin-bottom: 15px;">Luar biasa!</p>
+        
+        <div style="background: rgba(0,0,0,0.03); padding: 15px; border-radius: 10px; max-width: 350px; margin: 0 auto 20px;">
+            <p style="font-size: 0.9em; margin-bottom: 8px; font-weight: 600;">Masukkan Nama Kamu untuk Menyimpan Skor:</p>
+            <input type="text" id="result-username" class="custom-input" placeholder="Ketik nama kamu..." style="margin-bottom: 10px;">
+            <br>
+            <button class="btn" onclick="saveScoreToHistory()">Simpan & Selesai</button>
+        </div>
     </main>
 </div>
 
@@ -290,27 +282,12 @@
         localStorage.setItem('theme_sinau', isDark ? 'dark' : 'light');
     }
 
-    // Cek tema yang tersimpan saat web dimuat
     window.onload = () => {
         if(localStorage.getItem('theme_sinau') === 'dark') {
             toggleTheme();
         }
         updateHistorySidebar();
     };
-
-    // --- SISTEM LOGIN NAMA PENGGUNA ---
-    let currentUser = "";
-    
-    function masukDashboard() {
-        const inputName = document.getElementById('username-input').value.trim();
-        if(!inputName) {
-            alert("Harap masukkan nama kamu terlebih dahulu!");
-            return;
-        }
-        currentUser = inputName;
-        document.getElementById('welcome-name').innerText = `Halo, ${currentUser}!`;
-        showView('view-dashboard');
-    }
 
     // --- KONTROL MUSIK INTERAKTIF ---
     const bgMusic = document.getElementById('bg-music');
@@ -336,7 +313,7 @@
         }
     }
 
-    // Fungsi Pengacak Khusus
+    // Fungsi Pengacak Array
     function shuffleArray(array) {
         let currentIndex = array.length, randomIndex;
         while (currentIndex !== 0) {
@@ -355,7 +332,6 @@
         { q: "Alenia pembuka surat lamaran pekerjaan yang tepat berdasarkan iklan di koran Kompas tanggal 5 September 2024 adalah...", o: ["Sesuai iklan di Kompas, saya melamar pekerjaan...", "Berdasarkan iklan yang dimuat pada harian Kompas tanggal 5 September 2024, saya mengajukan lamaran...", "Membaca iklan di koran, saya berniat melamar...", "Saya melihat iklan di Kompas dan saya ingin bekerja di perusahaan Bapak."], c: 1, exp: "Penulisan sumber iklan harus mencantumkan nama media dan tanggal terbit secara formal." },
         { q: "Penulisan alamat surat yang benar sesuai dengan EYD/PUEBI adalah...", o: ["Kepada Yth. Bapak Direktur PT Sukses Makmur Jl. Melati 10 Jakarta", "Yth. Direktur PT Sukses Makmur Jalan Melati No. 10 Jakarta", "Yth. Pimpinan PT. Sukses Makmur, Jalan Melati 10, Jakarta.", "Kepada Yth. Pimpinan PT Sukses Makmur di Jakarta"], c: 1, exp: "Alamat surat tidak menggunakan kata 'Kepada', tidak menggunakan titik setelah 'PT', dan menggunakan kata 'Jalan' tanpa disingkat." }
     ];
-    // Menghapus teks variasi agar hanya tersisa pertanyaannya saja
     for(let i=5; i<40; i++) {
         psts_indo_questions.push({ q: `Manakah penulisan alamat surat yang salah?`, o: ["Yth. Direktur PT Abadi", "Kepada Yth. Bapak Direktur", "Yth. Pimpinan HRD", "Yth. Kepala HRD PT Makmur"], c: 1, exp: "Penggunaan 'Kepada' dan 'Yth.' secara bersamaan adalah pemborosan kata (salah)." });
     }
@@ -365,7 +341,6 @@
         { q: "Which one is NOT a generic structure of News Item?", o: ["Newsworthy Event", "Background Event", "Sources", "Resolution"], c: 3, exp: "Resolution ada di Narrative text, bukan News Item." },
         { q: "The summary of the main event is written in the...", o: ["Orientation", "Newsworthy Event", "Sources", "Background"], c: 1, exp: "Newsworthy event berisi ringkasan/inti kejadian utama." }
     ];
-    // Menghapus teks variasi agar hanya tersisa pertanyaannya saja
     for(let i=3; i<40; i++) {
         psts_bing_questions.push({ q: `Which of the following is a Past Tense verb?`, o: ["Go", "Went", "Going", "Goes"], c: 1, exp: "'Went' is the past form of 'go'." });
     }
@@ -379,6 +354,7 @@
     let questions = [];
     let currentQIndex = 0;
     let score = 0;
+    let finalCalculatedScore = 0;
     let answered = false;
 
     // --- FUNGSI HISTORI ---
@@ -419,9 +395,10 @@
         document.getElementById(id).classList.add('active'); 
     }
 
-    // --- KUIS LOGIC ---
+    // --- KUIS LOGIC (Acak Soal Setiap Kali Mulai) ---
     function startStudySession(modulId) {
         currentModulId = modulId;
+        // Mengacak urutan soal secara total setiap kali sesi dimulai
         questions = shuffleArray([...database[modulId].questions]); 
         document.getElementById('quiz-title').innerText = database[modulId].title;
         currentQIndex = 0; score = 0;
@@ -441,6 +418,7 @@
         const optionsContainer = document.getElementById('options-container');
         optionsContainer.innerHTML = '';
         
+        // Mengacak posisi pilihan ganda (A, B, C, D)
         let optionsArr = q.o.map((text, index) => ({ text, isCorrect: index === q.c }));
         optionsArr = shuffleArray(optionsArr);
 
@@ -484,25 +462,36 @@
         document.getElementById('progress-fill').style.width = `100%`;
         setTimeout(() => {
             showView('view-result');
-            const finalScore = Math.round((score / questions.length) * 100);
-            document.getElementById('final-score').innerText = finalScore;
-            
-            let historyData = JSON.parse(localStorage.getItem('quizHistory_sinau')) || [];
-            let now = new Date();
-            let timeString = now.toLocaleString('id-ID', {day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute:'2-digit'});
-
-            historyData.push({
-                nama: currentUser,
-                modul: database[currentModulId].title,
-                skor: finalScore,
-                waktu: timeString
-            });
-            
-            localStorage.setItem('quizHistory_sinau', JSON.stringify(historyData));
-            updateHistorySidebar();
-
-            document.getElementById('result-message').innerText = finalScore >= 80 ? "Luar biasa! Pertahankan!" : "Jangan menyerah, coba lagi!";
+            finalCalculatedScore = Math.round((score / questions.length) * 100);
+            document.getElementById('final-score').innerText = finalCalculatedScore;
+            document.getElementById('result-username').value = ""; // Kosongkan input nama
+            document.getElementById('result-message').innerText = finalCalculatedScore >= 80 ? "Luar biasa! Pertahankan!" : "Jangan menyerah, coba lagi!";
         }, 300);
+    }
+
+    function saveScoreToHistory() {
+        const inputName = document.getElementById('result-username').value.trim();
+        if(!inputName) {
+            alert("Harap masukkan nama kamu terlebih dahulu sebelum menyimpan!");
+            return;
+        }
+
+        let historyData = JSON.parse(localStorage.getItem('quizHistory_sinau')) || [];
+        let now = new Date();
+        let timeString = now.toLocaleString('id-ID', {day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute:'2-digit'});
+
+        historyData.push({
+            nama: inputName,
+            modul: database[currentModulId].title,
+            skor: finalCalculatedScore,
+            waktu: timeString
+        });
+        
+        localStorage.setItem('quizHistory_sinau', JSON.stringify(historyData));
+        updateHistorySidebar();
+
+        alert("Skor berhasil disimpan ke histori!");
+        showView('view-dashboard');
     }
 
     // --- AI CHATBOX ---
@@ -520,7 +509,7 @@
         input.value = '';
         body.scrollTop = body.scrollHeight;
         setTimeout(() => {
-            body.innerHTML += `<div class="ai-msg">Semangat belajarnya, ${currentUser}! Pertanyaan "${text}" dicatat ya. Tetap fokus! 🚀</div>`;
+            body.innerHTML += `<div class="ai-msg">Semangat belajarnya! Pertanyaan "${text}" dicatat ya. Tetap fokus! 🚀</div>`;
             body.scrollTop = body.scrollHeight;
         }, 800);
     }
