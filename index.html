@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>sinau bang - Liquid Glass & Chat</title>
+    <title>sinau bang - Floating Liquid Glass Navbar</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
 
@@ -12,7 +12,7 @@
         body {
             background: linear-gradient(135deg, #b2ebf2 0%, #80deea 45%, #4dd0e1 100%);
             min-height: 100vh; color: #1e3d59; overflow-x: hidden; transition: background 0.4s, color 0.4s;
-            background-attachment: fixed;
+            background-attachment: fixed; padding-top: 90px; /* Ruang untuk floating navbar */
         }
 
         /* Tema Gelap (Dark Mode Liquid Glass) */
@@ -24,8 +24,8 @@
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         }
         body.dark-theme .brand h1, body.dark-theme .section-title, body.dark-theme .history-info h3, body.dark-theme .question-text { color: #38bdf8; }
-        body.dark-theme .menu-btn { color: #38bdf8; }
-        body.dark-theme .music-widget { background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(56, 189, 248, 0.3); color: #38bdf8; }
+        body.dark-theme .nav-icon-btn { color: #38bdf8; }
+        body.dark-theme .nav-icon-btn.active, body.dark-theme .nav-icon-btn:hover { background: rgba(30, 41, 59, 0.9); }
         body.dark-theme .sidebar-header { border-bottom: 2px solid rgba(255,255,255,0.1); }
         body.dark-theme .log-item { background: rgba(30, 41, 59, 0.6); border-left: 4px solid #38bdf8; color: #f1f5f9; }
         body.dark-theme .option-btn { background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(255,255,255,0.1); color: #f1f5f9; }
@@ -47,8 +47,8 @@
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2), inset 0 0 15px rgba(255, 255, 255, 0.5);
             text-align: center; border: 1px solid rgba(255, 255, 255, 0.4); animation: fadeIn 0.6s ease;
         }
-        .auth-card h2 { color: #004d40; margin-bottom: 20px; font-size: 2em; font-weight: 700; text-shadow: 0 2px 4px rgba(255,255,255,0.3); }
-        body.dark-theme .auth-card h2 { color: #38bdf8; text-shadow: none; }
+        .auth-card h2 { color: #004d40; margin-bottom: 20px; font-size: 2em; font-weight: 700; }
+        body.dark-theme .auth-card h2 { color: #38bdf8; }
         .auth-input {
             width: 100%; padding: 14px 18px; margin-bottom: 15px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.6);
             outline: none; font-size: 1em; background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(5px); color: #00332c; transition: 0.3s;
@@ -59,32 +59,31 @@
             color: white; font-weight: 600; font-size: 1.05em; cursor: pointer; transition: 0.3s; margin-top: 5px;
             box-shadow: 0 4px 15px rgba(0, 77, 64, 0.3);
         }
-        .auth-btn:hover { opacity: 0.95; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 77, 64, 0.4); }
+        .auth-btn:hover { opacity: 0.95; transform: translateY(-2px); }
         .auth-switch { margin-top: 20px; font-size: 0.9em; color: #004d40; font-weight: 500; }
         body.dark-theme .auth-switch { color: #cbd5e1; }
         .auth-switch span { color: #00695c; font-weight: 700; cursor: pointer; text-decoration: underline; }
-        body.dark-theme .auth-switch span { color: #38bdf8; }
 
-        /* LIQUID GLASS GENERAL CARDS & NAVBAR */
+        /* FLOATING LIQUID GLASS PILL NAVBAR (Mirip Referensi Gambar) */
         .navbar {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 15px 25px; background: rgba(255, 255, 255, 0.35); backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.4);
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1); position: sticky; top: 0; z-index: 100;
+            position: fixed; top: 15px; left: 50%; transform: translateX(-50%);
+            width: auto; max-width: 95%; background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.5); border-radius: 50px;
+            padding: 8px 18px; display: flex; align-items: center; justify-content: center;
+            gap: 12px; box-shadow: 0 10px 30px rgba(31, 38, 135, 0.15), inset 0 0 15px rgba(255, 255, 255, 0.4);
+            z-index: 100;
         }
-        .menu-btn { background: none; border: none; font-size: 1.6em; color: #004d40; cursor: pointer; transition: 0.2s; }
-        .menu-btn:hover { transform: scale(1.1); }
-        .brand h1 { font-size: 1.5em; color: #004d40; display: flex; align-items: center; gap: 8px; font-weight: 700; }
-        .right-nav { display: flex; align-items: center; gap: 12px; }
-        .theme-btn { background: none; border: none; font-size: 1.4em; cursor: pointer; transition: 0.2s; }
-        .theme-btn:hover { transform: rotate(20deg); }
-
-        .music-widget {
-            display: flex; align-items: center; gap: 8px; background: rgba(255, 255, 255, 0.4);
-            backdrop-filter: blur(10px); padding: 8px 16px; border-radius: 30px; border: 1px solid rgba(255, 255, 255, 0.6);
-            font-size: 0.85em; cursor: pointer; font-weight: 600; color: #004d40; transition: 0.2s;
+        .nav-icon-btn {
+            background: transparent; border: none; padding: 8px 14px; border-radius: 30px;
+            cursor: pointer; color: #004d40; font-size: 1.15em; display: flex; align-items: center;
+            justify-content: center; gap: 6px; font-weight: 600; transition: 0.3s ease;
         }
-        .music-widget:hover { background: rgba(255, 255, 255, 0.6); }
+        .nav-icon-btn.active {
+            background: rgba(255, 255, 255, 0.65); box-shadow: 0 4px 12px rgba(0,0,0,0.08); color: #004d40;
+        }
+        body.dark-theme .nav-icon-btn.active { background: rgba(30, 41, 59, 0.9); color: #38bdf8; }
+        .nav-icon-btn:hover { background: rgba(255, 255, 255, 0.4); transform: translateY(-1px); }
 
         /* FOLDER UI (Liquid Glass Accordion) */
         .folder-header {
@@ -94,7 +93,7 @@
             margin-bottom: 12px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); user-select: none;
             border: 1px solid rgba(255,255,255,0.5);
         }
-        .folder-header:hover { transform: translateY(-3px); background: rgba(255, 255, 255, 0.65); box-shadow: 0 8px 25px rgba(0,0,0,0.08); }
+        .folder-header:hover { transform: translateY(-3px); background: rgba(255, 255, 255, 0.65); }
         .folder-content {
             display: none; padding: 10px 0 10px 15px; border-left: 2px dashed #00897b;
             margin-left: 15px; margin-bottom: 15px; animation: slideDown 0.3s ease;
@@ -158,7 +157,7 @@
         .btn-outline { background: rgba(255,255,255,0.2); color: #004d40; border: 2px solid #00897b; backdrop-filter: blur(5px); }
         body.dark-theme .btn-outline { color: #38bdf8; border-color: #38bdf8; background: rgba(30,41,59,0.4); }
 
-        /* CHAT STYLES (Liquid Glass Chat Room) */
+        /* CHAT STYLES */
         .chat-container { display: flex; flex-direction: column; height: 500px; gap: 15px; }
         .chat-messages-box {
             flex: 1; background: rgba(255, 255, 255, 0.3); backdrop-filter: blur(15px); border-radius: 16px;
@@ -242,20 +241,14 @@
     </div>
 </div>
 
+<!-- FLOATING PILL NAVBAR -->
 <div class="navbar">
-    <div style="display: flex; align-items: center; gap: 12px;">
-        <button class="menu-btn" onclick="toggleSidebar()">☰</button>
-        <div class="brand"><h1>📚 sinau bang</h1></div>
-    </div>
-    <div class="right-nav">
-        <button class="btn btn-outline" style="padding: 6px 14px; font-size: 0.85em;" onclick="openChatRoom()">💬 Chat Room</button>
-        <span id="nav-user-badge" style="font-size: 0.85em; font-weight: 600; color: #004d40; background: rgba(255,255,255,0.5); backdrop-filter: blur(5px); padding: 5px 12px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.6);">Halo, User</span>
-        <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">🌙</button>
-        <div class="music-widget" onclick="toggleMusic()" id="music-btn-box">
-            🎵 <span id="music-text">Putar</span>
-        </div>
-        <button class="btn btn-outline" style="padding: 6px 12px; font-size: 0.85em; border-color:#e53935; color:#e53935;" onclick="logoutUser()">Keluar</button>
-    </div>
+    <button class="nav-icon-btn active" id="nav-home-btn" onclick="goHome()">🏠 Home</button>
+    <button class="nav-icon-btn" id="nav-chat-btn" onclick="openChatRoom()">💬 Chat</button>
+    <button class="nav-icon-btn" onclick="toggleSidebar()">📜 Histori</button>
+    <button class="nav-icon-btn" id="theme-btn" onclick="toggleTheme()" title="Ganti Tema">🌙</button>
+    <button class="nav-icon-btn" onclick="toggleMusic()" id="music-btn-box" title="Putar/Jeda Musik">🎵 <span id="music-text">Putar</span></button>
+    <button class="nav-icon-btn" style="color: #e53935;" onclick="logoutUser()" title="Keluar Akun">🚪 Keluar</button>
 </div>
 
 <div class="sidebar" id="sidebar">
@@ -269,7 +262,11 @@
 <div class="container">
     <!-- DASHBOARD WITH FOLDER UI -->
     <main id="view-dashboard" class="view active card">
-        <h2 class="section-title">Kategori Modul Belajar</h2>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 class="section-title" style="margin:0; border:none;">📚 Kategori Modul Belajar</h2>
+            <span id="nav-user-badge" style="font-size: 0.85em; font-weight: 600; color: #004d40; background: rgba(255,255,255,0.5); backdrop-filter: blur(5px); padding: 5px 14px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.6);">👤 User</span>
+        </div>
+        <div style="border-bottom: 2px solid rgba(0, 137, 123, 0.3); margin-bottom: 20px;"></div>
         
         <!-- FOLDER 1: UMUM -->
         <div class="folder">
@@ -330,7 +327,7 @@
     <main id="view-chat" class="view card">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
             <h2 class="section-title" style="margin: 0; border: none;">💬 Ruang Obrolan Publik</h2>
-            <button class="btn btn-outline" style="padding: 5px 12px; font-size: 0.8em;" onclick="showView('view-dashboard')">⬅ Kembali ke Menu</button>
+            <button class="btn btn-outline" style="padding: 5px 12px; font-size: 0.8em;" onclick="goHome()">⬅ Kembali</button>
         </div>
         <p style="font-size: 0.85em; margin-bottom: 15px; opacity: 0.8;">Diskusikan materi pelajaran, tanya soal, atau ngobrol bareng teman-teman lain secara real-time di sini!</p>
         
@@ -348,7 +345,7 @@
     <!-- QUIZ VIEW -->
     <main id="view-quiz" class="view card">
         <div class="quiz-header">
-            <button class="btn btn-outline" style="padding: 5px 12px; font-size: 0.8em;" onclick="showView('view-dashboard')">⬅ Batal</button>
+            <button class="btn btn-outline" style="padding: 5px 12px; font-size: 0.8em;" onclick="goHome()">⬅ Batal</button>
             <h3 id="quiz-title" style="color:#004d40; font-size: 1.1em;">Judul</h3>
             <span id="question-tracker" style="font-weight: 600;">0/0</span>
         </div>
@@ -471,12 +468,25 @@
         }
     }
 
-    // --- CHAT ROOM LOGIC ---
+    // --- NAVIGATION HELPERS ---
+    function setActiveNav(btnId) {
+        document.querySelectorAll('.navbar .nav-icon-btn').forEach(b => b.classList.remove('active'));
+        const target = document.getElementById(btnId);
+        if(target) target.classList.add('active');
+    }
+
+    function goHome() {
+        showView('view-dashboard');
+        setActiveNav('nav-home-btn');
+    }
+
     function openChatRoom() {
         showView('view-chat');
+        setActiveNav('nav-chat-btn');
         loadChatMessages();
     }
 
+    // --- CHAT ROOM LOGIC ---
     async function loadChatMessages() {
         const chatBox = document.getElementById('chat-messages-box');
         chatBox.innerHTML = '<p style="text-align: center; color: gray; font-size: 0.9em;">Memuat pesan...</p>';
@@ -800,7 +810,7 @@
         try {
             let btn = document.querySelector('.result-container .btn'); btn.innerText = "Menyimpan..."; btn.disabled = true;
             await fetch(FIREBASE_SKOR_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dataBaru) });
-            alert("Skor berhasil disimpan ke akun online-mu!"); updateHistorySidebar(); showView('view-dashboard');
+            alert("Skor berhasil disimpan ke akun online-mu!"); updateHistorySidebar(); goHome();
             btn.innerText = "Simpan ke Histori Akun"; btn.disabled = false;
         } catch (error) { alert("Gagal menyimpan data."); }
     }
