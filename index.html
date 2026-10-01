@@ -3,184 +3,155 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>sinau bang - Mobile App UI</title>
+    <title>sinau bang - 60fps Glassmorphism UI</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            /* Default Teal Theme */
+            --bg-1: #b2ebf2; --bg-2: #80deea; --bg-3: #4dd0e1;
+            --theme-1: #00897b; --theme-2: #004d40;
+            --glass-bg: rgba(255, 255, 255, 0.15);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --text-main: #1e3d59; --text-muted: #475569;
+            --nav-bg: rgba(255, 255, 255, 0.2);
+        }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
 
         body {
-            background: linear-gradient(135deg, #b2ebf2 0%, #80deea 45%, #4dd0e1 100%);
-            min-height: 100vh; color: #1e3d59; overflow-x: hidden; transition: background 0.4s, color 0.4s;
-            background-attachment: fixed; 
-            padding-bottom: 90px; /* Ruang untuk bottom nav */
+            background: linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 50%, var(--bg-3) 100%);
+            min-height: 100vh; color: var(--text-main); overflow-x: hidden; 
+            transition: background 0.8s ease, color 0.5s ease;
+            background-attachment: fixed; padding-bottom: 95px; padding-top: 75px;
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* Tema Gelap (Dark Mode Liquid Glass) */
-        body.dark-theme { background: linear-gradient(135deg, #0f172a 100%, #1e293b 50%, #090d16 0%); color: #f1f5f9; }
-        body.dark-theme .top-header, body.dark-theme .card, body.dark-theme .history-item, body.dark-theme .modal-content, body.dark-theme .auth-card, body.dark-theme .chat-messages-box {
-            background: rgba(15, 23, 42, 0.75); border-color: rgba(255, 255, 255, 0.1); color: #f1f5f9;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        /* GLASSMORPHISM UTILITIES */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+            transition: all 0.5s ease;
         }
-        body.dark-theme .brand h1, body.dark-theme .section-title, body.dark-theme .history-info h3, body.dark-theme .question-text { color: #38bdf8; }
-        body.dark-theme .log-item { background: rgba(30, 41, 59, 0.6); border-left: 4px solid #38bdf8; color: #f1f5f9; }
-        body.dark-theme .option-btn { background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(255,255,255,0.1); color: #f1f5f9; }
-        body.dark-theme .option-btn.correct { background: rgba(22, 101, 52, 0.8) !important; color: #fff !important; border-color: #22c55e !important; }
-        body.dark-theme .option-btn.wrong { background: rgba(153, 27, 27, 0.8) !important; color: #fff !important; border-color: #ef4444 !important; }
-        body.dark-theme .feedback-box { background: rgba(50, 40, 20, 0.8); border-left: 4px solid #fbbf24; color: #fef3c7; }
-        body.dark-theme input, body.dark-theme textarea { background: rgba(30, 41, 59, 0.8); color: #fff; border: 1px solid rgba(255,255,255,0.15); }
-        body.dark-theme .chat-bubble-other { background: rgba(30, 41, 59, 0.9); color: #e2e8f0; }
 
         /* AUTH / LOGIN SCREEN */
         #view-auth {
             display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px;
-            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1350&q=80') no-repeat center center fixed;
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1350&q=80') no-repeat center center fixed;
             background-size: cover; position: fixed; top: 0; left: 0; width: 100%; z-index: 2000;
         }
-        .auth-card {
-            background: rgba(255, 255, 255, 0.25); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border-radius: 24px; padding: 40px 30px; width: 100%; max-width: 420px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2), inset 0 0 15px rgba(255, 255, 255, 0.5);
-            text-align: center; border: 1px solid rgba(255, 255, 255, 0.4); animation: fadeIn 0.6s ease;
-        }
-        .auth-card h2 { color: #004d40; margin-bottom: 20px; font-size: 2em; font-weight: 700; }
-        body.dark-theme .auth-card h2 { color: #38bdf8; }
-        .auth-input { width: 100%; padding: 14px 18px; margin-bottom: 15px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.6); outline: none; font-size: 1em; background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(5px); color: #00332c; transition: 0.3s; }
-        .auth-input:focus { border-color: #00796b; box-shadow: 0 0 12px rgba(0, 121, 107, 0.3); background: rgba(255,255,255,0.6); }
-        .auth-btn { width: 100%; padding: 14px; border-radius: 14px; border: none; background: linear-gradient(135deg, #00897b, #004d40); color: white; font-weight: 600; font-size: 1.05em; cursor: pointer; transition: 0.3s; margin-top: 5px; box-shadow: 0 4px 15px rgba(0, 77, 64, 0.3); }
-        .auth-btn:hover { opacity: 0.95; transform: translateY(-2px); }
-        .auth-switch { margin-top: 20px; font-size: 0.9em; color: #004d40; font-weight: 500; }
-        body.dark-theme .auth-switch { color: #cbd5e1; }
-        .auth-switch span { color: #00695c; font-weight: 700; cursor: pointer; text-decoration: underline; }
+        .auth-card { border-radius: 24px; padding: 40px 30px; width: 100%; max-width: 420px; text-align: center; animation: fadeIn 0.6s ease; }
+        .auth-card h2 { color: var(--theme-1); margin-bottom: 20px; font-size: 2em; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.2);}
+        .auth-input { width: 100%; padding: 14px 18px; margin-bottom: 15px; border-radius: 14px; border: 1px solid var(--glass-border); outline: none; font-size: 1em; background: rgba(255, 255, 255, 0.2); color: #fff; transition: 0.3s; }
+        .auth-input::placeholder { color: rgba(255,255,255,0.7); }
+        .auth-input:focus { border-color: var(--theme-1); background: rgba(255,255,255,0.3); }
+        .auth-btn { width: 100%; padding: 14px; border-radius: 14px; border: none; background: linear-gradient(135deg, var(--theme-1), var(--theme-2)); color: white; font-weight: 600; font-size: 1.05em; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .auth-switch { margin-top: 20px; font-size: 0.9em; color: #fff; font-weight: 500; }
+        .auth-switch span { color: var(--theme-1); font-weight: 700; cursor: pointer; text-decoration: underline; }
 
-        /* TOP HEADER (Simple Glass) */
-        .top-header {
-            position: fixed; top: 0; left: 0; width: 100%; padding: 15px 25px;
-            background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.5); z-index: 100;
-            display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
-        .top-header h1 { font-size: 1.4em; color: #004d40; font-weight: 700; display: flex; align-items: center; gap: 8px;}
+        /* TOP HEADER */
+        .top-header { position: fixed; top: 0; left: 0; width: 100%; padding: 15px 25px; z-index: 100; display: flex; justify-content: center; align-items: center; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;}
+        .top-header h1 { font-size: 1.4em; color: var(--theme-2); font-weight: 700; }
 
-        /* MOBILE BOTTOM NAVIGATION BAR (Floating Indicator Style) */
+        /* --- 60FPS SLIDING BOTTOM NAVIGATION WITH CUTOUT --- */
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; width: 100%; height: 75px;
-            background: rgba(255, 255, 255, 0.65); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-            display: flex; justify-content: space-around; align-items: center;
-            border-radius: 25px 25px 0 0; box-shadow: 0 -5px 25px rgba(0,0,0,0.1);
-            z-index: 1000; border-top: 1px solid rgba(255,255,255,0.7);
-            padding-bottom: env(safe-area-inset-bottom); /* Support for iPhone notch */
-        }
-        body.dark-theme .bottom-nav { background: rgba(15, 23, 42, 0.85); border-top-color: rgba(255,255,255,0.15); }
-        
-        .nav-item {
-            position: relative; width: 20%; height: 100%; display: flex;
-            justify-content: center; align-items: center; cursor: pointer; flex-direction: column;
-        }
-        .nav-icon {
-            font-size: 1.5em; transition: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            color: #004d40; z-index: 2;
-        }
-        .nav-text {
-            position: absolute; font-size: 0.7em; font-weight: 600; color: #004d40;
-            transform: translateY(20px); opacity: 0; transition: 0.4s;
+            background: var(--nav-bg); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+            display: flex; border-radius: 30px 30px 0 0; z-index: 1000;
+            border-top: 1px solid var(--glass-border); box-shadow: 0 -5px 25px rgba(0,0,0,0.05);
+            padding-bottom: env(safe-area-inset-bottom);
         }
         
-        /* THE FLOATING CUTOUT BUBBLE */
-        .nav-item::before {
-            content: ''; position: absolute; top: 12px; width: 50px; height: 50px;
-            background: linear-gradient(135deg, #00897b, #004d40);
-            border-radius: 50%; opacity: 0; transition: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            z-index: 1; border: 5px solid transparent;
+        /* The sliding wrapper that moves 60fps */
+        .nav-indicator-wrapper {
+            position: absolute; top: 0; left: 0; width: 20%; height: 100%;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); /* Bouncy smooth physics */
+            z-index: 1; pointer-events: none;
         }
-
-        .nav-item.active .nav-icon { transform: translateY(-28px); color: white; }
-        .nav-item.active .nav-text { transform: translateY(14px); opacity: 1; color: #00897b; }
-        .nav-item.active::before {
-            opacity: 1; transform: translateY(-34px);
-            /* Fake cutout color matches background */
-            border-color: #b2ebf2; 
-            box-shadow: 0 5px 15px rgba(0,77,64,0.4);
-        }
-
-        /* Adjustments for Dark Mode */
-        body.dark-theme .nav-icon { color: #94a3b8; }
-        body.dark-theme .nav-text { color: #38bdf8; }
-        body.dark-theme .nav-item.active::before { border-color: #0f172a; background: linear-gradient(135deg, #0284c7, #0369a1); box-shadow: 0 5px 15px rgba(2,132,199,0.4); }
-
-
-        .container { max-width: 800px; margin: 85px auto 20px auto; padding: 0 15px; }
         
-        /* Main Liquid Glass Container Card */
-        .card {
-            background: rgba(255, 255, 255, 0.35); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border-radius: 24px; padding: 25px; box-shadow: 0 15px 35px rgba(31, 38, 135, 0.15), inset 0 0 20px rgba(255, 255, 255, 0.4);
-            margin-bottom: 20px; animation: fadeIn 0.4s ease; border: 1px solid rgba(255, 255, 255, 0.5);
+        /* The circular cutout / indicator shape */
+        .nav-indicator {
+            position: absolute; top: -25px; left: 50%; transform: translateX(-50%);
+            width: 55px; height: 55px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--theme-1), var(--theme-2));
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            /* Transparent border creates the gap/cutout illusion on the glass */
+            border: 6px solid transparent; background-clip: padding-box;
+            display: flex; justify-content: center; align-items: center;
         }
+        
+        /* Simulate the inverted curve (cekungan) */
+        .nav-indicator::before, .nav-indicator::after {
+            content: ''; position: absolute; top: 22px; width: 20px; height: 20px;
+            background: transparent; border-radius: 50%;
+        }
+        .nav-indicator::before { left: -24px; box-shadow: 10px -10px 0 0 var(--glass-border); }
+        .nav-indicator::after { right: -24px; box-shadow: -10px -10px 0 0 var(--glass-border); }
+
+        .nav-item { position: relative; width: 20%; height: 100%; display: flex; justify-content: center; align-items: center; flex-direction: column; cursor: pointer; z-index: 2; }
+        .nav-icon { font-size: 1.5em; transition: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); color: var(--text-main); opacity: 0.7; }
+        .nav-text { position: absolute; font-size: 0.7em; font-weight: 600; color: var(--theme-2); transform: translateY(20px); opacity: 0; transition: 0.4s; }
+        
+        /* Active Item States */
+        .nav-item.active .nav-icon { transform: translateY(-34px); color: white; opacity: 1; text-shadow: 0 2px 5px rgba(0,0,0,0.3); }
+        .nav-item.active .nav-text { transform: translateY(14px); opacity: 1; }
+
+        /* MAIN CONTAINERS */
+        .container { max-width: 800px; margin: 0 auto; padding: 0 15px; }
+        .card { border-radius: 24px; padding: 25px; margin-bottom: 20px; animation: fadeIn 0.4s ease; }
         .view { display: none; } .view.active { display: block; }
-        .section-title { font-size: 1.3em; color: #004d40; margin-bottom: 20px; border-bottom: 2px solid rgba(0, 137, 123, 0.3); padding-bottom: 10px; font-weight: 700; }
+        .section-title { font-size: 1.3em; color: var(--theme-2); margin-bottom: 20px; border-bottom: 2px solid var(--theme-1); padding-bottom: 10px; font-weight: 700; }
 
-        /* FOLDER UI (Accordion) */
-        .folder-header {
-            background: rgba(255, 255, 255, 0.5); backdrop-filter: blur(12px); padding: 15px 20px; border-radius: 16px; cursor: pointer;
-            display: flex; justify-content: space-between; align-items: center; font-weight: 600;
-            color: #00695c; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border-left: 6px solid #00897b;
-            margin-bottom: 12px; transition: 0.3s; border: 1px solid rgba(255,255,255,0.5);
-        }
-        .folder-header:hover { transform: translateY(-2px); background: rgba(255, 255, 255, 0.7); }
-        .folder-content { display: none; padding: 5px 0 10px 15px; border-left: 2px dashed #00897b; margin-left: 15px; margin-bottom: 15px; animation: slideDown 0.3s ease; }
+        /* FOLDER UI */
+        .folder-header { padding: 15px 20px; border-radius: 16px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 600; color: var(--theme-2); border-left: 6px solid var(--theme-1); margin-bottom: 12px; transition: 0.3s; }
+        .folder-header:hover { transform: translateY(-2px); }
+        .folder-content { display: none; padding: 5px 0 10px 15px; border-left: 2px dashed var(--theme-1); margin-left: 15px; margin-bottom: 15px; animation: slideDown 0.3s ease; }
         .folder-content.active { display: flex; flex-direction: column; gap: 10px; }
-        .chevron { transition: transform 0.3s ease; font-size: 1.1em; }
-        .chevron.active { transform: rotate(180deg); }
+        .chevron { transition: transform 0.3s ease; font-size: 1.1em; } .chevron.active { transform: rotate(180deg); }
+        .history-item { border-radius: 14px; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid var(--theme-1); }
+        .history-info h3 { font-size: 1em; margin-bottom: 3px; color: var(--theme-2); }
+        .history-info p { font-size: 0.8em; color: var(--text-muted); }
 
-        .history-item {
-            background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(10px); border-radius: 14px; padding: 15px;
-            display: flex; justify-content: space-between; align-items: center;
-            border-left: 4px solid #00897b; box-shadow: 0 4px 10px rgba(0,0,0,0.03); border: 1px solid rgba(255, 255, 255, 0.6);
-        }
-        .history-info h3 { font-size: 1em; margin-bottom: 3px; color: #004d40; }
-        .history-info p { font-size: 0.8em; color: #555; }
-        body.dark-theme .history-info p { color: #94a3b8; }
-
-        .btn { background: linear-gradient(135deg, #00897b, #004d40); color: white; border: none; padding: 12px 20px; border-radius: 30px; font-weight: 600; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 12px rgba(0,77,64,0.3); }
-        .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,77,64,0.4); opacity: 0.95; }
-        .btn-outline { background: rgba(255,255,255,0.4); color: #004d40; border: 2px solid #00897b; backdrop-filter: blur(5px); }
-        body.dark-theme .btn-outline { color: #38bdf8; border-color: #38bdf8; background: rgba(30,41,59,0.5); }
+        .btn { background: linear-gradient(135deg, var(--theme-1), var(--theme-2)); color: white; border: none; padding: 12px 20px; border-radius: 30px; font-weight: 600; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        .btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
+        .btn-outline { background: var(--glass-bg); color: var(--text-main); border: 2px solid var(--theme-1); backdrop-filter: blur(5px); }
+        
+        /* THEME SELECTOR BUTTONS */
+        .theme-circle { width: 35px; height: 35px; border-radius: 50%; cursor: pointer; border: 2px solid var(--glass-border); display: inline-block; transition: 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+        .theme-circle:hover { transform: scale(1.15); border-color: #fff; }
 
         /* CHAT STYLES */
         .chat-container { display: flex; flex-direction: column; height: 500px; gap: 12px; }
-        .chat-messages-box {
-            flex: 1; background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(15px); border-radius: 16px;
-            padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; border: 1px solid rgba(255, 255, 255, 0.5);
-        }
-        .chat-bubble { max-width: 80%; padding: 10px 15px; border-radius: 16px; font-size: 0.9em; line-height: 1.4; position: relative; animation: fadeIn 0.3s ease; }
-        .chat-bubble-other { background: rgba(255, 255, 255, 0.8); align-self: flex-start; border-bottom-left-radius: 4px; color: #1e3d59; border: 1px solid rgba(255,255,255,0.9); }
-        .chat-bubble-me { background: linear-gradient(135deg, #00897b, #004d40); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
-        .chat-sender { font-size: 0.75em; font-weight: 700; margin-bottom: 2px; opacity: 0.85; display: block; }
-        .chat-time { font-size: 0.7em; margin-top: 4px; text-align: right; opacity: 0.7; display: block; }
+        .chat-messages-box { flex: 1; border-radius: 16px; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .chat-bubble { max-width: 80%; padding: 10px 15px; border-radius: 16px; font-size: 0.9em; line-height: 1.4; animation: fadeIn 0.3s ease; }
+        .chat-bubble-other { background: var(--glass-bg); align-self: flex-start; border-bottom-left-radius: 4px; border: 1px solid var(--glass-border); }
+        .chat-bubble-me { background: linear-gradient(135deg, var(--theme-1), var(--theme-2)); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
         .chat-input-area { display: flex; gap: 8px; }
-        .chat-input { flex: 1; padding: 12px 18px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.6); background: rgba(255, 255, 255, 0.6); outline: none; font-size: 0.9em; color: #1e3d59; transition: 0.3s; }
-        
-        /* Modal Detail Histori */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); z-index: 3000; justify-content: center; align-items: center; padding: 15px; }
-        .modal-content { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(20px); width: 100%; max-width: 500px; max-height: 80vh; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; border: 1px solid rgba(255,255,255,0.6); }
+        .chat-input { flex: 1; padding: 12px 18px; border-radius: 30px; border: 1px solid var(--glass-border); background: var(--glass-bg); color: var(--text-main); outline: none; transition: 0.3s; }
+        .chat-input::placeholder { color: var(--text-muted); }
+
+        /* MODAL */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); z-index: 3000; justify-content: center; align-items: center; padding: 15px; }
+        .modal-content { width: 100%; max-width: 500px; max-height: 80vh; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; }
         .modal-body { flex: 1; overflow-y: auto; margin-top: 15px; }
-        .detail-soal-card { background: rgba(255,255,255,0.6); padding: 12px; border-radius: 12px; margin-bottom: 10px; font-size: 0.85em; border-left: 4px solid #00897b; border: 1px solid rgba(255,255,255,0.6); }
+        .detail-soal-card { padding: 12px; border-radius: 12px; margin-bottom: 10px; font-size: 0.85em; border-left: 4px solid var(--theme-1); }
+        .log-item { padding: 15px; border-radius: 16px; margin-bottom: 12px; border-left: 5px solid var(--theme-1); cursor: pointer; transition: 0.2s; }
+        .log-item:hover { transform: scale(1.02); filter: brightness(1.1); }
 
-        /* Log Item for History View */
-        .log-item { background: rgba(255, 255, 255, 0.6); padding: 15px; border-radius: 16px; margin-bottom: 12px; border-left: 5px solid #2e7d32; cursor: pointer; transition: 0.2s; border: 1px solid rgba(255,255,255,0.5);}
-        .log-item:hover { transform: scale(1.02); background: rgba(255, 255, 255, 0.9); }
-
-        /* Quiz View specifics */
+        /* QUIZ */
         .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .progress-bar { width: 100%; height: 8px; background: rgba(255,255,255,0.5); border-radius: 4px; overflow: hidden; margin-bottom: 20px;}
-        .progress-fill { height: 100%; background: linear-gradient(90deg, #00897b, #26a69a); width: 0%; transition: width 0.3s ease; }
-        .reading-box { background: rgba(255,255,255,0.6); border-left: 4px solid #00897b; padding: 15px; margin-bottom: 15px; border-radius: 0 12px 12px 0; font-size: 0.85em; display: none; }
-        .question-text { font-size: 1.1em; font-weight: 600; margin-bottom: 15px; color: #004d40; }
+        .progress-bar { width: 100%; height: 8px; background: rgba(255,255,255,0.2); border-radius: 4px; overflow: hidden; margin-bottom: 20px;}
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--theme-1), var(--theme-2)); width: 0%; transition: width 0.3s ease; }
+        .reading-box { border-left: 4px solid var(--theme-1); padding: 15px; margin-bottom: 15px; border-radius: 0 12px 12px 0; font-size: 0.85em; display: none; }
+        .question-text { font-size: 1.1em; font-weight: 600; margin-bottom: 15px; color: var(--theme-2); }
         .options { display: grid; gap: 10px; }
-        .option-btn { background: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.7); padding: 12px 16px; border-radius: 14px; text-align: left; font-size: 0.9em; cursor: pointer; transition: 0.2s; font-weight: 500;}
-        .option-btn:hover:not(:disabled) { background: rgba(255,255,255,0.8); }
+        .option-btn { background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 12px 16px; border-radius: 14px; text-align: left; font-size: 0.9em; cursor: pointer; transition: 0.2s; color: var(--text-main); font-weight: 500;}
+        .option-btn:hover:not(:disabled) { background: rgba(255,255,255,0.3); }
+        .option-btn.correct { background: rgba(22, 163, 74, 0.7) !important; color: white !important; border-color: #22c55e !important; }
+        .option-btn.wrong { background: rgba(220, 38, 38, 0.7) !important; color: white !important; border-color: #ef4444 !important; }
+        .feedback-box { display: none; margin-top: 15px; padding: 15px; border-radius: 12px; border-left: 4px solid #fbbf24; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes slideDown { from { transform: translateY(-10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
@@ -188,243 +159,204 @@
 </head>
 <body>
 
-<!-- Audio Player (Hidden visually, controlled by Music Menu) -->
-<audio id="bg-music" loop>
-    <source id="audio-source" src="DJ TEMANKU SEMUA PADA JAHAT TANTE __ DJ TANTE CULIK AKU DONG VIRAL TIKTOK TERBARU 2024.mp3" type="audio/mpeg">
-</audio>
+<audio id="bg-music" loop><source id="audio-source" src="DJ TEMANKU SEMUA PADA JAHAT TANTE __ DJ TANTE CULIK AKU DONG VIRAL TIKTOK TERBARU 2024.mp3" type="audio/mpeg"></audio>
 
-<!-- SCREEN 1: LOGIN & REGISTER AUTHENTICATION (ONLINE FIREBASE) -->
+<!-- LOGIN SCREEN -->
 <div id="view-auth">
-    <div class="auth-card" id="auth-box">
+    <div class="auth-card glass-panel" id="auth-box">
         <h2 id="auth-title">Masuk Akun</h2>
         <input type="text" id="auth-user" class="auth-input" placeholder="Username unik kamu...">
         <input type="password" id="auth-pass" class="auth-input" placeholder="Password rahasia...">
         <button class="auth-btn" id="auth-main-btn" onclick="handleAuth()">Masuk</button>
-        <div class="auth-switch" id="auth-switch-text">
-            Belum punya akun? <span onclick="switchAuthMode('register')">Daftar sekarang</span>
-        </div>
+        <div class="auth-switch" id="auth-switch-text">Belum punya akun? <span onclick="switchAuthMode('register')">Daftar</span></div>
     </div>
 </div>
 
-<!-- Modal Detail Histori -->
+<!-- Modal Histori -->
 <div class="modal" id="history-modal">
-    <div class="modal-content">
-        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid rgba(0,137,123,0.3); padding-bottom:12px;">
-            <h3 id="modal-title" style="color:#004d40; font-size:1.1em;">Detail Pengerjaan</h3>
-            <button class="btn btn-outline" style="padding: 2px 10px; border-radius: 10px; border-color: #e53935; color: #e53935;" onclick="closeModal()">Tutup</button>
+    <div class="modal-content glass-panel">
+        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--glass-border); padding-bottom:12px;">
+            <h3 id="modal-title" style="color:var(--theme-2); font-size:1.1em;">Detail</h3>
+            <button class="btn btn-outline" style="padding: 2px 10px; border-color: #ef4444; color: #ef4444;" onclick="closeModal()">Tutup</button>
         </div>
         <div class="modal-body" id="modal-body-content"></div>
     </div>
 </div>
 
-<!-- TOP HEADER -->
-<div class="top-header" id="top-header">
-    <div class="brand"><h1>📚 sinau bang</h1></div>
-</div>
+<div class="top-header glass-panel" id="top-header"><h1>📚 sinau bang</h1></div>
 
-<!-- MAIN CONTENT CONTAINER -->
 <div class="container">
-    
-    <!-- 1. HOME VIEW (Dashboard) -->
-    <main id="view-dashboard" class="view active card">
+    <!-- 1. HOME -->
+    <main id="view-dashboard" class="view active card glass-panel">
         <h2 class="section-title">Kategori Modul Belajar</h2>
         
-        <!-- FOLDER 1: UMUM -->
         <div class="folder">
-            <div class="folder-header" onclick="toggleFolder('folder-umum', this)">
-                <span>📚 Mata Pelajaran Umum</span>
-                <span class="chevron">▼</span>
+            <div class="folder-header glass-panel" onclick="toggleFolder('folder-umum', this)">
+                <span>📚 Mata Pelajaran Umum</span><span class="chevron">▼</span>
             </div>
             <div class="folder-content" id="folder-umum">
-                <div class="history-item">
-                    <div class="history-info"><h3>PSTS BHS INDO XII</h3><p>40 Soal: Surat Lamaran</p></div>
-                    <button class="btn" style="padding: 6px 14px; font-size: 0.85em;" onclick="startStudySession('psts_indo')">Mulai</button>
-                </div>
-                <div class="history-item">
-                    <div class="history-info"><h3>PSTS BING XII</h3><p>40 Soal: News Item Text</p></div>
-                    <button class="btn" style="padding: 6px 14px; font-size: 0.85em;" onclick="startStudySession('psts_bing')">Mulai</button>
-                </div>
-                <div class="history-item">
-                    <div class="history-info"><h3>PSTS BHS JAWA XII</h3><p>40 Soal: Teks Sandiwara</p></div>
-                    <button class="btn" style="padding: 6px 14px; font-size: 0.85em;" onclick="startStudySession('psts_jawa')">Mulai</button>
-                </div>
+                <div class="history-item glass-panel"><div class="history-info"><h3>PSTS BHS INDO XII</h3><p>40 Soal: Surat Lamaran</p></div><button class="btn" onclick="startStudySession('psts_indo')">Mulai</button></div>
+                <div class="history-item glass-panel"><div class="history-info"><h3>PSTS BING XII</h3><p>40 Soal: News Item Text</p></div><button class="btn" onclick="startStudySession('psts_bing')">Mulai</button></div>
+                <div class="history-item glass-panel"><div class="history-info"><h3>PSTS BHS JAWA XII</h3><p>40 Soal: Teks Sandiwara</p></div><button class="btn" onclick="startStudySession('psts_jawa')">Mulai</button></div>
             </div>
         </div>
 
-        <!-- FOLDER 2: MPLB -->
         <div class="folder">
-            <div class="folder-header" onclick="toggleFolder('folder-mplb', this)">
-                <span style="color:#ad1457;">🏢 Jurusan MPLB</span>
-                <span class="chevron" style="color:#ad1457;">▼</span>
+            <div class="folder-header glass-panel" onclick="toggleFolder('folder-mplb', this)">
+                <span>🏢 Jurusan MPLB</span><span class="chevron">▼</span>
             </div>
             <div class="folder-content" id="folder-mplb">
-                <div class="history-item" style="border-left-color: #ad1457;">
-                    <div class="history-info"><h3 style="color:#ad1457;">SOP Pelayanan Prima</h3><p>Prosedur standar</p></div>
-                    <button class="btn" style="background: linear-gradient(135deg, #c2185b, #880e4f); padding: 6px 14px; font-size: 0.85em;" onclick="startStudySession('mplb_sop')">Mulai</button>
-                </div>
+                <div class="history-item glass-panel"><div class="history-info"><h3>SOP Pelayanan Prima</h3><p>Prosedur standar</p></div><button class="btn" onclick="startStudySession('mplb_sop')">Mulai</button></div>
             </div>
         </div>
 
-        <!-- FOLDER 3: TKJ -->
         <div class="folder">
-            <div class="folder-header" onclick="toggleFolder('folder-tkj', this)">
-                <span style="color:#283593;">💻 Jurusan TKJ</span>
-                <span class="chevron" style="color:#283593;">▼</span>
+            <div class="folder-header glass-panel" onclick="toggleFolder('folder-tkj', this)">
+                <span>💻 Jurusan TKJ</span><span class="chevron">▼</span>
             </div>
             <div class="folder-content" id="folder-tkj">
-                <div class="history-item" style="border-left-color: #283593;">
-                    <div class="history-info"><h3 style="color:#283593;">Config IP, DHCP, VLAN</h3><p>Administrasi Jaringan</p></div>
-                    <button class="btn" style="background: linear-gradient(135deg, #3f51b5, #1a237e); padding: 6px 14px; font-size: 0.85em;" onclick="startStudySession('tkj_jaringan')">Mulai</button>
-                </div>
-                <div class="history-item" style="border-left-color: #0277bd;">
-                    <div class="history-info"><h3 style="color:#0277bd;">Sistem VSAT</h3><p>Transmisi satelit</p></div>
-                    <button class="btn" style="background: linear-gradient(135deg, #0288d1, #01579b); padding: 6px 14px; font-size: 0.85em;" onclick="startStudySession('tkj_vsat')">Mulai</button>
-                </div>
+                <div class="history-item glass-panel"><div class="history-info"><h3>Config IP, DHCP, VLAN</h3></div><button class="btn" onclick="startStudySession('tkj_jaringan')">Mulai</button></div>
+                <div class="history-item glass-panel"><div class="history-info"><h3>Sistem VSAT</h3></div><button class="btn" onclick="startStudySession('tkj_vsat')">Mulai</button></div>
             </div>
         </div>
     </main>
 
-    <!-- 2. CHAT ROOM VIEW -->
-    <main id="view-chat" class="view card">
+    <!-- 2. CHAT -->
+    <main id="view-chat" class="view card glass-panel">
         <h2 class="section-title">💬 Ruang Obrolan Publik</h2>
-        <p style="font-size: 0.8em; margin-bottom: 12px; opacity: 0.8;">Diskusikan materi atau ngobrol santai bareng teman lainnya!</p>
-        
         <div class="chat-container">
-            <div class="chat-messages-box" id="chat-messages-box">
-                <p style="text-align: center; color: gray; font-size: 0.85em; margin-top: 20px;">Memuat pesan...</p>
-            </div>
+            <div class="chat-messages-box glass-panel" id="chat-messages-box"><p style="text-align: center;">Memuat pesan...</p></div>
             <div class="chat-input-area">
-                <input type="text" id="chat-input-field" class="chat-input" placeholder="Tulis pesan..." onkeypress="handleChatKeyPress(event)">
+                <input type="text" id="chat-input-field" class="chat-input" placeholder="Ketik pesan..." onkeypress="handleChatKeyPress(event)">
                 <button class="btn" style="padding: 10px 15px;" onclick="sendChatMessage()">🚀</button>
             </div>
         </div>
     </main>
 
-    <!-- 3. MUSIC VIEW -->
-    <main id="view-music" class="view card">
+    <!-- 3. MUSIC -->
+    <main id="view-music" class="view card glass-panel">
         <h2 class="section-title">🎵 Pilihan Musik</h2>
-        <p style="font-size: 0.85em; margin-bottom: 15px; color: #555;">Pilih lagu favoritmu untuk menemani belajar. Klik tombol putar/jeda untuk mematikan.</p>
-        
         <div style="display: flex; flex-direction: column; gap: 10px;">
-            <!-- Music Option 1 -->
-            <div class="history-item" style="border-left-color: #8e24aa; padding: 12px 15px;">
-                <div class="history-info"><h3 style="color:#8e24aa;">DJ TikTok Viral 2024</h3><p>Temanku Semua Pada Jahat</p></div>
-                <button class="btn" id="btn-play-1" style="background: linear-gradient(135deg, #ab47bc, #7b1fa2); padding: 8px 12px;" onclick="playSelectedTrack('DJ TEMANKU SEMUA PADA JAHAT TANTE __ DJ TANTE CULIK AKU DONG VIRAL TIKTOK TERBARU 2024.mp3', 1)">Putar ▶</button>
-            </div>
-            
-            <!-- Music Option 2 (Placeholder) -->
-            <div class="history-item" style="border-left-color: #039be5; padding: 12px 15px;">
-                <div class="history-info"><h3 style="color:#039be5;">Lofi Study Chill</h3><p>Segera ditambahkan...</p></div>
-                <button class="btn" disabled style="background: gray; padding: 8px 12px; cursor:not-allowed;">Belum Ada</button>
-            </div>
-            
-            <!-- Music Option 3 (Placeholder) -->
-            <div class="history-item" style="border-left-color: #43a047; padding: 12px 15px;">
-                <div class="history-info"><h3 style="color:#43a047;">Piano Relaxing</h3><p>Segera ditambahkan...</p></div>
-                <button class="btn" disabled style="background: gray; padding: 8px 12px; cursor:not-allowed;">Belum Ada</button>
+            <div class="history-item glass-panel">
+                <div class="history-info"><h3>DJ TikTok Viral 2024</h3></div>
+                <button class="btn" id="btn-play-1" onclick="playSelectedTrack('DJ TEMANKU SEMUA PADA JAHAT TANTE __ DJ TANTE CULIK AKU DONG VIRAL TIKTOK TERBARU 2024.mp3', 1)">Putar ▶</button>
             </div>
         </div>
-        
-        <div style="text-align: center; margin-top: 25px;">
-            <button class="btn btn-outline" style="width: 100%;" onclick="toggleMusicPlayback()" id="main-music-toggle">⏸ Jeda Musik Saat Ini</button>
-        </div>
+        <button class="btn btn-outline" style="width: 100%; margin-top:20px;" onclick="toggleMusicPlayback()" id="main-music-toggle">⏸ Jeda Musik</button>
     </main>
 
-    <!-- 4. HISTORY VIEW -->
-    <main id="view-history" class="view card">
+    <!-- 4. HISTORY -->
+    <main id="view-history" class="view card glass-panel">
         <h2 class="section-title">📜 Histori Belajar</h2>
-        <div id="main-history-log">
-            <p style="text-align: center; color: gray; font-size: 0.9em;">Memuat histori...</p>
-        </div>
+        <div id="main-history-log"><p style="text-align: center;">Memuat histori...</p></div>
     </main>
 
-    <!-- 5. PROFILE VIEW -->
-    <main id="view-profile" class="view card" style="text-align: center; padding-top: 40px;">
-        <div style="font-size: 5em; margin-bottom: 10px; text-shadow: 0 4px 10px rgba(0,0,0,0.1);">🧑‍🎓</div>
-        <h2 id="profile-name-display" style="color:#004d40; font-weight: 700; font-size: 1.8em;">User</h2>
-        <p style="color: #666; font-size: 0.9em; margin-bottom: 25px;">Siswa SMK YAMAS - Akun Terverifikasi</p>
+    <!-- 5. PROFILE & THEME CUSTOMIZER -->
+    <main id="view-profile" class="view card glass-panel" style="text-align: center; padding-top: 30px;">
+        <div style="font-size: 4em; margin-bottom: 10px;">🧑‍🎓</div>
+        <h2 id="profile-name-display" style="color:var(--theme-2); font-weight: 700; font-size: 1.8em;">User</h2>
+        <p style="color: var(--text-muted); font-size: 0.9em; margin-bottom: 25px;">Siswa SMK YAMAS</p>
         
-        <div style="background: rgba(255,255,255,0.4); backdrop-filter: blur(10px); padding: 15px; border-radius: 16px; margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.5);">
-            <h4 style="margin-bottom:12px; color: #00695c;">Terhubung Dengan:</h4>
-            <div style="display: flex; justify-content: center; gap: 10px;">
-                <a href="#" class="btn btn-outline" style="padding: 6px 15px; font-size:0.85em;">📸 Instagram</a>
-                <a href="https://github.com/oulinlin0" target="_blank" class="btn btn-outline" style="padding: 6px 15px; font-size:0.85em;">💻 GitHub</a>
+        <!-- THEME SELECTOR -->
+        <div class="glass-panel" style="padding: 15px; border-radius: 16px; margin-bottom: 20px;">
+            <h4 style="margin-bottom:12px; color: var(--theme-2);">🎨 Sesuaikan Warna UI</h4>
+            <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
+                <div class="theme-circle" style="background: linear-gradient(135deg, #b2ebf2, #00897b);" onclick="setTheme('teal')" title="Teal Default"></div>
+                <div class="theme-circle" style="background: linear-gradient(135deg, #5b1016, #2d050a);" onclick="setTheme('ruby')" title="Ruby Dark Glass"></div>
+                <div class="theme-circle" style="background: linear-gradient(135deg, #0f172a, #0ea5e9);" onclick="setTheme('ocean')" title="Deep Ocean"></div>
+                <div class="theme-circle" style="background: linear-gradient(135deg, #fbcfe8, #db2777);" onclick="setTheme('pink')" title="Pastel Pink"></div>
+                <div class="theme-circle" style="background: linear-gradient(135deg, #18181b, #71717a);" onclick="setTheme('dark')" title="Dark Minimalist"></div>
             </div>
+            <p style="font-size:0.75em; margin-top:10px; color:var(--text-muted);">Pilih gradiasi warna transparan kesukaanmu.</p>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 12px;">
-            <button class="btn btn-outline" style="width: 100%; border-color: #0288d1; color: #0288d1;" onclick="toggleTheme()">🌙 Ganti Tema Gelap/Terang</button>
-            <button class="btn" style="width: 100%; background: linear-gradient(135deg, #ef5350, #c62828); box-shadow: 0 4px 15px rgba(198, 40, 40, 0.3);" onclick="logoutUser()">🚪 Keluar Akun</button>
+            <a href="https://github.com/oulinlin0" target="_blank" class="btn btn-outline">💻 GitHub Developer</a>
+            <button class="btn" style="background: linear-gradient(135deg, #ef5350, #c62828);" onclick="logoutUser()">🚪 Keluar Akun</button>
         </div>
     </main>
 
-    <!-- 6. QUIZ VIEW (Hidden from nav) -->
-    <main id="view-quiz" class="view card">
+    <!-- 6. QUIZ -->
+    <main id="view-quiz" class="view card glass-panel">
         <div class="quiz-header">
-            <button class="btn btn-outline" style="padding: 5px 12px; font-size: 0.8em;" onclick="switchTab(0, 'view-dashboard')">⬅ Batal</button>
-            <h3 id="quiz-title" style="color:#004d40; font-size: 1em;">Judul</h3>
-            <span id="question-tracker" style="font-weight: 600; font-size:0.9em;">0/0</span>
+            <button class="btn btn-outline" style="padding: 5px 12px;" onclick="switchTab(0, 'view-dashboard')">⬅ Batal</button>
+            <h3 id="quiz-title" style="font-size: 1em;">Judul</h3>
+            <span id="question-tracker">0/0</span>
         </div>
         <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
-
-        <div class="question-area">
-            <div id="reading-text" class="reading-box"></div>
-            <div id="question-text" class="question-text">Memuat...</div>
-            <div id="options-container" class="options"></div>
-        </div>
-
-        <div id="feedback-box" class="feedback-box">
-            <h4>💡 Pembahasan:</h4>
-            <p id="feedback-text"></p>
-        </div>
-
-        <div id="next-btn-container" class="next-btn-container">
-            <button class="btn" onclick="nextQuestion()">Lanjut ➡</button>
-        </div>
+        <div class="question-area"><div id="reading-text" class="reading-box glass-panel"></div><div id="question-text" class="question-text">Memuat...</div><div id="options-container" class="options"></div></div>
+        <div id="feedback-box" class="feedback-box glass-panel"><h4>💡 Pembahasan:</h4><p id="feedback-text"></p></div>
+        <div id="next-btn-container" style="margin-top:20px; text-align:right; display:none;"><button class="btn" onclick="nextQuestion()">Lanjut ➡</button></div>
     </main>
 
-    <!-- 7. RESULT VIEW (Hidden from nav) -->
-    <main id="view-result" class="view card" style="text-align: center; padding: 40px 15px;">
-        <h2 class="section-title" style="border:none;">Selesai! 🎉</h2>
-        <div style="width: 130px; height: 130px; border-radius: 50%; background: linear-gradient(135deg, #00897b, #004d40); color: white; display: flex; align-items: center; justify-content: center; font-size: 3em; font-weight: 700; margin: 0 auto 20px; box-shadow: 0 10px 25px rgba(0,77,64,0.3);" id="final-score">100</div>
-        <p id="result-message" style="margin-bottom: 25px; font-weight: 600; font-size: 1.1em;">Luar biasa!</p>
-        
-        <div style="background: rgba(255,255,255,0.4); padding: 20px; border-radius: 16px; margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.6);">
-            <p style="font-size: 0.9em; margin-bottom: 5px;">Skor akan disimpan atas nama:</p>
-            <b id="result-username-display" style="color:#004d40; font-size: 1.2em;">-</b>
-        </div>
-        <button class="btn" style="width: 100%; padding: 14px; font-size: 1.05em;" onclick="saveScoreToHistory()">💾 Simpan & Kembali</button>
+    <!-- 7. RESULT -->
+    <main id="view-result" class="view card glass-panel" style="text-align: center; padding: 40px 15px;">
+        <h2>Selesai! 🎉</h2>
+        <div style="width: 130px; height: 130px; border-radius: 50%; background: linear-gradient(135deg, var(--theme-1), var(--theme-2)); color: white; display: flex; align-items: center; justify-content: center; font-size: 3em; font-weight: 700; margin: 20px auto;" id="final-score">100</div>
+        <p id="result-message" style="margin-bottom: 25px;">Luar biasa!</p>
+        <button class="btn" style="width: 100%;" onclick="saveScoreToHistory()">💾 Simpan & Kembali</button>
     </main>
 </div>
 
-<!-- BOTTOM NAVIGATION BAR (Mobile Style) -->
+<!-- 60FPS FLOATING BOTTOM NAV -->
 <nav class="bottom-nav" id="bottom-nav">
-    <div class="nav-item active" onclick="switchTab(0, 'view-dashboard')">
-        <span class="nav-icon">🏠</span>
-        <span class="nav-text">Home</span>
+    <div class="nav-indicator-wrapper" id="indicator-wrapper">
+        <div class="nav-indicator"></div>
     </div>
-    <div class="nav-item" onclick="switchTab(1, 'view-chat')">
-        <span class="nav-icon">💬</span>
-        <span class="nav-text">Chat</span>
-    </div>
-    <div class="nav-item" onclick="switchTab(2, 'view-music')">
-        <span class="nav-icon">🎵</span>
-        <span class="nav-text">Musik</span>
-    </div>
-    <div class="nav-item" onclick="switchTab(3, 'view-history')">
-        <span class="nav-icon">📜</span>
-        <span class="nav-text">Histori</span>
-    </div>
-    <div class="nav-item" onclick="switchTab(4, 'view-profile')">
-        <span class="nav-icon">👤</span>
-        <span class="nav-text">Profile</span>
-    </div>
+    <div class="nav-item active" onclick="switchTab(0, 'view-dashboard')"><span class="nav-icon">🏠</span><span class="nav-text">Home</span></div>
+    <div class="nav-item" onclick="switchTab(1, 'view-chat')"><span class="nav-icon">💬</span><span class="nav-text">Chat</span></div>
+    <div class="nav-item" onclick="switchTab(2, 'view-music')"><span class="nav-icon">🎵</span><span class="nav-text">Musik</span></div>
+    <div class="nav-item" onclick="switchTab(3, 'view-history')"><span class="nav-icon">📜</span><span class="nav-text">Histori</span></div>
+    <div class="nav-item" onclick="switchTab(4, 'view-profile')"><span class="nav-icon">👤</span><span class="nav-text">Profile</span></div>
 </nav>
 
 <script>
-    // --- AUTENTIKASI ---
-    let isRegisterMode = false;
-    let currentUser = localStorage.getItem('sinau_active_user') || null;
+    // --- THEME CUSTOMIZER LOGIC ---
+    const themes = {
+        teal: { bg1: '#b2ebf2', bg2: '#80deea', bg3: '#4dd0e1', th1: '#00897b', th2: '#004d40', txt: '#1e3d59', txtM: '#475569', gBg: 'rgba(255, 255, 255, 0.25)', gBr: 'rgba(255, 255, 255, 0.4)', nBg: 'rgba(255, 255, 255, 0.3)' },
+        ruby: { bg1: '#5b1016', bg2: '#3d080f', bg3: '#1a0306', th1: '#ef4444', th2: '#991b1b', txt: '#fecdd3', txtM: '#fda4af', gBg: 'rgba(0, 0, 0, 0.3)', gBr: 'rgba(255, 255, 255, 0.1)', nBg: 'rgba(0, 0, 0, 0.4)' },
+        ocean: { bg1: '#0f172a', bg2: '#1e293b', bg3: '#020617', th1: '#0ea5e9', th2: '#0369a1', txt: '#f1f5f9', txtM: '#94a3b8', gBg: 'rgba(15, 23, 42, 0.6)', gBr: 'rgba(255, 255, 255, 0.1)', nBg: 'rgba(15, 23, 42, 0.7)' },
+        pink: { bg1: '#fce7f3', bg2: '#fbcfe8', bg3: '#f9a8d4', th1: '#db2777', th2: '#9d174d', txt: '#4a044e', txtM: '#701a75', gBg: 'rgba(255, 255, 255, 0.3)', gBr: 'rgba(255, 255, 255, 0.5)', nBg: 'rgba(255, 255, 255, 0.4)' },
+        dark: { bg1: '#18181b', bg2: '#27272a', bg3: '#000000', th1: '#a1a1aa', th2: '#52525b', txt: '#f4f4f5', txtM: '#a1a1aa', gBg: 'rgba(24, 24, 27, 0.6)', gBr: 'rgba(255, 255, 255, 0.05)', nBg: 'rgba(24, 24, 27, 0.8)' }
+    };
+
+    function setTheme(themeName) {
+        const t = themes[themeName];
+        document.documentElement.style.setProperty('--bg-1', t.bg1);
+        document.documentElement.style.setProperty('--bg-2', t.bg2);
+        document.documentElement.style.setProperty('--bg-3', t.bg3);
+        document.documentElement.style.setProperty('--theme-1', t.th1);
+        document.documentElement.style.setProperty('--theme-2', t.th2);
+        document.documentElement.style.setProperty('--text-main', t.txt);
+        document.documentElement.style.setProperty('--text-muted', t.txtM);
+        document.documentElement.style.setProperty('--glass-bg', t.gBg);
+        document.documentElement.style.setProperty('--glass-border', t.gBr);
+        document.documentElement.style.setProperty('--nav-bg', t.nBg);
+        localStorage.setItem('sinau_theme', themeName);
+    }
+
+    const savedTheme = localStorage.getItem('sinau_theme') || 'teal'; setTheme(savedTheme);
+
+    // --- NAVIGATION LOGIC ---
+    function switchTab(index, viewId) {
+        if (index >= 0) {
+            document.getElementById('indicator-wrapper').style.transform = `translateX(${index * 100}%)`;
+            const navItems = document.querySelectorAll('.bottom-nav .nav-item');
+            navItems.forEach((el, i) => { if(i === index) el.classList.add('active'); else el.classList.remove('active'); });
+        }
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active')); document.getElementById(viewId).classList.add('active');
+        
+        if(viewId === 'view-quiz' || viewId === 'view-result') {
+            document.getElementById('bottom-nav').style.display = 'none'; document.getElementById('top-header').style.display = 'none';
+        } else {
+            document.getElementById('bottom-nav').style.display = 'flex'; document.getElementById('top-header').style.display = 'flex';
+        }
+        if(viewId === 'view-history') loadHistoryView();
+        if(viewId === 'view-chat') loadChatMessages();
+    }
+
+    // --- AUTHENTICATION ---
+    let isRegisterMode = false; let currentUser = localStorage.getItem('sinau_active_user') || null;
     const FIREBASE_USERS_URL = "https://sinaubang-web-a5069-default-rtdb.asia-southeast1.firebasedatabase.app/users.json";
     const FIREBASE_SKOR_URL = "https://sinaubang-web-a5069-default-rtdb.asia-southeast1.firebasedatabase.app/skor.json";
     const FIREBASE_CHAT_URL = "https://sinaubang-web-a5069-default-rtdb.asia-southeast1.firebasedatabase.app/chat_global.json";
@@ -433,191 +365,96 @@
         if (currentUser) {
             document.getElementById('view-auth').style.display = 'none';
             document.getElementById('profile-name-display').innerText = currentUser;
-            switchTab(0, 'view-dashboard'); // Default to home
-        } else {
-            document.getElementById('view-auth').style.display = 'flex';
-        }
-        if(localStorage.getItem('theme_sinau') === 'dark') toggleTheme();
+            switchTab(0, 'view-dashboard');
+        } else { document.getElementById('view-auth').style.display = 'flex'; }
     });
 
     function switchAuthMode(mode) {
         isRegisterMode = (mode === 'register');
-        document.getElementById('auth-title').innerText = isRegisterMode ? "Daftar Akun Baru" : "Masuk Akun";
+        document.getElementById('auth-title').innerText = isRegisterMode ? "Daftar Akun" : "Masuk Akun";
         document.getElementById('auth-main-btn').innerText = isRegisterMode ? "Daftar & Masuk" : "Masuk";
-        document.getElementById('auth-switch-text').innerHTML = isRegisterMode 
-            ? `Sudah punya akun? <span onclick="switchAuthMode('login')">Masuk di sini</span>`
-            : `Belum punya akun? <span onclick="switchAuthMode('register')">Daftar sekarang</span>`;
     }
 
     async function handleAuth() {
-        const u = document.getElementById('auth-user').value.trim();
-        const p = document.getElementById('auth-pass').value.trim();
-        if(!u || !p) { alert("Username dan password tidak boleh kosong!"); return; }
+        const u = document.getElementById('auth-user').value.trim(); const p = document.getElementById('auth-pass').value.trim();
+        if(!u || !p) { alert("Data tidak boleh kosong!"); return; }
         let btn = document.getElementById('auth-main-btn'); btn.innerText = "Memproses..."; btn.disabled = true;
-
         try {
             let res = await fetch(FIREBASE_USERS_URL); let usersDB = await res.json() || {};
             if (isRegisterMode) {
-                if (usersDB[u]) { alert("Username terpakai! Gunakan nama lain."); btn.innerText = "Daftar & Masuk"; btn.disabled = false; return; }
+                if (usersDB[u]) { alert("Username terpakai!"); btn.innerText = "Daftar & Masuk"; btn.disabled = false; return; }
                 await fetch(`https://sinaubang-web-a5069-default-rtdb.asia-southeast1.firebasedatabase.app/users/${u}.json`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password: p }) });
             } else {
-                if (!usersDB[u] || usersDB[u].password !== p) { alert("Username atau password salah!"); btn.innerText = "Masuk"; btn.disabled = false; return; }
+                if (!usersDB[u] || usersDB[u].password !== p) { alert("Username/password salah!"); btn.innerText = "Masuk"; btn.disabled = false; return; }
             }
             currentUser = u; localStorage.setItem('sinau_active_user', currentUser);
             document.getElementById('view-auth').style.display = 'none';
             document.getElementById('profile-name-display').innerText = currentUser;
             switchTab(0, 'view-dashboard');
-        } catch (error) { alert("Gagal terhubung."); } finally { btn.innerText = isRegisterMode ? "Daftar & Masuk" : "Masuk"; btn.disabled = false; }
+        } catch (error) { alert("Koneksi gagal."); } finally { btn.innerText = isRegisterMode ? "Daftar & Masuk" : "Masuk"; btn.disabled = false; }
     }
 
-    function logoutUser() {
-        if(confirm("Yakin ingin keluar?")) { localStorage.removeItem('sinau_active_user'); location.reload(); }
-    }
+    function logoutUser() { if(confirm("Keluar?")) { localStorage.removeItem('sinau_active_user'); location.reload(); } }
+    function toggleFolder(folderId, headerElement) { document.getElementById(folderId).classList.toggle('active'); headerElement.querySelector('.chevron').classList.toggle('active'); }
 
-    // --- BOTTOM NAVIGATION & VIEWS LOGIC ---
-    function switchTab(index, viewId) {
-        // Update Bottom Nav UI
-        const navItems = document.querySelectorAll('.bottom-nav .nav-item');
-        navItems.forEach((el, i) => {
-            if(i === index) el.classList.add('active');
-            else el.classList.remove('active');
-        });
-
-        // Switch View Content
-        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-        document.getElementById(viewId).classList.add('active');
-
-        // Toggle Top Header & Bottom Nav visibility based on view
-        if(viewId === 'view-quiz' || viewId === 'view-result') {
-            document.getElementById('bottom-nav').style.display = 'none';
-            document.getElementById('top-header').style.display = 'none';
-        } else {
-            document.getElementById('bottom-nav').style.display = 'flex';
-            document.getElementById('top-header').style.display = 'flex';
-        }
-
-        // Trigger specific actions per view
-        if(viewId === 'view-history') loadHistoryView();
-        if(viewId === 'view-chat') loadChatMessages();
-    }
-
-    // --- MUSIC LOGIC ---
-    let isMusicPlaying = false;
-    const bgMusic = document.getElementById('bg-music');
-    
+    // --- MUSIC ---
+    let isMusicPlaying = false; const bgMusic = document.getElementById('bg-music');
     function playSelectedTrack(src, index) {
-        document.getElementById('audio-source').src = src;
-        bgMusic.load();
-        bgMusic.play().then(() => {
-            isMusicPlaying = true;
-            document.getElementById('main-music-toggle').innerText = "⏸ Jeda Musik Saat Ini";
-            document.getElementById(`btn-play-${index}`).innerText = "Sedang Diputar 🎶";
-        }).catch(e => console.log(e));
+        document.getElementById('audio-source').src = src; bgMusic.load();
+        bgMusic.play().then(() => { isMusicPlaying = true; document.getElementById('main-music-toggle').innerText = "⏸ Jeda Musik"; document.getElementById(`btn-play-${index}`).innerText = "Sedang Diputar 🎶"; }).catch(e=>console.log(e));
     }
-
-    function toggleMusicPlayback() {
-        if (isMusicPlaying) {
-            bgMusic.pause(); isMusicPlaying = false;
-            document.getElementById('main-music-toggle').innerText = "▶ Putar Kembali";
-        } else {
-            bgMusic.play().then(() => {
-                isMusicPlaying = true;
-                document.getElementById('main-music-toggle').innerText = "⏸ Jeda Musik Saat Ini";
-            }).catch(e => console.log(e));
-        }
-    }
-
-    function toggleTheme() {
-        document.body.classList.toggle('dark-theme');
-        const isDark = document.body.classList.contains('dark-theme');
-        localStorage.setItem('theme_sinau', isDark ? 'dark' : 'light');
-    }
-
-    function toggleFolder(folderId, headerElement) {
-        const content = document.getElementById(folderId); const chevron = headerElement.querySelector('.chevron');
-        if (content.classList.contains('active')) { content.classList.remove('active'); chevron.classList.remove('active'); } 
-        else { content.classList.add('active'); chevron.classList.add('active'); }
-    }
+    function toggleMusicPlayback() { if (isMusicPlaying) { bgMusic.pause(); isMusicPlaying = false; document.getElementById('main-music-toggle').innerText = "▶ Putar"; } else { bgMusic.play(); isMusicPlaying = true; document.getElementById('main-music-toggle').innerText = "⏸ Jeda"; } }
 
     // --- CHAT LOGIC ---
     async function loadChatMessages() {
-        const chatBox = document.getElementById('chat-messages-box');
-        chatBox.innerHTML = '<p style="text-align: center; color: gray; font-size: 0.85em;">Memuat pesan...</p>';
+        const chatBox = document.getElementById('chat-messages-box'); chatBox.innerHTML = '<p>Memuat pesan...</p>';
         try {
             let res = await fetch(FIREBASE_CHAT_URL); let data = await res.json(); chatBox.innerHTML = '';
-            if(!data) { chatBox.innerHTML = '<p style="text-align: center; color: gray; font-size: 0.85em;">Jadilah yang pertama mengirim pesan!</p>'; return; }
+            if(!data) { chatBox.innerHTML = '<p>Mulai obrolan!</p>'; return; }
             Object.values(data).forEach(c => {
-                let isMe = (c.sender === currentUser);
-                let bubbleClass = isMe ? 'chat-bubble chat-bubble-me' : 'chat-bubble chat-bubble-other';
-                chatBox.innerHTML += `<div class="${bubbleClass}"><span class="chat-sender">${c.sender}</span><span>${c.message}</span><span class="chat-time">${c.time}</span></div>`;
-            });
-            chatBox.scrollTop = chatBox.scrollHeight;
-        } catch(e) { chatBox.innerHTML = '<p style="text-align: center; color: red;">Gagal memuat pesan chat.</p>'; }
+                let isMe = (c.sender === currentUser); let bClass = isMe ? 'chat-bubble-me' : 'chat-bubble-other';
+                chatBox.innerHTML += `<div class="chat-bubble ${bClass}"><b>${c.sender}</b><br>${c.message}<br><small>${c.time}</small></div>`;
+            }); chatBox.scrollTop = chatBox.scrollHeight;
+        } catch(e) {}
     }
-
     async function sendChatMessage() {
         const inputField = document.getElementById('chat-input-field'); const msg = inputField.value.trim(); if(!msg) return;
-        let timeString = new Date().toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'});
-        try {
-            inputField.value = '';
-            await fetch(FIREBASE_CHAT_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sender: currentUser, message: msg, time: timeString }) });
-            loadChatMessages();
-        } catch(e) { alert("Gagal mengirim pesan."); }
+        let timeString = new Date().toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'}); inputField.value = '';
+        await fetch(FIREBASE_CHAT_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sender: currentUser, message: msg, time: timeString }) });
+        loadChatMessages();
     }
-    function handleChatKeyPress(event) { if(event.key === 'Enter') sendChatMessage(); }
+    function handleChatKeyPress(e) { if(e.key === 'Enter') sendChatMessage(); }
 
-    // --- HISTORY LOGIC ---
+    // --- HISTORY ---
     let globalHistoryCache = [];
     async function loadHistoryView() {
-        const logContainer = document.getElementById('main-history-log');
-        logContainer.innerHTML = '<p style="text-align:center; color:gray;">Memuat data...</p>';
+        const log = document.getElementById('main-history-log'); log.innerHTML = '<p>Memuat...</p>';
         try {
-            let response = await fetch(FIREBASE_SKOR_URL); let data = await response.json(); logContainer.innerHTML = ''; 
-            if (!data) { logContainer.innerHTML = "<p style='text-align:center; color:gray;'>Belum ada histori.</p>"; return; }
+            let res = await fetch(FIREBASE_SKOR_URL); let data = await res.json(); log.innerHTML = ''; 
+            if (!data) return;
             globalHistoryCache = Object.keys(data).map(key => ({ id: key, ...data[key] }));
             let myHistory = globalHistoryCache.filter(item => item.nama === currentUser).reverse();
-
-            if (myHistory.length === 0) { logContainer.innerHTML = "<p style='text-align:center; color:gray;'>Belum ada riwayat ujian untuk akun ini.</p>"; return; }
-
             myHistory.forEach((item) => {
-                logContainer.innerHTML += `
-                <div class="log-item" onclick="openHistoryDetail('${item.id}')">
-                    <span style="font-size:1em; font-weight:600; color:#004d40;">${item.modul}</span><br>
-                    Skor: <b style="font-size:1.2em; color:#c2185b;">${item.skor}</b><br>
-                    <span style="font-size:0.8em; color:gray;">📅 ${item.waktu}</span>
-                    <div style="font-size:0.8em; color:#00897b; margin-top:5px; font-weight:600;">👆 Lihat detail jawaban</div>
-                </div>`;
+                log.innerHTML += `<div class="log-item glass-panel" onclick="openHistoryDetail('${item.id}')"><b>${item.modul}</b><br>Skor: ${item.skor}<br><small>${item.waktu}</small></div>`;
             });
-        } catch (error) { logContainer.innerHTML = "<p style='color:red; text-align:center;'>Gagal memuat histori.</p>"; }
+        } catch (e) {}
     }
-
     function openHistoryDetail(id) {
         const record = globalHistoryCache.find(x => x.id === id); if(!record) return;
-        document.getElementById('modal-title').innerText = `${record.modul} (Skor: ${record.skor})`;
         const modalBody = document.getElementById('modal-body-content'); modalBody.innerHTML = '';
-        if (!record.detailJawaban) { modalBody.innerHTML = "<p style='text-align:center;'>Detail tidak tersedia.</p>"; } 
-        else {
+        if (record.detailJawaban) {
             record.detailJawaban.forEach((ans, i) => {
-                let statusColor = ans.isTrue ? "border-left-color:#2e7d32;" : "border-left-color:#c62828;";
-                modalBody.innerHTML += `
-                <div class="detail-soal-card" style="${statusColor}">
-                    <b>Soal ${i + 1}:</b> ${ans.soal}<br>
-                    <span style="color:${ans.isTrue ? '#2e7d32' : '#c62828'}">Jawaban: <b>${ans.pilihanUser}</b> (${ans.isTrue ? 'Benar' : 'Salah'})</span><br>
-                    <span style="color:#555;">Kunci: <b>${ans.jawabanBenar}</b></span>
-                </div>`;
+                let color = ans.isTrue ? "#22c55e" : "#ef4444";
+                modalBody.innerHTML += `<div class="detail-soal-card glass-panel" style="border-color:${color}"><b>Soal ${i+1}:</b> ${ans.soal}<br>Jawab: ${ans.pilihanUser} <br>Kunci: ${ans.jawabanBenar}</div>`;
             });
         }
         document.getElementById('history-modal').style.display = 'flex';
     }
     function closeModal() { document.getElementById('history-modal').style.display = 'none'; }
 
-    // --- QUIZ DATA & LOGIC ---
-    function shuffleArray(array) {
-        let cur = array.length, temp, rand;
-        while (cur !== 0) { rand = Math.floor(Math.random() * cur); cur -= 1; temp = array[cur]; array[cur] = array[rand]; array[rand] = temp; } return array;
-    }
-
-    // DATABASE 120+ SOAL LENGKAP
+    // --- FULL DATABASE (120+ QUESTIONS) ---
+    function shuffleArray(arr) { let c = arr.length, t, r; while (c !== 0) { r = Math.floor(Math.random() * c); c -= 1; t = arr[c]; arr[c] = arr[r]; arr[r] = t; } return arr; }
+    
     const readingTexts = {
         teks1: "<strong>Teks 1 (Flood)</strong><br>A massive flood hit Jakarta on Monday, Sept 14. It started at 02.00 AM. 500 refugees fled to safer places. The water reached 2 meters. The Mayor stated, 'We are sending boats.' Sadly, there were 3 casualties.",
         teks2: "<strong>Teks 2 (Robbery)</strong><br>An armed robbery occurred at a local bank at 14.00. 3 men stole $50,000. It lasted 10 minutes. The police arrived 5 minutes later. Chief Inspector Budi reported the arrest of one suspect.",
@@ -782,26 +619,25 @@
         { q: "Jika tamu tidak memiliki janji temu dengan pimpinan yang sedang rapat, resepsionis sebaiknya...", o: ["Mempersilakan tamu masuk menerobos rapat", "Meminta tamu menunggu di luar tanpa penjelasan", "Menjelaskan dengan sopan bahwa pimpinan sedang rapat dan meminta tamu mengisi buku tamu/meninggalkan pesan", "Menyuruh tamu pulang dengan nada kasar"], c: 2, exp: "Penyampaian informasi yang jelas dan sopan serta menawarkan alternatif (meninggalkan pesan) adalah SOP yang benar." }
     ];
 
-    const database = {
-        'psts_indo': { title: "PSTS BHS INDO XII", questions: psts_indo_questions },
-        'psts_bing': { title: "PSTS BING XII", questions: psts_bing_questions },
-        'psts_jawa': { title: "PSTS BHS JAWA XII", questions: psts_jawa_questions },
-        'tkj_jaringan': { title: "Config IP, DHCP & VLAN", questions: tkj_jaringan_qs },
-        'tkj_vsat': { title: "Topologi & Sistem VSAT", questions: tkj_vsat_qs },
-        'mplb_sop': { title: "SOP Pelayanan Prima", questions: mplb_sop_qs }
+    const db = {
+        'psts_indo': { title: "PSTS BHS INDO XII", q: psts_indo_questions },
+        'psts_bing': { title: "PSTS BING XII", q: psts_bing_questions },
+        'psts_jawa': { title: "PSTS BHS JAWA XII", q: psts_jawa_questions },
+        'tkj_jaringan': { title: "Config IP, DHCP & VLAN", q: tkj_jaringan_qs },
+        'tkj_vsat': { title: "Topologi & Sistem VSAT", q: tkj_vsat_qs },
+        'mplb_sop': { title: "SOP Pelayanan Prima", q: mplb_sop_qs }
     };
-
+    
     let currentModulId = ''; let questions = []; let currentQIndex = 0; let score = 0; let finalCalculatedScore = 0; let answered = false; let userSessionAnswers = [];
 
     function startStudySession(modulId) {
-        currentModulId = modulId; questions = shuffleArray(JSON.parse(JSON.stringify(database[modulId].questions))); 
+        currentModulId = modulId; questions = shuffleArray(JSON.parse(JSON.stringify(db[modulId].q))); 
         currentQIndex = 0; score = 0; userSessionAnswers = [];
-        document.getElementById('quiz-title').innerText = database[modulId].title;
-        switchTab(-1, 'view-quiz'); // Hide nav, show quiz
-        renderQuestion();
+        document.getElementById('quiz-title').innerText = db[modulId].title;
+        switchTab(-1, 'view-quiz'); renderQuestion();
     }
 
-    let currentShuffledOptions = [];
+    let currentOpts = [];
     function renderQuestion() {
         answered = false; const q = questions[currentQIndex];
         document.getElementById('question-tracker').innerText = `${currentQIndex + 1}/${questions.length}`;
@@ -809,38 +645,46 @@
         const readingBox = document.getElementById('reading-text');
         if (q.passage) { readingBox.innerHTML = q.passage; readingBox.style.display = 'block'; } else { readingBox.style.display = 'none'; readingBox.innerHTML = ''; }
         document.getElementById('question-text').innerText = `${currentQIndex + 1}. ${q.q}`;
-        const optionsContainer = document.getElementById('options-container'); optionsContainer.innerHTML = '';
-        currentShuffledOptions = shuffleArray(q.o.map((text, index) => ({ text, isCorrect: index === q.c })));
-        currentShuffledOptions.forEach((opt, index) => {
-            const btn = document.createElement('button'); btn.className = 'option-btn';
-            btn.innerText = String.fromCharCode(65 + index) + ". " + opt.text;
-            btn.onclick = () => selectAnswer(opt, btn); optionsContainer.appendChild(btn);
+        const optC = document.getElementById('options-container'); optC.innerHTML = '';
+        currentOpts = shuffleArray(q.o.map((text, i) => ({ text, isCorrect: i === q.c })));
+        currentOpts.forEach((opt, i) => {
+            const btn = document.createElement('button'); btn.className = 'option-btn'; btn.innerText = String.fromCharCode(65 + i) + ". " + opt.text;
+            btn.onclick = () => selectAnswer(opt, btn); optC.appendChild(btn);
         });
         document.getElementById('feedback-box').style.display = 'none'; document.getElementById('next-btn-container').style.display = 'none';
     }
 
-    function selectAnswer(selectedOpt, btnElement) {
-        if (answered) return; answered = true; let correctOptText = "";
+    function selectAnswer(selOpt, btn) {
+        if (answered) return; answered = true; let cText = "";
         const allBtns = document.querySelectorAll('.option-btn');
-        currentShuffledOptions.forEach((opt, idx) => {
-            allBtns[idx].disabled = true; if(opt.isCorrect) { allBtns[idx].classList.add('correct'); correctOptText = opt.text; }
-        });
-        if (selectedOpt.isCorrect) { btnElement.classList.add('correct'); score++; } else { btnElement.classList.add('wrong'); }
-        userSessionAnswers.push({ soal: questions[currentQIndex].q, pilihanUser: selectedOpt.text, isTrue: selectedOpt.isCorrect, jawabanBenar: correctOptText });
+        currentOpts.forEach((opt, idx) => { allBtns[idx].disabled = true; if(opt.isCorrect) { allBtns[idx].classList.add('correct'); cText = opt.text; } });
+        if (selOpt.isCorrect) { btn.classList.add('correct'); score++; } else { btn.classList.add('wrong'); }
+        userSessionAnswers.push({ soal: questions[currentQIndex].q, pilihanUser: selOpt.text, isTrue: selOpt.isCorrect, jawabanBenar: cText });
         document.getElementById('feedback-text').innerText = questions[currentQIndex].exp;
         document.getElementById('feedback-box').style.display = 'block'; document.getElementById('next-btn-container').style.display = 'block';
     }
 
     function nextQuestion() { currentQIndex++; if (currentQIndex < questions.length) renderQuestion(); else finishQuiz(); }
-    function finishQuiz() {
-        document.getElementById('progress-fill').style.width = `100%`;
-        setTimeout(() => {
+    
+    function finishQuiz() { 
+        document.getElementById('progress-fill').style.width = `100%`; 
+        setTimeout(() => { 
             switchTab(-1, 'view-result');
             finalCalculatedScore = Math.round((score / questions.length) * 100);
             document.getElementById('final-score').innerText = finalCalculatedScore;
-            document.getElementById('result-username-display').innerText = currentUser;
-            document.getElementById('result-message').innerText = finalCalculatedScore >= 80 ? "Luar biasa!" : "Coba lagi!";
-        }, 300);
+            document.getElementById('result-message').innerText = finalCalculatedScore >= 80 ? "Luar biasa!" : "Coba lagi ya, pasti bisa!";
+        }, 300); 
+    }
+    
+    async function saveScoreToHistory() { 
+        let timeString = new Date().toLocaleString('id-ID', {day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute:'2-digit'});
+        const dataBaru = { nama: currentUser, modul: document.getElementById('quiz-title').innerText, skor: finalCalculatedScore, waktu: timeString, detailJawaban: userSessionAnswers };
+        try {
+            let btn = document.querySelector('#view-result .btn'); btn.innerText = "Menyimpan..."; btn.disabled = true;
+            await fetch(FIREBASE_SKOR_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dataBaru) });
+            alert("Skor berhasil disimpan ke akun online-mu!"); loadHistoryView(); switchTab(0, 'view-dashboard');
+            btn.innerText = "💾 Simpan & Kembali"; btn.disabled = false;
+        } catch (error) { alert("Gagal menyimpan data."); }
     }
 </script>
 </body>
