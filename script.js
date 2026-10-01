@@ -77,7 +77,7 @@ function switchTab(index, viewId, iconSymbol = '<i class="fa-solid fa-house"></i
         targetView.classList.add('active');  
     }  
 
-    if (viewId === 'view-quiz' || viewId === 'view-result' || viewId === 'view-private-room') {  
+    if (viewId === 'view-quiz' || viewId === 'view-result' || viewId === 'view-private-room' || viewId === 'view-call') {  
         document.getElementById('bottom-nav').style.display = 'none';  
         document.getElementById('top-header').style.display = 'none';  
     } else {  
@@ -102,7 +102,7 @@ function switchTab(index, viewId, iconSymbol = '<i class="fa-solid fa-house"></i
     if (viewId === 'view-chat') {  
         loadChatUsersList();  
         if (!chatListInterval) {
-            chatListInterval = setInterval(loadChatUsersList, 500);
+            chatListInterval = setInterval(loadChatUsersList, 1500);
         }
     }  
 }  
@@ -185,6 +185,79 @@ function toggleMusicPlayback() {
     if (isMusicPlaying) { bgMusic.pause(); isMusicPlaying = false; document.getElementById('main-music-toggle').innerText = "▶ Putar"; } 
     else { bgMusic.play(); isMusicPlaying = true; document.getElementById('main-music-toggle').innerText = "⏸ Jeda"; } 
 }  
+
+// --- CALL SYSTEM (PANGGILAN SUARA & VIDEO) ---
+let activeCallInterval = null;
+let callDurationSeconds = 0;
+let isMicMuted = false;
+let isCameraOff = false;
+
+function startCall(isVideo = false) {
+    const targetName = activeGroup ? "Grup Diskusi Sinau Bang" : activeChatUser;
+    if (!targetName) return;
+
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById('view-call').classList.add('active');
+
+    document.getElementById('call-target-name').innerText = targetName;
+    document.getElementById('call-type-label').innerText = isVideo ? "Memanggil (Video Call)..." : "Memanggil (Voice Call)...";
+    document.getElementById('call-avatar').src = activeGroup ? `https://ui-avatars.com/api/?name=Grup&background=0284c7&color=fff&bold=true` : getAvatarUrl(targetName);
+    
+    const videoContainer = document.getElementById('video-stream-container');
+    if (isVideo) {
+        videoContainer.style.display = 'block';
+    } else {
+        videoContainer.style.display = 'none';
+    }
+
+    callDurationSeconds = 0;
+    isMicMuted = false;
+    isCameraOff = false;
+    document.getElementById('mic-btn-icon').className = "fa-solid fa-microphone";
+    document.getElementById('video-btn-icon').className = "fa-solid fa-video";
+
+    setTimeout(() => {
+        document.getElementById('call-type-label').innerText = "Menyambungkan...";
+        setTimeout(() => {
+            document.getElementById('call-type-label').innerText = "00:00";
+            if (activeCallInterval) clearInterval(activeCallInterval);
+            activeCallInterval = setInterval(() => {
+                callDurationSeconds++;
+                let mins = Math.floor(callDurationSeconds / 60).toString().padStart(2, '0');
+                let secs = (callDurationSeconds % 60).toString().padStart(2, '0');
+                document.getElementById('call-type-label').innerText = `${mins}:${secs}`;
+            }, 1000);
+        }, 1500);
+    }, 2000);
+}
+
+function endCall() {
+    if (activeCallInterval) {
+        clearInterval(activeCallInterval);
+        activeCallInterval = null;
+    }
+    if (activeGroup) {
+        openGroupChat(activeGroup, "Grup Diskusi Sinau Bang");
+    } else if (activeChatUser) {
+        openPrivateChat(activeChatUser);
+    } else {
+        switchTab(1, 'view-chat', '<i class=\'fa-solid fa-message\'></i>');
+    }
+}
+
+function toggleMuteMic() {
+    isMicMuted = !isMicMuted;
+    const icon = document.getElementById('mic-btn-icon');
+    icon.className = isMicMuted ? "fa-solid fa-microphone-slash" : "fa-solid fa-microphone";
+}
+
+function toggleVideoCamera() {
+    isCameraOff = !isCameraOff;
+    const icon = document.getElementById('video-btn-icon');
+    icon.className = isCameraOff ? "fa-solid fa-video-slash" : "fa-solid fa-video";
+    const videoBox = document.getElementById('video-stream-container');
+    videoBox.style.opacity = isCameraOff ? "0.2" : "1";
+}
 
 // --- REAL-TIME PRIVATE & GROUP CHAT SYSTEM ---  
 function getAvatarUrl(name) {
@@ -301,29 +374,14 @@ async function loadChatUsersList() {
 
         chatItems.sort((a, b) => b.maxTimestamp - a.maxTimestamp);
 
-        // Update Bell Notification Real-time Badge
-        const bellIconContainer = document.querySelector('.chat-header-top');
-        if (bellIconContainer) {
-            let bellBadge = document.getElementById('global-bell-badge');
+        // Update Notification Bell Badge in Header
+        const bellBadge = document.getElementById('global-bell-badge');
+        if (bellBadge) {
             if (totalUnreadGlobal > 0) {
-                if (!bellBadge) {
-                    bellIconContainer.innerHTML = `
-                        <h2 style="font-size: 1.6em; font-weight: 700;">Chat</h2>
-                        <div style="position: relative; display: inline-block; cursor: pointer;">
-                            <i class="fa-regular fa-bell" style="font-size: 1.2em;"></i>
-                            <span id="global-bell-badge" style="position: absolute; top: -5px; right: -8px; background: #22c55e; color: white; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; font-size: 0.65em; font-weight: 700;">${totalUnreadGlobal}</span>
-                        </div>
-                    `;
-                } else {
-                    bellBadge.innerText = totalUnreadGlobal;
-                }
+                bellBadge.style.display = 'flex';
+                bellBadge.innerText = totalUnreadGlobal;
             } else {
-                if (bellBadge) {
-                    bellIconContainer.innerHTML = `
-                        <h2 style="font-size: 1.6em; font-weight: 700;">Chat</h2>
-                        <i class="fa-regular fa-bell" style="font-size: 1.2em;"></i>
-                    `;
-                }
+                bellBadge.style.display = 'none';
             }
         }
 
@@ -437,7 +495,7 @@ function openPrivateChat(targetUser) {
     loadPrivateMessages();  
       
     if(currentChatInterval) clearInterval(currentChatInterval);  
-    currentChatInterval = setInterval(loadPrivateMessages, 500);  
+    currentChatInterval = setInterval(loadPrivateMessages, 1000);  
 }  
 
 function openGroupChat(groupId, groupName) {
@@ -470,7 +528,7 @@ function openGroupChat(groupId, groupName) {
     loadPrivateMessages();  
       
     if(currentChatInterval) clearInterval(currentChatInterval);  
-    currentChatInterval = setInterval(loadPrivateMessages, 500);  
+    currentChatInterval = setInterval(loadPrivateMessages, 1000);  
 }
 
 async function loadPrivateMessages() {  
@@ -778,7 +836,7 @@ const psts_bing_questions = [
     { q: "(Teks 2) Who is the authority giving information?", o: ["The bank teller", "Chief Inspector Budi", "The robber", "The manager"], c: 1, passage: readingTexts.teks2, exp: "Narasumber resminya adalah Chief Inspector Budi." },  
       
     { q: "(Teks 3) The topic is...", o: ["A bus tour", "A traffic accident / bus crash", "Buying a new bus", "Road construction"], c: 1, passage: readingTexts.teks3, exp: "Topik membahas kecelakaan lalu lintas (bus crash)." },  
-    { q: "(Teks 3) On what day and date did the bus crash occur?", o: ["Saturday, Oct 9", "Sunday, Oct 10", "Monday, Oct 11", "Sunday, Nov 10"], c: 1, passage: readingTexts.teks3, exp: "Tertulis 'Sunday, Oct 10'." },  
+    { q: "(Teks 3) On what day and date did the bus crash occur?", o: ["Sunday, Oct 9", "Sunday, Oct 10", "Monday, Oct 11", "Sunday, Nov 10"], c: 1, passage: readingTexts.teks3, exp: "Tertulis 'Sunday, Oct 10'." },  
     { q: "(Teks 3) What time did the accident happen?", o: ["05.00", "06.00", "07.00", "08.00"], c: 1, passage: readingTexts.teks3, exp: "Tertulis kejadian pada '06.00'." },  
     { q: "(Teks 3) What was the total number of passengers?", o: ["10", "15", "30", "40"], c: 3, passage: readingTexts.teks3, exp: "Bus membawa '40 passengers'." },  
     { q: "(Teks 3) How many victims died in the accident?", o: ["2", "5", "10", "40"], c: 1, passage: readingTexts.teks3, exp: "Tertulis '5 died'." },  
