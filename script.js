@@ -1,25 +1,31 @@
-// --- CUSTOM SINGLE COLOR THEME LOGIC ---  
-const inputColor1 = document.getElementById('bg-color-1');  
-  
-function updateCustomBackground() {  
-    const color = inputColor1 ? inputColor1.value : '#0ea5e9';  
-      
-    // 1. Ubah pancaran warna pada background utama
-    document.body.style.background = `radial-gradient(circle at 50% 25%, ${color}44 0%, transparent 70%), #080c14`;  
-      
-    // 2. Ubah variabel warna tema tunggal
-    document.documentElement.style.setProperty('--theme-1', color);  
+// --- THEME TOGGLE LOGIC (TERANG / GELAP) ---  
+document.addEventListener("DOMContentLoaded", () => {
+    const themeBtn = document.getElementById("themeToggleBtn");
+    const body = document.body;
 
-    // 3. Simpan ke local storage
-    localStorage.setItem('sinau_theme_color', color);  
-}  
-  
-const savedColor = localStorage.getItem('sinau_theme_color');  
-if (savedColor) {  
-    if (inputColor1) inputColor1.value = savedColor;  
-    document.body.style.background = `radial-gradient(circle at 50% 25%, ${savedColor}44 0%, transparent 70%), #080c14`;  
-    document.documentElement.style.setProperty('--theme-1', savedColor);  
-}  
+    // Cek tema yang tersimpan di Local Storage saat halaman dimuat
+    const currentTheme = localStorage.getItem("app_theme");
+    if (currentTheme === "light") {
+        body.classList.add("light-theme");
+        if (themeBtn) themeBtn.innerHTML = "🌙 Beralih ke Mode Gelap";
+    }
+
+    // Fungsi klik tombol toggle tema
+    if (themeBtn) {
+        themeBtn.addEventListener("click", () => {
+            body.classList.toggle("light-theme");
+            
+            // Ubah teks tombol dan simpan ke Local Storage
+            if (body.classList.contains("light-theme")) {
+                themeBtn.innerHTML = "🌙 Beralih ke Mode Gelap";
+                localStorage.setItem("app_theme", "light");
+            } else {
+                themeBtn.innerHTML = "☀️ Beralih ke Mode Terang";
+                localStorage.setItem("app_theme", "dark");
+            }
+        });
+    }
+});
 
 // --- NAVIGATION LOGIC ---  
 function switchTab(index, viewId, iconSymbol = '<i class="fa-solid fa-house"></i>') {  
