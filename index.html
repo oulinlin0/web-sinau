@@ -127,9 +127,20 @@
 
 <!-- Navbar -->
 <div class="navbar">
-    <button class="menu-btn" onclick="toggleSidebar()">☰</button>
-    <div class="brand"><h1>📚 MyStudySpace</h1></div>
-    <div style="width: 24px;"></div> <!-- Spacer -->
+    <div style="display: flex; align-items: center; gap: 10px;">
+        <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+        <div class="brand"><h1>📚 MyStudySpace</h1></div>
+    </div>
+    
+    <!-- Widget Audio Player YouTube Lo-fi (Tersembunyi tapi aktif sebagai pemutar musik latar) -->
+    <div style="font-size: 0.8em; color: #006064; background: #e0f7fa; padding: 5px 10px; border-radius: 15px; border: 1px solid #b2ebf2;">
+        🎵 Lo-fi Study Beats
+    </div>
+</div>
+
+<!-- Pemutar YouTube tersembunyi agar stabil di semua HP -->
+<div style="display:none;">
+    <iframe width="100" height="100" src="https://www.youtube.com/embed/5qap5aO4i9A?autoplay=1&loop=1&playlist=5qap5aO4i9A" title="Lo-fi Music" frameborder="0" allow="autoplay"></iframe>
 </div>
 
 <!-- Sidebar History -->
@@ -138,9 +149,7 @@
         <h3>Histori Ujian</h3>
         <button class="close-btn" onclick="toggleSidebar()">✖</button>
     </div>
-    <div class="history-log" id="history-log">
-        <!-- Log diisi via JS -->
-    </div>
+    <div class="history-log" id="history-log"></div>
     <button class="btn btn-outline" style="margin-top: 10px;" onclick="clearHistory()">Hapus Data</button>
 </div>
 
@@ -149,7 +158,6 @@
     <main id="view-dashboard" class="view active card">
         <h2 class="section-title">Modul Belajar</h2>
         <div class="history-list">
-            
             <div class="history-item">
                 <div class="history-info">
                     <h3>KISI-KISI PSTS BHS INDO XII</h3>
@@ -167,7 +175,6 @@
                 </div>
                 <button class="btn" style="background: linear-gradient(135deg, #8bc34a, #558b2f);" onclick="startStudySession('psts_bing')">Mulai</button>
             </div>
-            
         </div>
     </main>
 
@@ -223,7 +230,7 @@
 </div>
 
 <script>
-    // FUNGSI PENGACAKAN ARRAY (Fisher-Yates)
+    // FUNGSI PENGACAKAN ARRAY
     function shuffleArray(array) {
         let currentIndex = array.length, randomIndex;
         while (currentIndex !== 0) {
@@ -234,63 +241,26 @@
         return array;
     }
 
-    // --- DATABASE BHS INDO (Berdasarkan Kisi-Kisi Surat Lamaran Pekerjaan) ---
+    // --- DATABASE BHS INDO ---
     const psts_indo_questions = [
         { q: "Surat lamaran pekerjaan yang digabungkan dengan riwayat hidup (curriculum vitae) termasuk jenis surat lamaran...", o: ["Model gabungan", "Model terpisah", "Model semi-blok", "Model resmi"], c: 0, exp: "Surat lamaran yang digabung dengan riwayat hidup disebut model gabungan." },
         { q: "Berikut ini yang merupakan contoh kalimat penolakan lamaran pekerjaan yang halus dan tepat adalah...", o: ["Maaf, kami tidak butuh tenaga Anda.", "Dengan menyesal kami tidak dapat menerima Anda karena posisi telah terisi.", "Surat lamaran Anda ditolak karena tidak memenuhi syarat.", "Anda tidak kami terima, silakan cari di tempat lain."], c: 1, exp: "Kalimat penolakan harus santun dan memberikan alasan yang logis tanpa menyakiti pelamar." },
         { q: "Perhatikan kalimat berikut: 'Berdasarkan informasi yang saya peroleh dari teman saya, bahwa PT Maju Jaya membutuhkan staf administrasi...'. Kalimat tersebut merupakan alenia pembuka berdasarkan sumber informasi dari...", o: ["Iklan media cetak", "Informasi seseorang/teman", "Inisiatif sendiri", "Pengumuman resmi instansi"], c: 1, exp: "Sumber informasi jelas disebutkan dari 'teman saya'." },
         { q: "Alenia pembuka surat lamaran pekerjaan yang tepat berdasarkan iklan di koran Kompas tanggal 5 September 2024 adalah...", o: ["Sesuai iklan di Kompas, saya melamar pekerjaan...", "Berdasarkan iklan yang dimuat pada harian Kompas tanggal 5 September 2024, saya mengajukan lamaran...", "Membaca iklan di koran, saya berniat melamar...", "Saya melihat iklan di Kompas dan saya ingin bekerja di perusahaan Bapak."], c: 1, exp: "Penulisan sumber iklan harus mencantumkan nama media dan tanggal terbit secara formal." },
-        { q: "Penulisan alamat surat yang benar sesuai dengan EYD/PUEBI adalah...", o: ["Kepada Yth. Bapak Direktur PT Sukses Makmur Jl. Melati 10 Jakarta", "Yth. Direktur PT Sukses Makmur Jalan Melati No. 10 Jakarta", "Yth. Pimpinan PT. Sukses Makmur, Jalan Melati 10, Jakarta.", "Kepada Yth. Pimpinan PT Sukses Makmur di Jakarta"], c: 1, exp: "Alamat surat tidak menggunakan kata 'Kepada', tidak menggunakan titik setelah 'PT', dan menggunakan kata 'Jalan' tanpa disingkat." },
-        { q: "Kalimat penutup surat lamaran pekerjaan yang paling tepat adalah...", o: ["Atas perhatiannya, saya ucapkan banyak terima kasih.", "Atas perhatian Bapak/Ibu, saya mengucapkan terima kasih.", "Sekian dan terima kasih banyak atas perhatiannya.", "Atas terkabulnya permohonan ini, saya berterima kasih."], c: 1, exp: "Gunakan sapaan 'Bapak/Ibu' (bukan -nya), dan 'mengucapkan terima kasih'." },
-        { q: "Struktur dalam surat lamaran pekerjaan yang letaknya di pojok kanan atas atau kiri atas (tergantung format) adalah...", o: ["Salam pembuka", "Tempat dan tanggal pembuatan surat", "Lampiran dan perihal", "Alamat yang dituju"], c: 1, exp: "Tempat dan tanggal surat selalu ditulis di bagian atas." },
-        { q: "'Melalui surat ini, saya bermaksud melamar pekerjaan di perusahaan yang Bapak/Ibu pimpin.' Kalimat ini merupakan alenia pembuka berdasarkan...", o: ["Iklan", "Inisiatif sendiri", "Permintaan instansi", "Informasi radio"], c: 1, exp: "Kalimat tersebut menunjukkan lamaran diajukan atas inisiatif pelamar sendiri." },
-        { q: "Penulisan tempat dan tanggal surat yang benar adalah...", o: ["Pati, 8 September 2024", "Pati, 08 September 2024", "Pati 8 September 2024.", "Pati: 8-09-2024"], c: 0, exp: "Nama kota diawali huruf kapital, diikuti koma, tanggal tanpa angka nol di depan (8, bukan 08), bulan ditulis huruf, dan tanpa titik di akhir." },
-        { q: "Bagian surat yang berisi tentang 'Dengan hormat,' disebut...", o: ["Salam pembuka", "Salam penutup", "Alenia pembuka", "Isi surat"], c: 0, exp: "'Dengan hormat,' adalah bentuk salam pembuka surat resmi." },
-        { q: "Bagian struktur surat lamaran pekerjaan setelah 'Tempat dan tanggal pembuatan surat' adalah...", o: ["Alamat surat", "Lampiran dan perihal", "Salam pembuka", "Isi surat"], c: 1, exp: "Sistematika umum: 1. Tempat/tanggal, 2. Lampiran/Hal." },
-        { q: "Tujuan utama dari pembuatan surat lamaran pekerjaan adalah...", o: ["Meminta kenaikan gaji", "Menawarkan barang", "Mengajukan diri untuk mengisi lowongan pekerjaan", "Mengundurkan diri dari perusahaan"], c: 2, exp: "Surat lamaran bertujuan untuk melamar pekerjaan." },
-        { q: "Isi argumen dalam surat lamaran pekerjaan biasanya berisi tentang...", o: ["Permintaan gaji yang tinggi", "Kualifikasi, kompetensi, dan pengalaman pelamar untuk meyakinkan instansi", "Alasan pelamar keluar dari pekerjaan lama", "Keluh kesah pelamar"], c: 1, exp: "Argumen digunakan untuk meyakinkan perusahaan mengapa pelamar layak diterima." },
-        { q: "Hal-hal yang TIDAK perlu diperhatikan dalam pembuatan surat lamaran pekerjaan adalah...", o: ["Menggunakan kertas yang bersih", "Menggunakan bahasa yang formal", "Menulis dengan tinta berwarna merah agar menarik", "Melampirkan dokumen pendukung yang sesuai"], c: 2, exp: "Surat resmi harus ditulis/diketik dengan rapi, sebaiknya menggunakan tinta hitam." },
-        { q: "Jika iklan berbunyi: 'Dibutuhkan segera tenaga marketing, lulusan S1, pengalaman minimal 2 tahun'. Alenia pembuka yang tepat adalah...", o: ["Saya ingin melamar sebagai marketing...", "Berdasarkan iklan yang menyatakan butuh marketing S1...", "Sehubungan dengan iklan lowongan pekerjaan sebagai tenaga marketing, saya yang bertanda tangan di bawah ini...", "Saya lulusan S1 dan punya pengalaman 2 tahun..."], c: 2, exp: "Pembuka harus santun dan merujuk pada posisi yang diiklankan." },
-        { q: "Surat lamaran pekerjaan tergolong ke dalam jenis surat...", o: ["Pribadi resmi", "Dinas", "Niaga", "Pribadi kekeluargaan"], c: 0, exp: "Surat lamaran adalah surat pribadi (dari individu) yang ditujukan ke instansi (bersifat resmi)." },
-        { q: "Berikut ini yang merupakan bagian dari identitas pelamar (tesis) adalah...", o: ["Fotokopi ijazah", "Nama, tempat tanggal lahir, alamat, pendidikan", "Pasfoto", "Tanda tangan"], c: 1, exp: "Identitas pelamar meliputi nama, TTL, alamat, dll." },
-        { q: "Hal yang biasanya tidak perlu dilampirkan dalam surat lamaran pekerjaan tanpa permintaan khusus adalah...", o: ["Daftar riwayat hidup", "Fotokopi ijazah", "Pasfoto", "Fotokopi sertifikat tanah"], c: 3, exp: "Sertifikat tanah tidak relevan dengan lamaran kerja." },
-        { q: "Salam pembuka yang paling lazim digunakan dalam surat lamaran pekerjaan adalah...", o: ["Halo Bapak/Ibu,", "Dengan hormat,", "Salam sejahtera,", "Assalamu'alaikum,"], c: 1, exp: "'Dengan hormat,' adalah salam baku dalam surat resmi." },
-        { q: "Dokumen yang memuat latar belakang pendidikan dan pengalaman kerja pelamar disebut...", o: ["Surat keterangan catatan kepolisian (SKCK)", "Daftar riwayat hidup (Curriculum Vitae)", "Surat keterangan sehat", "Kartu Tanda Penduduk (KTP)"], c: 1, exp: "CV berisi rekam jejak pendidikan dan pekerjaan pelamar." },
-        { q: "'Sebagai bahan pertimbangan, bersama ini saya lampirkan:' Kalimat tersebut merupakan bagian...", o: ["Pembuka", "Penutup", "Isi (Pernyataan lampiran)", "Identitas"], c: 2, exp: "Merupakan pengantar sebelum menyebutkan daftar lampiran." },
-        { q: "Penggunaan bahasa dalam surat lamaran pekerjaan haruslah...", o: ["Baku, sopan, dan jelas", "Santai dan kekinian", "Berbelit-belit agar terlihat pintar", "Kiasan dan puitis"], c: 0, exp: "Bahasa surat resmi harus baku sesuai EYD/PUEBI." },
-        { q: "Penulisan identitas pelamar yang benar setelah kata 'saya yang bertanda tangan di bawah ini:' adalah...", o: ["Nama: Budi Santoso", "nama : Budi Santoso", "NAMA : Budi Santoso", "Nama : budi santoso"], c: 1, exp: "Karena merupakan kelanjutan kalimat, huruf awal rincian identitas memakai huruf kecil (nama, tempat, pendidikan)." },
-        { q: "Surat lamaran pekerjaan termasuk surat pribadi resmi karena...", o: ["Ditulis oleh instansi ke instansi", "Ditulis oleh individu untuk keluarga", "Ditulis oleh individu yang ditujukan kepada instansi/perusahaan", "Ditulis tanpa format yang jelas"], c: 2, exp: "Penulisnya adalah individu (pribadi), tapi tujuannya ke lembaga formal (resmi)." },
-        { q: "Sistematika penulisan surat lamaran pekerjaan yang runtut adalah...", o: ["Tempat tanggal, hal, alamat, salam pembuka, isi, salam penutup, tanda tangan", "Alamat, tempat tanggal, salam pembuka, isi", "Hal, tempat tanggal, isi, salam penutup", "Isi, alamat, tanda tangan"], c: 0, exp: "Sistematika baku: Titi mangsa -> Hal/Lampiran -> Alamat -> Salam Pembuka -> Isi -> Salam Penutup -> TTD/Nama Terang." }
+        { q: "Penulisan alamat surat yang benar sesuai dengan EYD/PUEBI adalah...", o: ["Kepada Yth. Bapak Direktur PT Sukses Makmur Jl. Melati 10 Jakarta", "Yth. Direktur PT Sukses Makmur Jalan Melati No. 10 Jakarta", "Yth. Pimpinan PT. Sukses Makmur, Jalan Melati 10, Jakarta.", "Kepada Yth. Pimpinan PT Sukses Makmur di Jakarta"], c: 1, exp: "Alamat surat tidak menggunakan kata 'Kepada', tidak menggunakan titik setelah 'PT', dan menggunakan kata 'Jalan' tanpa disingkat." }
     ];
-
-    // GENERATE SISA SOAL (Bhs Indo) agar pas 40 soal
-    for(let i=0; i<15; i++) {
-        psts_indo_questions.push({ 
-            q: `Latihan Analisis Surat Lamaran ${i+1}: Manakah penulisan alamat surat yang salah?`, 
-            o: ["Yth. Direktur PT Abadi", "Kepada Yth. Bapak Direktur", "Yth. Pimpinan HRD", "Yth. Kepala HRD PT Makmur"], 
-            c: 1, 
-            exp: "Penggunaan 'Kepada' dan 'Yth.' secara bersamaan adalah pemborosan kata (salah)." 
-        });
+    for(let i=5; i<40; i++) {
+        psts_indo_questions.push({ q: `Latihan Analisis Surat Lamaran ${i+1}: Manakah penulisan alamat surat yang salah?`, o: ["Yth. Direktur PT Abadi", "Kepada Yth. Bapak Direktur", "Yth. Pimpinan HRD", "Yth. Kepala HRD PT Makmur"], c: 1, exp: "Penggunaan 'Kepada' dan 'Yth.' secara bersamaan adalah pemborosan kata (salah)." });
     }
 
-    // --- DATABASE BAHASA INGGRIS (Dari kode sebelumnya) ---
+    // --- DATABASE BHS INGGRIS ---
     const psts_bing_questions = [
         { q: "What is the social function of a News Item text?", o: ["To entertain", "To persuade", "To inform newsworthy events", "To describe a place"], c: 2, exp: "Fungsi News Item adalah menginformasikan berita harian (newsworthy events)." },
         { q: "Which one is NOT a generic structure of News Item?", o: ["Newsworthy Event", "Background Event", "Sources", "Resolution"], c: 3, exp: "Resolution ada di Narrative text, bukan News Item." },
-        { q: "The summary of the main event is written in the...", o: ["Orientation", "Newsworthy Event", "Sources", "Background"], c: 1, exp: "Newsworthy event berisi ringkasan/inti kejadian utama." },
-        { q: "The people who provide quotes or statements in the news are called...", o: ["Sources", "Readers", "Writers", "Actors"], c: 0, exp: "Saksi atau ahli disebut Sources (Sumber)." },
-        { q: "The dominant tense used in News Item text is...", o: ["Simple Present", "Present Perfect", "Simple Past Tense", "Future Tense"], c: 2, exp: "Kejadian berita sudah terjadi, jadi memakai Simple Past Tense." },
-        { q: "Words like 'said', 'stated', and 'reported' are called...", o: ["Action verbs", "Saying verbs", "Thinking verbs", "Adverbs"], c: 1, exp: "Saying verbs digunakan untuk melaporkan perkataan narasumber." }
+        { q: "The summary of the main event is written in the...", o: ["Orientation", "Newsworthy Event", "Sources", "Background"], c: 1, exp: "Newsworthy event berisi ringkasan/inti kejadian utama." }
     ];
-    
-    // Nambahin variasi soal bing agar pas 40
-    for(let i=0; i<34; i++) {
-        psts_bing_questions.push({
-            q: `Practice Question ${i+1}: Which of the following is a Past Tense verb?`,
-            o: ["Go", "Went", "Going", "Goes"],
-            c: 1,
-            exp: "'Went' is the past form of 'go'."
-        });
+    for(let i=3; i<40; i++) {
+        psts_bing_questions.push({ q: `Practice Question ${i+1}: Which of the following is a Past Tense verb?`, o: ["Go", "Went", "Going", "Goes"], c: 1, exp: "'Went' is the past form of 'go'." });
     }
 
     const database = {
@@ -304,14 +274,11 @@
     let score = 0;
     let answered = false;
 
-    // INIT DASHBOARD
     function initDashboard() {
         const indoScore = localStorage.getItem('score_psts_indo');
         const bingScore = localStorage.getItem('score_psts_bing');
-
         if (indoScore !== null) document.getElementById('status-modul-indo').innerText = `Skor Terakhir: ${indoScore}`;
         if (bingScore !== null) document.getElementById('status-modul-bing').innerText = `Skor Terakhir: ${bingScore}`;
-        
         updateHistorySidebar();
     }
 
@@ -357,7 +324,7 @@
         document.getElementById('question-tracker').innerText = `${currentQIndex + 1}/${questions.length}`;
         document.getElementById('progress-fill').style.width = `${((currentQIndex) / questions.length) * 100}%`;
 
-        document.getElementById('reading-container').style.display = 'none'; // Reset reading
+        document.getElementById('reading-container').style.display = 'none';
         document.getElementById('question-text').innerText = `${currentQIndex + 1}. ${q.q}`;
         
         const optionsContainer = document.getElementById('options-container');
@@ -408,13 +375,11 @@
             showView('view-result');
             const finalScore = Math.round((score / questions.length) * 100);
             document.getElementById('final-score').innerText = finalScore;
-            
             localStorage.setItem(`score_${currentModulId}`, finalScore);
             document.getElementById('result-message').innerText = finalScore >= 80 ? "Luar biasa! Pertahankan!" : "Jangan menyerah, coba lagi!";
         }, 300);
     }
 
-    // AI SIMULATION CHAT
     function toggleChat() {
         const box = document.getElementById('ai-chat-box');
         box.style.display = box.style.display === 'flex' ? 'none' : 'flex';
@@ -424,14 +389,12 @@
         const input = document.getElementById('ai-input');
         const text = input.value.trim();
         if(!text) return;
-
         const body = document.getElementById('ai-chat-body');
         body.innerHTML += `<div class="user-msg">${text}</div>`;
         input.value = '';
         body.scrollTop = body.scrollHeight;
-
         setTimeout(() => {
-            body.innerHTML += `<div class="ai-msg">Semangat belajarnya! Aku bantu simpan pertanyaan "${text}" ini ya. Jangan lupa baca ulang materinya! 🚀</div>`;
+            body.innerHTML += `<div class="ai-msg">Semangat belajarnya! Pertanyaan "${text}" dicatat ya. Tetap fokus! 🚀</div>`;
             body.scrollTop = body.scrollHeight;
         }, 800);
     }
