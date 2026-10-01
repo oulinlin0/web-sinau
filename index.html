@@ -50,58 +50,67 @@
         .top-header { position: fixed; top: 0; left: 0; width: 100%; padding: 15px 25px; z-index: 100; display: flex; justify-content: center; align-items: center; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;}
         .top-header h1 { font-size: 1.4em; color: #ffffff; font-weight: 700; text-shadow: 0 2px 5px rgba(0,0,0,0.3); }
 
-        /* --- PERFECT CURVED BOTTOM NAVIGATION (FLUTTER STYLE) --- */
+        /* --- PERFECT CURVED BOTTOM NAVIGATION (SEPARATED HOLE EFFECT) --- */
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; width: 100%; height: 75px;
-            background: #ffffff; display: flex; border-radius: 30px 30px 0 0; z-index: 1000;
-            box-shadow: 0 -10px 30px rgba(0,0,0,0.15); /* Shadow lebih halus */
+            background: transparent; /* Harus transparan agar bolongannya terlihat */
+            display: flex; z-index: 1000;
             padding-bottom: env(safe-area-inset-bottom);
+            filter: drop-shadow(0 -4px 15px rgba(0,0,0,0.15)); /* Trik untuk memberi shadow mengikuti lekukan lubang */
         }
         
+        /* Container untuk lapisan navbar putih (mengontrol area ilusi shadow raksasa) */
+        .nav-bg-clip {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            border-radius: 30px 30px 0 0;
+            overflow: hidden; 
+            z-index: 1; pointer-events: none;
+        }
+
         .nav-indicator-wrapper {
             position: absolute; top: 0; left: 0; width: 20%; height: 100%;
             transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             z-index: 2; pointer-events: none;
         }
 
-        /* Lingkaran Ikon Melayang */
-        .nav-indicator {
-            position: absolute; 
-            top: -30px; /* Jarak pas agar melayang setengah */
-            left: 50%; 
-            transform: translateX(-50%);
-            width: 56px; 
-            height: 56px; 
+        /* 1. EFEK LUBANG CEKUNG TEMBUS PANDANG (THE HOLE) */
+        .nav-hole {
+            position: absolute;
+            top: -35px; /* Separuh dari height, pas memotong atas navbar */
+            left: 50%; transform: translateX(-50%);
+            width: 70px; height: 70px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--theme-1), var(--theme-2));
-            border: 6px solid #ffffff; /* Garis putih pemotong */
-            display: flex; justify-content: center; align-items: center;
-            color: #ffffff; font-size: 1.4em;
+            background: transparent;
+            box-shadow: 0 0 0 2000px #ffffff; /* Menciptakan warna putih solid di SELURUH sisa navbar */
         }
 
-        /* Trik Pemotong Cekungan (Notch Curve) Bebas Bug */
-        .nav-indicator::before, 
-        .nav-indicator::after {
-            content: ''; 
-            position: absolute; 
-            top: 2px; /* Setara dengan garis atas navbar */
-            width: 22px; 
-            height: 22px;
-            background: transparent;
+        /* EFEK LENGKUNGAN LEMBUT PADA SIKU LUBANG (FILLETS) */
+        .nav-hole::before, .nav-hole::after {
+            content: ''; position: absolute;
+            top: 35px; /* Sejajar pas dengan garis lurus batas atas navbar */
+            width: 24px; height: 24px;
         }
-        
-        /* Lengkungan Kiri */
-        .nav-indicator::before { 
-            left: -27px; /* Rapat ke sisi luar border */
-            border-bottom-right-radius: 22px; 
-            box-shadow: 0 24px 0 0 #ffffff; /* Didorong murni ke BAWAH agar atasnya lurus sempurna */
+        .nav-hole::before {
+            left: -24px;
+            background: radial-gradient(circle at top left, transparent 23.5px, #ffffff 24px);
         }
-        
-        /* Lengkungan Kanan */
-        .nav-indicator::after { 
-            right: -27px; /* Rapat ke sisi luar border */
-            border-bottom-left-radius: 22px; 
-            box-shadow: 0 24px 0 0 #ffffff; /* Didorong murni ke BAWAH agar atasnya lurus sempurna */
+        .nav-hole::after {
+            right: -24px;
+            background: radial-gradient(circle at top right, transparent 23.5px, #ffffff 24px);
+        }
+
+        /* 2. TOMBOL YANG MELAYANG TERPISAH (FLOATING BUTTON) */
+        .nav-floating-icon {
+            position: absolute;
+            top: -26px; /* Letaknya dibuat benar-benar berpusat di tengah lubang */
+            left: 50%; transform: translateX(-50%);
+            width: 52px; height: 52px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--theme-1), var(--theme-2));
+            color: #ffffff; font-size: 1.4em;
+            display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+            border: none; /* Dihilangkan bordernya supaya benar-benar tampak pisah */
         }
 
         .nav-item { position: relative; width: 20%; height: 100%; display: flex; justify-content: center; align-items: center; flex-direction: column; cursor: pointer; z-index: 3; }
@@ -322,9 +331,20 @@
 
 <!-- CURVED ANIMATED BOTTOM NAVIGATION -->
 <nav class="bottom-nav" id="bottom-nav">
-    <div class="nav-indicator-wrapper" id="indicator-wrapper">
-        <div class="nav-indicator" id="nav-floating-icon">🏠</div>
+    
+    <!-- Lapis 1: Pembentuk Background Putih + Lubang yang bolong tembus pandang -->
+    <div class="nav-bg-clip">
+        <div class="nav-indicator-wrapper" id="bg-wrapper">
+            <div class="nav-hole"></div>
+        </div>
     </div>
+    
+    <!-- Lapis 2: Tombol Bulat Melayang (Terpisah dari navbar putih) -->
+    <div class="nav-indicator-wrapper" id="indicator-wrapper" style="z-index: 4;">
+        <div class="nav-floating-icon" id="nav-floating-icon">🏠</div>
+    </div>
+
+    <!-- Lapis 3: Menu-menu yang bisa diklik -->
     <div class="nav-item active" onclick="switchTab(0, 'view-dashboard', '🏠')"><span class="nav-icon">🏠</span><span class="nav-text">Home</span></div>
     <div class="nav-item" onclick="switchTab(1, 'view-chat', '💬')"><span class="nav-icon">💬</span><span class="nav-text">Chat</span></div>
     <div class="nav-item" onclick="switchTab(2, 'view-music', '🎵')"><span class="nav-icon">🎵</span><span class="nav-text">Musik</span></div>
@@ -354,8 +374,12 @@
     // --- NAVIGATION LOGIC ---
     function switchTab(index, viewId, iconSymbol = '🏠') {
         if (index >= 0) {
+            /* MENGGERAKKAN KEDUA LAYER BERSAMAAN SECARA HALUS */
             document.getElementById('indicator-wrapper').style.transform = `translateX(${index * 100}%)`;
+            document.getElementById('bg-wrapper').style.transform = `translateX(${index * 100}%)`;
+            
             document.getElementById('nav-floating-icon').innerText = iconSymbol;
+            
             const navItems = document.querySelectorAll('.bottom-nav .nav-item');
             navItems.forEach((el, i) => { if(i === index) el.classList.add('active'); else el.classList.remove('active'); });
         }
