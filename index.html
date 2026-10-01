@@ -3,137 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>sinau bang - 60fps Glassmorphism UI</title>
+    <title>sinau bang - Custom Glass UI</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
         :root {
-            /* Default Teal Theme */
-            --bg-1: #b2ebf2; --bg-2: #80deea; --bg-3: #4dd0e1;
-            --theme-1: #00897b; --theme-2: #004d40;
-            --glass-bg: rgba(255, 255, 255, 0.15);
-            --glass-border: rgba(255, 255, 255, 0.3);
-            --text-main: #1e3d59; --text-muted: #475569;
-            --nav-bg: rgba(255, 255, 255, 0.2);
+            /* Warna Tema Utama (Tombol & Aksen) */
+            --theme-1: #0ea5e9; 
+            --theme-2: #0284c7;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
 
         body {
-            background: linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 50%, var(--bg-3) 100%);
-            min-height: 100vh; color: var(--text-main); overflow-x: hidden; 
-            transition: background 0.8s ease, color 0.5s ease;
+            /* Background default (Bisa diubah lewat color picker) */
+            background: linear-gradient(135deg, #0f172a, #3b0764);
+            min-height: 100vh; color: #ffffff; overflow-x: hidden; 
+            transition: background 0.5s ease;
             background-attachment: fixed; padding-bottom: 95px; padding-top: 75px;
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* GLASSMORPHISM UTILITIES */
+        /* --- DARK GLASSMORPHISM UTILITIES (Referensi 1000085444.jpg) --- */
         .glass-panel {
-            background: var(--glass-bg);
+            background: rgba(0, 0, 0, 0.35); /* Transparan gelap */
             backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
-            transition: all 0.5s ease;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease; color: #ffffff;
         }
 
         /* AUTH / LOGIN SCREEN */
         #view-auth {
             display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px;
-            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1350&q=80') no-repeat center center fixed;
-            background-size: cover; position: fixed; top: 0; left: 0; width: 100%; z-index: 2000;
+            background: rgba(0,0,0,0.4); position: fixed; top: 0; left: 0; width: 100%; z-index: 2000;
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
         }
         .auth-card { border-radius: 24px; padding: 40px 30px; width: 100%; max-width: 420px; text-align: center; animation: fadeIn 0.6s ease; }
-        .auth-card h2 { color: var(--theme-1); margin-bottom: 20px; font-size: 2em; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.2);}
-        .auth-input { width: 100%; padding: 14px 18px; margin-bottom: 15px; border-radius: 14px; border: 1px solid var(--glass-border); outline: none; font-size: 1em; background: rgba(255, 255, 255, 0.2); color: #fff; transition: 0.3s; }
-        .auth-input::placeholder { color: rgba(255,255,255,0.7); }
-        .auth-input:focus { border-color: var(--theme-1); background: rgba(255,255,255,0.3); }
-        .auth-btn { width: 100%; padding: 14px; border-radius: 14px; border: none; background: linear-gradient(135deg, var(--theme-1), var(--theme-2)); color: white; font-weight: 600; font-size: 1.05em; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-        .auth-switch { margin-top: 20px; font-size: 0.9em; color: #fff; font-weight: 500; }
+        .auth-card h2 { color: #ffffff; margin-bottom: 20px; font-size: 2em; font-weight: 700; text-shadow: 0 2px 10px rgba(0,0,0,0.5);}
+        .auth-input { width: 100%; padding: 14px 18px; margin-bottom: 15px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.2); outline: none; font-size: 1em; background: rgba(0, 0, 0, 0.4); color: #fff; transition: 0.3s; }
+        .auth-input::placeholder { color: rgba(255,255,255,0.6); }
+        .auth-input:focus { border-color: var(--theme-1); background: rgba(0,0,0,0.6); }
+        .auth-btn { width: 100%; padding: 14px; border-radius: 14px; border: none; background: linear-gradient(135deg, var(--theme-1), var(--theme-2)); color: white; font-weight: 600; font-size: 1.05em; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
+        .auth-switch { margin-top: 20px; font-size: 0.9em; color: rgba(255,255,255,0.8); font-weight: 500; }
         .auth-switch span { color: var(--theme-1); font-weight: 700; cursor: pointer; text-decoration: underline; }
 
         /* TOP HEADER */
         .top-header { position: fixed; top: 0; left: 0; width: 100%; padding: 15px 25px; z-index: 100; display: flex; justify-content: center; align-items: center; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;}
-        .top-header h1 { font-size: 1.4em; color: var(--theme-2); font-weight: 700; }
+        .top-header h1 { font-size: 1.4em; color: #ffffff; font-weight: 700; text-shadow: 0 2px 5px rgba(0,0,0,0.3); }
 
-        /* --- 60FPS SLIDING BOTTOM NAVIGATION WITH CUTOUT --- */
+        /* --- BOTTOM NAVIGATION (SOLID WHITE + PERFECT CUTOUT) --- */
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; width: 100%; height: 75px;
-            background: var(--nav-bg); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+            background: #ffffff; /* Putih Solid sesuai permintaan */
             display: flex; border-radius: 30px 30px 0 0; z-index: 1000;
-            border-top: 1px solid var(--glass-border); box-shadow: 0 -5px 25px rgba(0,0,0,0.05);
+            box-shadow: 0 -5px 25px rgba(0,0,0,0.15);
             padding-bottom: env(safe-area-inset-bottom);
         }
         
-        /* The sliding wrapper that moves 60fps */
         .nav-indicator-wrapper {
             position: absolute; top: 0; left: 0; width: 20%; height: 100%;
-            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); /* Bouncy smooth physics */
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             z-index: 1; pointer-events: none;
         }
         
-        /* The circular cutout / indicator shape */
+        /* Lingkaran pelayang dengan border putih solid agar menyatu sempurna dengan background putih */
         .nav-indicator {
             position: absolute; top: -25px; left: 50%; transform: translateX(-50%);
-            width: 55px; height: 55px; border-radius: 50%;
+            width: 56px; height: 56px; border-radius: 50%;
             background: linear-gradient(135deg, var(--theme-1), var(--theme-2));
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-            /* Transparent border creates the gap/cutout illusion on the glass */
-            border: 6px solid transparent; background-clip: padding-box;
-            display: flex; justify-content: center; align-items: center;
+            border: 6px solid #ffffff; /* Garis tepi putih menyatu dengan nav */
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
         }
         
-        /* Simulate the inverted curve (cekungan) */
+        /* Bayangan cekungan kiri dan kanan (menggunakan bayangan putih solid) */
         .nav-indicator::before, .nav-indicator::after {
             content: ''; position: absolute; top: 22px; width: 20px; height: 20px;
             background: transparent; border-radius: 50%;
         }
-        .nav-indicator::before { left: -24px; box-shadow: 10px -10px 0 0 var(--glass-border); }
-        .nav-indicator::after { right: -24px; box-shadow: -10px -10px 0 0 var(--glass-border); }
+        .nav-indicator::before { left: -26px; box-shadow: 12px -12px 0 0 #ffffff; }
+        .nav-indicator::after { right: -26px; box-shadow: -12px -12px 0 0 #ffffff; }
 
         .nav-item { position: relative; width: 20%; height: 100%; display: flex; justify-content: center; align-items: center; flex-direction: column; cursor: pointer; z-index: 2; }
-        .nav-icon { font-size: 1.5em; transition: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); color: var(--text-main); opacity: 0.7; }
-        .nav-text { position: absolute; font-size: 0.7em; font-weight: 600; color: var(--theme-2); transform: translateY(20px); opacity: 0; transition: 0.4s; }
+        .nav-icon { font-size: 1.5em; transition: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); color: #94a3b8; }
+        .nav-text { position: absolute; font-size: 0.7em; font-weight: 600; color: #64748b; transform: translateY(20px); opacity: 0; transition: 0.4s; }
         
         /* Active Item States */
-        .nav-item.active .nav-icon { transform: translateY(-34px); color: white; opacity: 1; text-shadow: 0 2px 5px rgba(0,0,0,0.3); }
-        .nav-item.active .nav-text { transform: translateY(14px); opacity: 1; }
+        .nav-item.active .nav-icon { transform: translateY(-34px); color: white; opacity: 1; }
+        .nav-item.active .nav-text { transform: translateY(14px); opacity: 1; color: var(--theme-2); }
 
         /* MAIN CONTAINERS */
         .container { max-width: 800px; margin: 0 auto; padding: 0 15px; }
         .card { border-radius: 24px; padding: 25px; margin-bottom: 20px; animation: fadeIn 0.4s ease; }
         .view { display: none; } .view.active { display: block; }
-        .section-title { font-size: 1.3em; color: var(--theme-2); margin-bottom: 20px; border-bottom: 2px solid var(--theme-1); padding-bottom: 10px; font-weight: 700; }
+        .section-title { font-size: 1.3em; color: #ffffff; margin-bottom: 20px; border-bottom: 2px solid rgba(255,255,255,0.2); padding-bottom: 10px; font-weight: 700; }
 
         /* FOLDER UI */
-        .folder-header { padding: 15px 20px; border-radius: 16px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 600; color: var(--theme-2); border-left: 6px solid var(--theme-1); margin-bottom: 12px; transition: 0.3s; }
-        .folder-header:hover { transform: translateY(-2px); }
-        .folder-content { display: none; padding: 5px 0 10px 15px; border-left: 2px dashed var(--theme-1); margin-left: 15px; margin-bottom: 15px; animation: slideDown 0.3s ease; }
+        .folder-header { padding: 15px 20px; border-radius: 16px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 600; margin-bottom: 12px; transition: 0.3s; }
+        .folder-header:hover { transform: translateY(-2px); background: rgba(255,255,255,0.1); }
+        .folder-content { display: none; padding: 5px 0 10px 15px; border-left: 2px dashed rgba(255,255,255,0.3); margin-left: 15px; margin-bottom: 15px; animation: slideDown 0.3s ease; }
         .folder-content.active { display: flex; flex-direction: column; gap: 10px; }
         .chevron { transition: transform 0.3s ease; font-size: 1.1em; } .chevron.active { transform: rotate(180deg); }
         .history-item { border-radius: 14px; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid var(--theme-1); }
-        .history-info h3 { font-size: 1em; margin-bottom: 3px; color: var(--theme-2); }
-        .history-info p { font-size: 0.8em; color: var(--text-muted); }
+        .history-info h3 { font-size: 1em; margin-bottom: 3px; color: #ffffff; }
+        .history-info p { font-size: 0.8em; color: rgba(255,255,255,0.7); }
 
-        .btn { background: linear-gradient(135deg, var(--theme-1), var(--theme-2)); color: white; border: none; padding: 12px 20px; border-radius: 30px; font-weight: 600; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        .btn { background: linear-gradient(135deg, var(--theme-1), var(--theme-2)); color: white; border: none; padding: 12px 20px; border-radius: 30px; font-weight: 600; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
         .btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
-        .btn-outline { background: var(--glass-bg); color: var(--text-main); border: 2px solid var(--theme-1); backdrop-filter: blur(5px); }
-        
-        /* THEME SELECTOR BUTTONS */
-        .theme-circle { width: 35px; height: 35px; border-radius: 50%; cursor: pointer; border: 2px solid var(--glass-border); display: inline-block; transition: 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
-        .theme-circle:hover { transform: scale(1.15); border-color: #fff; }
+        .btn-outline { background: rgba(255,255,255,0.1); color: #ffffff; border: 2px solid var(--theme-1); }
 
         /* CHAT STYLES */
         .chat-container { display: flex; flex-direction: column; height: 500px; gap: 12px; }
         .chat-messages-box { flex: 1; border-radius: 16px; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
         .chat-bubble { max-width: 80%; padding: 10px 15px; border-radius: 16px; font-size: 0.9em; line-height: 1.4; animation: fadeIn 0.3s ease; }
-        .chat-bubble-other { background: var(--glass-bg); align-self: flex-start; border-bottom-left-radius: 4px; border: 1px solid var(--glass-border); }
+        .chat-bubble-other { background: rgba(0,0,0,0.5); align-self: flex-start; border-bottom-left-radius: 4px; border: 1px solid rgba(255,255,255,0.1); }
         .chat-bubble-me { background: linear-gradient(135deg, var(--theme-1), var(--theme-2)); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
         .chat-input-area { display: flex; gap: 8px; }
-        .chat-input { flex: 1; padding: 12px 18px; border-radius: 30px; border: 1px solid var(--glass-border); background: var(--glass-bg); color: var(--text-main); outline: none; transition: 0.3s; }
-        .chat-input::placeholder { color: var(--text-muted); }
+        .chat-input { flex: 1; padding: 12px 18px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.4); color: #ffffff; outline: none; transition: 0.3s; }
+        .chat-input::placeholder { color: rgba(255,255,255,0.5); }
 
         /* MODAL */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); z-index: 3000; justify-content: center; align-items: center; padding: 15px; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(10px); z-index: 3000; justify-content: center; align-items: center; padding: 15px; }
         .modal-content { width: 100%; max-width: 500px; max-height: 80vh; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; }
         .modal-body { flex: 1; overflow-y: auto; margin-top: 15px; }
         .detail-soal-card { padding: 12px; border-radius: 12px; margin-bottom: 10px; font-size: 0.85em; border-left: 4px solid var(--theme-1); }
@@ -142,16 +132,23 @@
 
         /* QUIZ */
         .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .progress-bar { width: 100%; height: 8px; background: rgba(255,255,255,0.2); border-radius: 4px; overflow: hidden; margin-bottom: 20px;}
+        .progress-bar { width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; margin-bottom: 20px;}
         .progress-fill { height: 100%; background: linear-gradient(90deg, var(--theme-1), var(--theme-2)); width: 0%; transition: width 0.3s ease; }
-        .reading-box { border-left: 4px solid var(--theme-1); padding: 15px; margin-bottom: 15px; border-radius: 0 12px 12px 0; font-size: 0.85em; display: none; }
-        .question-text { font-size: 1.1em; font-weight: 600; margin-bottom: 15px; color: var(--theme-2); }
+        .reading-box { border-left: 4px solid var(--theme-1); padding: 15px; margin-bottom: 15px; border-radius: 0 12px 12px 0; font-size: 0.85em; display: none; background: rgba(0,0,0,0.2); }
+        .question-text { font-size: 1.1em; font-weight: 600; margin-bottom: 15px; color: #ffffff; }
         .options { display: grid; gap: 10px; }
-        .option-btn { background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 12px 16px; border-radius: 14px; text-align: left; font-size: 0.9em; cursor: pointer; transition: 0.2s; color: var(--text-main); font-weight: 500;}
-        .option-btn:hover:not(:disabled) { background: rgba(255,255,255,0.3); }
-        .option-btn.correct { background: rgba(22, 163, 74, 0.7) !important; color: white !important; border-color: #22c55e !important; }
-        .option-btn.wrong { background: rgba(220, 38, 38, 0.7) !important; color: white !important; border-color: #ef4444 !important; }
-        .feedback-box { display: none; margin-top: 15px; padding: 15px; border-radius: 12px; border-left: 4px solid #fbbf24; }
+        .option-btn { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); padding: 12px 16px; border-radius: 14px; text-align: left; font-size: 0.9em; cursor: pointer; transition: 0.2s; color: #ffffff; font-weight: 500;}
+        .option-btn:hover:not(:disabled) { background: rgba(255,255,255,0.1); }
+        .option-btn.correct { background: rgba(22, 163, 74, 0.8) !important; color: white !important; border-color: #22c55e !important; }
+        .option-btn.wrong { background: rgba(220, 38, 38, 0.8) !important; color: white !important; border-color: #ef4444 !important; }
+        .feedback-box { display: none; margin-top: 15px; padding: 15px; border-radius: 12px; border-left: 4px solid #fbbf24; background: rgba(0,0,0,0.3); }
+
+        /* COLOR PICKER STYLES */
+        .color-picker-container { display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 10px; }
+        .color-picker-wrapper { display: flex; flex-direction: column; align-items: center; font-size: 0.8em; color: rgba(255,255,255,0.8); }
+        input[type="color"] { -webkit-appearance: none; border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; background: none; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+        input[type="color"]::-webkit-color-swatch { border: 2px solid rgba(255,255,255,0.5); border-radius: 50%; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes slideDown { from { transform: translateY(-10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
@@ -175,9 +172,9 @@
 <!-- Modal Histori -->
 <div class="modal" id="history-modal">
     <div class="modal-content glass-panel">
-        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--glass-border); padding-bottom:12px;">
-            <h3 id="modal-title" style="color:var(--theme-2); font-size:1.1em;">Detail</h3>
-            <button class="btn btn-outline" style="padding: 2px 10px; border-color: #ef4444; color: #ef4444;" onclick="closeModal()">Tutup</button>
+        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.2); padding-bottom:12px;">
+            <h3 id="modal-title" style="color:#ffffff; font-size:1.1em;">Detail</h3>
+            <button class="btn btn-outline" style="padding: 2px 10px; border-color: #ef4444; color: #fca5a5;" onclick="closeModal()">Tutup</button>
         </div>
         <div class="modal-body" id="modal-body-content"></div>
     </div>
@@ -215,8 +212,8 @@
                 <span>💻 Jurusan TKJ</span><span class="chevron">▼</span>
             </div>
             <div class="folder-content" id="folder-tkj">
-                <div class="history-item glass-panel"><div class="history-info"><h3>Config IP, DHCP, VLAN</h3></div><button class="btn" onclick="startStudySession('tkj_jaringan')">Mulai</button></div>
-                <div class="history-item glass-panel"><div class="history-info"><h3>Sistem VSAT</h3></div><button class="btn" onclick="startStudySession('tkj_vsat')">Mulai</button></div>
+                <div class="history-item glass-panel"><div class="history-info"><h3>Config IP, DHCP, VLAN</h3><p>Administrasi Jaringan</p></div><button class="btn" onclick="startStudySession('tkj_jaringan')">Mulai</button></div>
+                <div class="history-item glass-panel"><div class="history-info"><h3>Sistem VSAT</h3><p>Transmisi satelit</p></div><button class="btn" onclick="startStudySession('tkj_vsat')">Mulai</button></div>
             </div>
         </div>
     </main>
@@ -225,7 +222,7 @@
     <main id="view-chat" class="view card glass-panel">
         <h2 class="section-title">💬 Ruang Obrolan Publik</h2>
         <div class="chat-container">
-            <div class="chat-messages-box glass-panel" id="chat-messages-box"><p style="text-align: center;">Memuat pesan...</p></div>
+            <div class="chat-messages-box glass-panel" id="chat-messages-box"><p style="text-align: center; color:rgba(255,255,255,0.5);">Memuat pesan...</p></div>
             <div class="chat-input-area">
                 <input type="text" id="chat-input-field" class="chat-input" placeholder="Ketik pesan..." onkeypress="handleChatKeyPress(event)">
                 <button class="btn" style="padding: 10px 15px;" onclick="sendChatMessage()">🚀</button>
@@ -248,26 +245,31 @@
     <!-- 4. HISTORY -->
     <main id="view-history" class="view card glass-panel">
         <h2 class="section-title">📜 Histori Belajar</h2>
-        <div id="main-history-log"><p style="text-align: center;">Memuat histori...</p></div>
+        <div id="main-history-log"><p style="text-align: center; color:rgba(255,255,255,0.5);">Memuat histori...</p></div>
     </main>
 
-    <!-- 5. PROFILE & THEME CUSTOMIZER -->
+    <!-- 5. PROFILE & CUSTOM BACKGROUND -->
     <main id="view-profile" class="view card glass-panel" style="text-align: center; padding-top: 30px;">
         <div style="font-size: 4em; margin-bottom: 10px;">🧑‍🎓</div>
-        <h2 id="profile-name-display" style="color:var(--theme-2); font-weight: 700; font-size: 1.8em;">User</h2>
-        <p style="color: var(--text-muted); font-size: 0.9em; margin-bottom: 25px;">Siswa SMK YAMAS</p>
+        <h2 id="profile-name-display" style="font-weight: 700; font-size: 1.8em;">User</h2>
+        <p style="color: rgba(255,255,255,0.7); font-size: 0.9em; margin-bottom: 25px;">Siswa SMK YAMAS</p>
         
-        <!-- THEME SELECTOR -->
-        <div class="glass-panel" style="padding: 15px; border-radius: 16px; margin-bottom: 20px;">
-            <h4 style="margin-bottom:12px; color: var(--theme-2);">🎨 Sesuaikan Warna UI</h4>
-            <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
-                <div class="theme-circle" style="background: linear-gradient(135deg, #b2ebf2, #00897b);" onclick="setTheme('teal')" title="Teal Default"></div>
-                <div class="theme-circle" style="background: linear-gradient(135deg, #5b1016, #2d050a);" onclick="setTheme('ruby')" title="Ruby Dark Glass"></div>
-                <div class="theme-circle" style="background: linear-gradient(135deg, #0f172a, #0ea5e9);" onclick="setTheme('ocean')" title="Deep Ocean"></div>
-                <div class="theme-circle" style="background: linear-gradient(135deg, #fbcfe8, #db2777);" onclick="setTheme('pink')" title="Pastel Pink"></div>
-                <div class="theme-circle" style="background: linear-gradient(135deg, #18181b, #71717a);" onclick="setTheme('dark')" title="Dark Minimalist"></div>
+        <!-- COLOR WHEEL / CUSTOM BACKGROUND -->
+        <div class="glass-panel" style="padding: 20px; border-radius: 16px; margin-bottom: 25px;">
+            <h4 style="margin-bottom:5px;">🎨 Kustomisasi Background</h4>
+            <p style="font-size:0.75em; color:rgba(255,255,255,0.7); margin-bottom:15px;">Pilih 2 warna untuk menciptakan gradasi unikmu!</p>
+            
+            <div class="color-picker-container">
+                <div class="color-picker-wrapper">
+                    <input type="color" id="bg-color-1" onchange="updateCustomBackground()">
+                    <span style="margin-top:5px;">Warna Atas</span>
+                </div>
+                <div style="font-size: 1.5em; color:rgba(255,255,255,0.3);">+</div>
+                <div class="color-picker-wrapper">
+                    <input type="color" id="bg-color-2" onchange="updateCustomBackground()">
+                    <span style="margin-top:5px;">Warna Bawah</span>
+                </div>
             </div>
-            <p style="font-size:0.75em; margin-top:10px; color:var(--text-muted);">Pilih gradiasi warna transparan kesukaanmu.</p>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 12px;">
@@ -292,13 +294,13 @@
     <!-- 7. RESULT -->
     <main id="view-result" class="view card glass-panel" style="text-align: center; padding: 40px 15px;">
         <h2>Selesai! 🎉</h2>
-        <div style="width: 130px; height: 130px; border-radius: 50%; background: linear-gradient(135deg, var(--theme-1), var(--theme-2)); color: white; display: flex; align-items: center; justify-content: center; font-size: 3em; font-weight: 700; margin: 20px auto;" id="final-score">100</div>
+        <div style="width: 130px; height: 130px; border-radius: 50%; background: linear-gradient(135deg, var(--theme-1), var(--theme-2)); color: white; display: flex; align-items: center; justify-content: center; font-size: 3em; font-weight: 700; margin: 20px auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5);" id="final-score">100</div>
         <p id="result-message" style="margin-bottom: 25px;">Luar biasa!</p>
         <button class="btn" style="width: 100%;" onclick="saveScoreToHistory()">💾 Simpan & Kembali</button>
     </main>
 </div>
 
-<!-- 60FPS FLOATING BOTTOM NAV -->
+<!-- 60FPS FLOATING BOTTOM NAV (WHITE SOLID) -->
 <nav class="bottom-nav" id="bottom-nav">
     <div class="nav-indicator-wrapper" id="indicator-wrapper">
         <div class="nav-indicator"></div>
@@ -311,31 +313,24 @@
 </nav>
 
 <script>
-    // --- THEME CUSTOMIZER LOGIC ---
-    const themes = {
-        teal: { bg1: '#b2ebf2', bg2: '#80deea', bg3: '#4dd0e1', th1: '#00897b', th2: '#004d40', txt: '#1e3d59', txtM: '#475569', gBg: 'rgba(255, 255, 255, 0.25)', gBr: 'rgba(255, 255, 255, 0.4)', nBg: 'rgba(255, 255, 255, 0.3)' },
-        ruby: { bg1: '#5b1016', bg2: '#3d080f', bg3: '#1a0306', th1: '#ef4444', th2: '#991b1b', txt: '#fecdd3', txtM: '#fda4af', gBg: 'rgba(0, 0, 0, 0.3)', gBr: 'rgba(255, 255, 255, 0.1)', nBg: 'rgba(0, 0, 0, 0.4)' },
-        ocean: { bg1: '#0f172a', bg2: '#1e293b', bg3: '#020617', th1: '#0ea5e9', th2: '#0369a1', txt: '#f1f5f9', txtM: '#94a3b8', gBg: 'rgba(15, 23, 42, 0.6)', gBr: 'rgba(255, 255, 255, 0.1)', nBg: 'rgba(15, 23, 42, 0.7)' },
-        pink: { bg1: '#fce7f3', bg2: '#fbcfe8', bg3: '#f9a8d4', th1: '#db2777', th2: '#9d174d', txt: '#4a044e', txtM: '#701a75', gBg: 'rgba(255, 255, 255, 0.3)', gBr: 'rgba(255, 255, 255, 0.5)', nBg: 'rgba(255, 255, 255, 0.4)' },
-        dark: { bg1: '#18181b', bg2: '#27272a', bg3: '#000000', th1: '#a1a1aa', th2: '#52525b', txt: '#f4f4f5', txtM: '#a1a1aa', gBg: 'rgba(24, 24, 27, 0.6)', gBr: 'rgba(255, 255, 255, 0.05)', nBg: 'rgba(24, 24, 27, 0.8)' }
-    };
+    // --- CUSTOM BACKGROUND LOGIC ---
+    const inputColor1 = document.getElementById('bg-color-1');
+    const inputColor2 = document.getElementById('bg-color-2');
 
-    function setTheme(themeName) {
-        const t = themes[themeName];
-        document.documentElement.style.setProperty('--bg-1', t.bg1);
-        document.documentElement.style.setProperty('--bg-2', t.bg2);
-        document.documentElement.style.setProperty('--bg-3', t.bg3);
-        document.documentElement.style.setProperty('--theme-1', t.th1);
-        document.documentElement.style.setProperty('--theme-2', t.th2);
-        document.documentElement.style.setProperty('--text-main', t.txt);
-        document.documentElement.style.setProperty('--text-muted', t.txtM);
-        document.documentElement.style.setProperty('--glass-bg', t.gBg);
-        document.documentElement.style.setProperty('--glass-border', t.gBr);
-        document.documentElement.style.setProperty('--nav-bg', t.nBg);
-        localStorage.setItem('sinau_theme', themeName);
+    function updateCustomBackground() {
+        const c1 = inputColor1.value;
+        const c2 = inputColor2.value;
+        document.body.style.background = `linear-gradient(135deg, ${c1}, ${c2})`;
+        localStorage.setItem('sinau_bg_1', c1);
+        localStorage.setItem('sinau_bg_2', c2);
     }
 
-    const savedTheme = localStorage.getItem('sinau_theme') || 'teal'; setTheme(savedTheme);
+    // Load saved colors on startup
+    const savedC1 = localStorage.getItem('sinau_bg_1') || '#0f172a'; // Default dark blue
+    const savedC2 = localStorage.getItem('sinau_bg_2') || '#3b0764'; // Default dark purple
+    inputColor1.value = savedC1;
+    inputColor2.value = savedC2;
+    document.body.style.background = `linear-gradient(135deg, ${savedC1}, ${savedC2})`;
 
     // --- NAVIGATION LOGIC ---
     function switchTab(index, viewId) {
@@ -407,13 +402,13 @@
 
     // --- CHAT LOGIC ---
     async function loadChatMessages() {
-        const chatBox = document.getElementById('chat-messages-box'); chatBox.innerHTML = '<p>Memuat pesan...</p>';
+        const chatBox = document.getElementById('chat-messages-box'); chatBox.innerHTML = '<p style="text-align:center; color:rgba(255,255,255,0.5);">Memuat pesan...</p>';
         try {
             let res = await fetch(FIREBASE_CHAT_URL); let data = await res.json(); chatBox.innerHTML = '';
-            if(!data) { chatBox.innerHTML = '<p>Mulai obrolan!</p>'; return; }
+            if(!data) { chatBox.innerHTML = '<p style="text-align:center; color:rgba(255,255,255,0.5);">Mulai obrolan!</p>'; return; }
             Object.values(data).forEach(c => {
                 let isMe = (c.sender === currentUser); let bClass = isMe ? 'chat-bubble-me' : 'chat-bubble-other';
-                chatBox.innerHTML += `<div class="chat-bubble ${bClass}"><b>${c.sender}</b><br>${c.message}<br><small>${c.time}</small></div>`;
+                chatBox.innerHTML += `<div class="chat-bubble ${bClass}"><b>${c.sender}</b><br>${c.message}<br><small style="opacity:0.7;">${c.time}</small></div>`;
             }); chatBox.scrollTop = chatBox.scrollHeight;
         } catch(e) {}
     }
@@ -428,14 +423,14 @@
     // --- HISTORY ---
     let globalHistoryCache = [];
     async function loadHistoryView() {
-        const log = document.getElementById('main-history-log'); log.innerHTML = '<p>Memuat...</p>';
+        const log = document.getElementById('main-history-log'); log.innerHTML = '<p style="text-align:center; color:rgba(255,255,255,0.5);">Memuat...</p>';
         try {
             let res = await fetch(FIREBASE_SKOR_URL); let data = await res.json(); log.innerHTML = ''; 
             if (!data) return;
             globalHistoryCache = Object.keys(data).map(key => ({ id: key, ...data[key] }));
             let myHistory = globalHistoryCache.filter(item => item.nama === currentUser).reverse();
             myHistory.forEach((item) => {
-                log.innerHTML += `<div class="log-item glass-panel" onclick="openHistoryDetail('${item.id}')"><b>${item.modul}</b><br>Skor: ${item.skor}<br><small>${item.waktu}</small></div>`;
+                log.innerHTML += `<div class="log-item glass-panel" onclick="openHistoryDetail('${item.id}')"><b>${item.modul}</b><br>Skor: ${item.skor}<br><small style="color:rgba(255,255,255,0.7);">${item.waktu}</small></div>`;
             });
         } catch (e) {}
     }
