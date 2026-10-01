@@ -106,25 +106,23 @@
             <div id="main-history-log"><p style="text-align: center; color:rgba(255,255,255,0.5);">Memuat histori...</p></div>  
         </main>  
 
-        <!-- 5. PROFILE & CUSTOM BACKGROUND -->  
+        <!-- 5. PROFILE & SETTING TEMA -->  
         <main id="view-profile" class="view card glass-panel" style="text-align: center; padding-top: 30px;">  
             <div style="font-size: 4em; margin-bottom: 10px;">🧑‍‍🎓</div>  
             <h2 id="profile-name-display" style="font-weight: 700; font-size: 1.8em;">User</h2>  
             <p style="color: rgba(255,255,255,0.7); font-size: 0.9em; margin-bottom: 25px;">Siswa SMK YAMAS</p>  
               
-            <!-- COLOR WHEEL / CUSTOM BACKGROUND (1 WARNA) -->  
-<div class="glass-panel" style="padding: 20px; border-radius: 16px; margin-bottom: 25px;">  
-    <h4 style="margin-bottom:5px;">🎨 Kustomisasi Warna Tema</h4>  
-    <p style="font-size:0.75em; color:rgba(255,255,255,0.7); margin-bottom:15px;">Pilih 1 warna favoritmu untuk seluruh tema & aksen!</p>  
-      
-    <div class="color-picker-container">  
-        <div class="color-picker-wrapper">  
-            <input type="color" id="bg-color-1" value="#0ea5e9" onchange="updateCustomBackground()">  
-            <span style="margin-top:8px; font-weight: 500;">Warna Utama</span>  
-        </div>  
-    </div>  
-</div>
-
+            <!-- TOMBOL TEMA TERANG / GELAP -->  
+            <div class="glass-panel" style="padding: 20px; border-radius: 16px; margin-bottom: 25px;">  
+                <h4 style="margin-bottom:5px;">🎨 Tampilan Tema</h4>  
+                <p style="font-size:0.75em; color:rgba(255,255,255,0.7); margin-bottom:15px;">Pilih mode terang atau gelap untuk kenyamanan belajarmu!</p>  
+                
+                <div class="theme-toggle-wrapper" style="display: flex; justify-content: center; margin-top: 15px;">
+                    <button id="themeToggleBtn" class="btn btn-outline" style="width: 100%; max-width: 250px;">
+                        ☀️ Beralih ke Mode Terang
+                    </button>
+                </div>
+            </div>
 
             <div style="display: flex; flex-direction: column; gap: 12px;">  
                 <a href="https://github.com/oulinlin0" target="_blank" class="btn btn-outline">💻 GitHub Developer</a>  
@@ -148,7 +146,7 @@
         <!-- 7. RESULT -->  
         <main id="view-result" class="view card glass-panel" style="text-align: center; padding: 40px 15px;">  
             <h2>Selesai! 🎉</h2>  
-            <div style="width: 130px; height: 130px; border-radius: 50%; background: linear-gradient(135deg, var(--theme-1), var(--theme-2)); color: white; display: flex; align-items: center; justify-content: center; font-size: 3em; font-weight: 700; margin: 20px auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5);" id="final-score">100</div>  
+            <div style="width: 130px; height: 130px; border-radius: 50%; background: linear-gradient(135deg, var(--theme-1), #080c14); color: white; display: flex; align-items: center; justify-content: center; font-size: 3em; font-weight: 700; margin: 20px auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5);" id="final-score">100</div>  
             <p id="result-message" style="margin-bottom: 25px;">Luar biasa!</p>  
             <button class="btn" style="width: 100%;" onclick="saveScoreToHistory()">💾 Simpan & Kembali</button>  
         </main>  
