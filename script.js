@@ -197,19 +197,20 @@ function searchYouTubeMusic() {
     setTimeout(() => {
         const encodedQ = encodeURIComponent(query);
         resultsContainer.innerHTML = `
-            <div class="history-item glass-panel" style="display:flex; flex-direction:column; gap:10px; align-items:stretch;">
+            <div class="history-item glass-panel" style="display:flex; flex-direction:column; gap:12px; align-items:stretch; border:1px solid var(--theme-accent);">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
                     <b>🎵 Hasil: ${query}</b>
-                    <span style="font-size:0.75em; color:var(--theme-accent);">YouTube Player</span>
+                    <span style="font-size:0.75em; color:var(--theme-accent); font-weight:600;">YouTube Direct</span>
                 </div>
-                <div style="position:relative; width:100%; height:180px; border-radius:12px; overflow:hidden; background:#000;">
-                    <iframe width="100%" height="100%" src="https://www.youtube.com/embed?listType=search&list=${encodedQ}" frameborder="0" allowfullscreen></iframe>
-                </div>
-                <p style="font-size:0.75em; color:rgba(255,255,255,0.6);">Putar video musik pilihanmu langsung di atas atau kunjungi YouTube resmi.</p>
-                <a href="https://www.youtube.com/results?search_query=${encodedQ}" target="_blank" class="btn btn-outline" style="text-align:center; font-size:0.85em; padding:8px;">🔍 Cari & Tonton di YouTube Resmi</a>
+                <p style="font-size:0.82em; color:rgba(255,255,255,0.75); line-height:1.4;">
+                    YouTube membatasi pemutaran video langsung di dalam aplikasi pihak ketiga. Klik tombol di bawah untuk menikmati lagu favoritmu langsung di aplikasi atau web YouTube:
+                </p>
+                <a href="https://www.youtube.com/results?search_query=${encodedQ}" target="_blank" class="btn" style="text-align:center; font-size:0.9em; padding:12px; display:block; text-decoration:none;">
+                    ▶ Putar & Tonton di YouTube Resmi
+                </a>
             </div>
         `;
-    }, 600);
+    }, 400);
 }
 
 // --- REAL-TIME PRIVATE & GROUP CHAT SYSTEM ---  
@@ -920,7 +921,7 @@ async function saveScoreToHistory() {
     let timeString = new Date().toLocaleString('id-ID', {day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute:'2-digit'});  
     const dataBaru = { nama: currentUser, modul: document.getElementById('quiz-title').innerText, skor: finalCalculatedScore, waktu: timeString, detailJawaban: userSessionAnswers };  
     try {  
-        let btn = document.querySelector('#view-result .btn'); btn.innerText = "Menyimpan..."; btn.disabled = true;  
+        let btn = document.querySelector('#view-result .btn'); btn.innerText = "Menyimpan...isi"; btn.disabled = true;  
         await fetch(FIREBASE_SKOR_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dataBaru) });  
         alert("Skor berhasil disimpan ke akun online-mu!"); loadHistoryView(); switchTab(0, 'view-dashboard', '<i class=\'fa-solid fa-house\'></i>');  
         btn.innerText = "💾 Simpan & Kembali"; btn.disabled = false;  
