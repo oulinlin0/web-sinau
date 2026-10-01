@@ -3,7 +3,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const themeBtn = document.getElementById("themeToggleBtn");
     const body = document.body;
 
-    // Cek tema yang tersimpan
     const currentTheme = localStorage.getItem("app_theme");
     if (currentTheme === "light") {
         body.classList.add("light-theme");
@@ -35,24 +34,29 @@ function switchTab(index, viewId, iconSymbol = '<i class="fa-solid fa-house"></i
         const indicator = document.getElementById('indicator-wrapper');  
         const navItems = document.querySelectorAll('.bottom-nav .nav-item');  
 
-        // Animasi ikon melayang
         if(indicator) {
             indicator.style.transform = `translateX(${index * 100}%)`;  
             document.getElementById('nav-floating-icon').innerHTML = iconSymbol;  
         }
 
         navItems.forEach((item, i) => {  
-            if (i === index) item.classList.add('active');  
-            else item.classList.remove('active');  
+            if (i === index) {  
+                item.classList.add('active');  
+            } else {  
+                item.classList.remove('active');  
+            }  
         });  
     }  
 
-    // Sembunyikan semua view, tampilkan yang dituju
-    document.querySelectorAll('.view').forEach(view => view.classList.remove('active'));  
-    const targetView = document.getElementById(viewId);  
-    if (targetView) targetView.classList.add('active');  
+    document.querySelectorAll('.view').forEach(view => {  
+        view.classList.remove('active');  
+    });  
 
-    // Sembunyikan Navigasi Bawah & Atas jika masuk ke kuis atau private chat
+    const targetView = document.getElementById(viewId);  
+    if (targetView) {  
+        targetView.classList.add('active');  
+    }  
+
     if (viewId === 'view-quiz' || viewId === 'view-result' || viewId === 'view-private-room') {  
         document.getElementById('bottom-nav').style.display = 'none';  
         document.getElementById('top-header').style.display = 'none';  
@@ -61,14 +65,17 @@ function switchTab(index, viewId, iconSymbol = '<i class="fa-solid fa-house"></i
         document.getElementById('top-header').style.display = 'flex';  
     }  
 
-    // Matikan refresh chat jika keluar dari private room untuk hemat kuota/memori
     if (viewId !== 'view-private-room' && currentChatInterval) {
         clearInterval(currentChatInterval);
     }
 
-    // Load data otomatis sesuai tab
-    if (viewId === 'view-history') loadHistoryView();  
-    if (viewId === 'view-chat') loadChatUsersList();  
+    if (viewId === 'view-history') {  
+        loadHistoryView();  
+    }  
+
+    if (viewId === 'view-chat') {  
+        loadChatUsersList();  
+    }  
 }  
 
 // --- AUTHENTICATION ---  
@@ -126,7 +133,7 @@ async function handleAuth() {
 }  
 
 function logoutUser() { 
-    if(confirm("Keluar dari akun?")) { localStorage.removeItem('sinau_active_user'); location.reload(); } 
+    if(confirm("Keluar?")) { localStorage.removeItem('sinau_active_user'); location.reload(); } 
 }  
 
 function toggleFolder(folderId, headerElement) { 
@@ -150,7 +157,7 @@ function toggleMusicPlayback() {
     else { bgMusic.play(); isMusicPlaying = true; document.getElementById('main-music-toggle').innerText = "⏸ Jeda"; } 
 }  
 
-// --- REAL-TIME PRIVATE CHAT & WHATSAPP STYLE UI ---  
+// --- REAL-TIME PRIVATE CHAT & WHATSAPP STYLE ---  
 function getAvatarUrl(name) {
     return `https://ui-avatars.com/api/?name=${name}&background=random&color=fff&bold=true`;
 }
@@ -163,24 +170,30 @@ async function loadChatUsersList() {
     const activeUsersList = document.getElementById('active-users-list');  
     const recentChatList = document.getElementById('chat-recent-list');  
       
-    // Render Horizontal Status (Bagian Atas)
-    activeUsersList.innerHTML = `  
-        <div class="active-user-item" style="display:inline-flex; flex-direction:column; align-items:center; gap:5px; margin-right:15px; cursor:pointer;">  
-            <div style="width:50px; height:50px; border-radius:50%; background:var(--theme-1); display:flex; justify-content:center; align-items:center; font-size:1.5em; color:white;"><i class="fa-solid fa-plus"></i></div>  
-            <span style="font-size:0.75em; opacity:0.8;">New</span>  
-        </div>  
-    `;  
-    recentChatList.innerHTML = '<p style="text-align:center; color:rgba(255,255,255,0.5);">Memuat kontak...</p>';  
+    if (activeUsersList) {
+        activeUsersList.innerHTML = `  
+            <div class="active-user-item">  
+                <div class="avatar-wrapper new-chat"><i class="fa-solid fa-plus"></i></div>  
+                <span>New</span>  
+            </div>  
+        `;  
+    }
+    
+    if (recentChatList) {
+        recentChatList.innerHTML = '<p style="text-align:center; color:rgba(255,255,255,0.5);">Memuat kontak...</p>';  
+    }
 
     try {  
         let res = await fetch(FIREBASE_USERS_URL);  
         let usersDB = await res.json() || {};  
           
         let otherUsers = Object.keys(usersDB).filter(u => u !== currentUser);  
-        recentChatList.innerHTML = '';  
+        if (recentChatList) recentChatList.innerHTML = '';  
 
         if (otherUsers.length === 0) {  
-            recentChatList.innerHTML = '<p style="text-align:center; color:rgba(255,255,255,0.5);">Belum ada teman yang terdaftar.</p>';  
+            if (recentChatList) {
+                recentChatList.innerHTML = '<p style="text-align:center; color:rgba(255,255,255,0.5);">Belum ada teman yang terdaftar.</p>';  
+            }
             return;  
         }  
 
@@ -188,67 +201,62 @@ async function loadChatUsersList() {
             const avatarPath = getAvatarUrl(user);  
             const roomId = getRoomId(currentUser, user);
             
-            // Ambil Meta Data Chat (Pesan terakhir, waktu, jumlah belum dibaca)
             let metaRes = await fetch(`https://sinaubang-web-a5069-default-rtdb.asia-southeast1.firebasedatabase.app/chat_meta/${roomId}.json`);
             let meta = await metaRes.json() || { lastMessage: "Ketuk untuk mulai obrolan...", time: "", unreadCount: 0, lastSender: "" };
 
             let previewText = meta.lastMessage;
             let isUnread = (meta.unreadCount > 0 && meta.lastSender !== currentUser);
-            
-            // Tambahkan Centang ala WhatsApp jika kita yang mengirim terakhir
+
             if (meta.lastSender === currentUser) {
-                previewText = `<i class="fa-solid fa-check-double" style="color:#38bdf8; font-size:0.8em; margin-right:4px;"></i> ${meta.lastMessage}`; 
+                previewText = `<i class="fa-solid fa-check-double" style="color:var(--theme-1); font-size:0.8em; margin-right:4px;"></i> ${meta.lastMessage}`; 
             }
 
-            // Elemen Badge (Lingkaran Hijau Angka)
-            let badgeHTML = isUnread 
-                ? `<div style="background: #22c55e; color: white; font-size: 0.7em; font-weight: 700; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(34, 197, 94, 0.4);">${meta.unreadCount}</div>` 
-                : '';
+            let badgeHTML = isUnread ? `<div class="unread-badge">${meta.unreadCount}</div>` : '';
 
-            // Render ke Status Horizontal
-            activeUsersList.innerHTML += `  
-                <div onclick="openPrivateChat('${user}')" style="display:inline-flex; flex-direction:column; align-items:center; gap:5px; margin-right:15px; cursor:pointer;">  
-                    <div style="position:relative; width:50px; height:50px;">  
-                        <img src="${avatarPath}" style="width:100%; height:100%; border-radius:50%; border:2px solid var(--theme-1);">  
-                        <div style="position:absolute; bottom:0; right:0; width:12px; height:12px; background:#22c55e; border-radius:50%; border:2px solid #fff;"></div>  
+            if (activeUsersList) {
+                activeUsersList.innerHTML += `  
+                    <div class="active-user-item" onclick="openPrivateChat('${user}')">  
+                        <div class="avatar-wrapper online">  
+                            <img src="${avatarPath}" alt="${user}">  
+                            <div class="online-dot"></div>  
+                        </div>  
+                        <span>${user}</span>  
                     </div>  
-                    <span style="font-size:0.75em; opacity:0.8;">${user}</span>  
-                </div>  
-            `;  
+                `;  
+            }
 
-            // Render ke List Vertical (Desain ala WhatsApp)
-            recentChatList.innerHTML += `  
-                <div onclick="openPrivateChat('${user}')" style="display:flex; align-items:center; justify-content:space-between; padding:12px; border-radius:16px; cursor:pointer; background:rgba(255,255,255,0.05); margin-bottom:8px; border:1px solid rgba(255,255,255,0.05);">  
-                    <div style="display:flex; align-items:center; gap:12px; flex:1; min-width:0;">
-                        <img src="${avatarPath}" style="width:45px; height:45px; border-radius:50%; flex-shrink:0;">
-                        <div style="display:flex; flex-direction:column; min-width:0; flex:1;">
-                            <span style="font-weight:600; font-size:0.95em;">${user}</span>
-                            <span style="font-size:0.8em; opacity:0.7; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${previewText}</span>
-                        </div>
-                    </div>
-                    <div style="display:flex; flex-direction:column; align-items:flex-end; gap:5px; margin-left:10px; flex-shrink:0;">
-                        <span style="font-size:0.7em; font-weight:${isUnread ? '700' : '500'}; color:${isUnread ? '#22c55e' : 'inherit'}; opacity:${isUnread ? '1' : '0.6'};">${meta.time}</span>
-                        ${badgeHTML}
-                    </div>
-                </div>  
-            `;  
+            if (recentChatList) {
+                recentChatList.innerHTML += `  
+                    <div class="chat-list-item" onclick="openPrivateChat('${user}')">  
+                        <div class="avatar-wrapper" style="width: 50px; height: 50px; margin-bottom: 0; flex-shrink: 0;">  
+                            <img src="${avatarPath}" alt="${user}">  
+                        </div>  
+                        <div class="chat-list-info">  
+                            <div class="chat-list-name">${user}</div>  
+                            <div class="chat-list-msg">${previewText}</div>  
+                        </div>  
+                        <div class="chat-list-meta">  
+                            <span style="font-weight: ${isUnread ? '700' : 'normal'}; color: ${isUnread ? '#22c55e' : 'inherit'};">${meta.time}</span>  
+                            ${badgeHTML}  
+                        </div>  
+                    </div>  
+                `;  
+            }
         }  
     } catch (error) {  
         console.error("Gagal memuat kontak", error);  
+        if (recentChatList) {
+            recentChatList.innerHTML = '<p style="text-align:center; color:#ef4444;">Gagal memuat kontak.</p>';
+        }
     }  
 }  
 
-// Tombol Kembali dari Chat Room
-function backToChatList() {
-    switchTab(1, 'view-chat', '<i class=\'fa-solid fa-message\'></i>');
-}
-
 async function openPrivateChat(targetUser) {  
     activeChatUser = targetUser;  
+    
     const roomId = getRoomId(currentUser, targetUser);
     const META_URL = `https://sinaubang-web-a5069-default-rtdb.asia-southeast1.firebasedatabase.app/chat_meta/${roomId}.json`;
     
-    // Saat room dibuka, reset Unread Count jadi 0 (Tandai sudah dibaca)
     try {
         let resMeta = await fetch(META_URL);
         let metaData = await resMeta.json();
@@ -262,19 +270,16 @@ async function openPrivateChat(targetUser) {
         }
     } catch(e){}
 
-    // Tampilkan View Chat Room
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));  
     document.getElementById('view-private-room').classList.add('active');  
       
     document.getElementById('private-chat-name').innerText = targetUser;  
-    document.getElementById('private-chat-avatar').innerHTML = `<img src="${getAvatarUrl(targetUser)}" style="width:100%; border-radius:50%;">`;  
+    document.getElementById('private-chat-avatar').src = getAvatarUrl(targetUser);  
       
     document.getElementById('bottom-nav').style.display = 'none';  
-    document.getElementById('top-header').style.display = 'none';
       
     loadPrivateMessages();  
       
-    // Set auto refresh pesan setiap 3 detik
     if(currentChatInterval) clearInterval(currentChatInterval);  
     currentChatInterval = setInterval(loadPrivateMessages, 3000);  
 }  
@@ -292,27 +297,19 @@ async function loadPrivateMessages() {
         
         chatBox.innerHTML = '';  
         if(!data) {  
-            chatBox.innerHTML = '<p style="text-align:center; color:rgba(255,255,255,0.5); margin-top:20px;">Belum ada pesan. Sapa temanmu!</p>';  
+            chatBox.innerHTML = '<p style="text-align:center; color:rgba(255,255,255,0.5);">Belum ada pesan. Sapa temanmu!</p>';  
             return;  
         }  
         
         Object.values(data).forEach(c => {  
             let isMe = (c.sender === currentUser);  
-            // Bubble styling dasar disediakan dari CSS, kita inject layout jam di dalam bubble
-            let bClass = isMe 
-                ? 'background:linear-gradient(135deg, var(--theme-1), var(--theme-2)); color:white; align-self:flex-end; border-bottom-right-radius:4px;' 
-                : 'background:rgba(0,0,0,0.4); align-self:flex-start; border-bottom-left-radius:4px; border:1px solid rgba(255,255,255,0.1);';  
-
+            let bClass = isMe ? 'chat-bubble-me' : 'chat-bubble-other';  
             chatBox.innerHTML += `  
-                <div style="max-width: 75%; padding: 10px 15px; border-radius: 16px; font-size: 0.9em; line-height: 1.4; animation: fadeIn 0.3s ease; ${bClass}">  
-                    ${c.message}
-                    <div style="font-size:0.7em; opacity:0.7; text-align:right; margin-top:4px;">
-                        ${c.time} ${isMe ? '<i class="fa-solid fa-check" style="margin-left:4px;"></i>' : ''}
-                    </div>  
+                <div class="chat-bubble ${bClass}">  
+                    ${c.message}<br><small style="opacity:0.7; font-size:0.75em; float:right; margin-left:10px; margin-top:3px;">${c.time} ${isMe ? '<i class="fa-solid fa-check" style="margin-left:2px;"></i>' : ''}</small>  
                 </div>`;  
         });  
         
-        // Auto scroll ke bawah
         chatBox.scrollTop = chatBox.scrollHeight;  
     } catch(e) { console.error(e); }  
 }  
@@ -331,14 +328,12 @@ async function sendPrivateMessage() {
     let timeString = new Date().toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'});   
     inputField.value = '';  
       
-    // 1. Simpan pesan ke database
     await fetch(PRIVATE_URL, {   
         method: 'POST',   
         headers: { 'Content-Type': 'application/json' },   
         body: JSON.stringify({ sender: currentUser, message: msg, time: timeString })   
     });  
 
-    // 2. Update Metadata (Agar badge belum dibaca bertambah di sisi penerima)
     let resMeta = await fetch(META_URL);
     let metaData = await resMeta.json() || { unreadCount: 0 };
     let newUnread = (metaData.lastSender !== currentUser) ? (metaData.unreadCount || 0) + 1 : 1;
@@ -361,7 +356,7 @@ function handlePrivateKeyPress(e) {
     if(e.key === 'Enter') sendPrivateMessage();   
 }
 
-// --- HISTORY & QUIZ (TETAP SAMA SEPERTI MILIKMU) ---  
+// --- HISTORY ---  
 let globalHistoryCache = [];  
 async function loadHistoryView() {  
     const log = document.getElementById('main-history-log'); log.innerHTML = '<p style="text-align:center; color:rgba(255,255,255,0.5);">Memuat...</p>';  
@@ -388,6 +383,7 @@ function openHistoryDetail(id) {
 }  
 function closeModal() { document.getElementById('history-modal').style.display = 'none'; }  
 
+// --- FULL DATABASE (120+ QUESTIONS) ---  
 function shuffleArray(arr) { let c = arr.length, t, r; while (c !== 0) { r = Math.floor(Math.random() * c); c -= 1; t = arr[c]; arr[c] = arr[r]; arr[r] = t; } return arr; }  
   
 const readingTexts = {  
