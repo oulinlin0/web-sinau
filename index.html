@@ -3,158 +3,212 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>sinau bang - Online Account Firebase</title>
+    <title>sinau bang - Liquid Glass & Chat</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
 
         body {
-            background: linear-gradient(135deg, #e0f7fa 0%, #80deea 50%, #4dd0e1 100%);
-            min-height: 100vh; color: #333; overflow-x: hidden; transition: background 0.3s, color 0.3s;
+            background: linear-gradient(135deg, #b2ebf2 0%, #80deea 45%, #4dd0e1 100%);
+            min-height: 100vh; color: #1e3d59; overflow-x: hidden; transition: background 0.4s, color 0.4s;
+            background-attachment: fixed;
         }
 
-        /* Tema Gelap (Dark Mode) */
+        /* Tema Gelap (Dark Mode Liquid Glass) */
         body.dark-theme {
-            background: linear-gradient(135deg, #121212 0%, #1e1e2f 50%, #1a1a2e 100%); color: #e0e0e0;
+            background: linear-gradient(135deg, #0f172a 100%, #1e293b 50%, #090d16 0%); color: #f1f5f9;
         }
-        body.dark-theme .navbar, body.dark-theme .card, body.dark-theme .sidebar, body.dark-theme .ai-chat-box, body.dark-theme .history-item, body.dark-theme .modal-content, body.dark-theme .auth-card {
-            background: rgba(30, 30, 42, 0.95); border-color: #333; color: #e0e0e0; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        body.dark-theme .navbar, body.dark-theme .card, body.dark-theme .sidebar, body.dark-theme .history-item, body.dark-theme .modal-content, body.dark-theme .auth-card, body.dark-theme .chat-box-container {
+            background: rgba(15, 23, 42, 0.75); border-color: rgba(255, 255, 255, 0.1); color: #f1f5f9;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         }
-        body.dark-theme .brand h1, body.dark-theme .section-title, body.dark-theme .history-info h3, body.dark-theme .question-text { color: #4dd0e1; }
-        body.dark-theme .menu-btn { color: #4dd0e1; }
-        body.dark-theme .music-widget { background: #2c2c3e; border: 1px solid #4dd0e1; color: #4dd0e1; }
-        body.dark-theme .sidebar-header { border-bottom: 2px solid #444; }
-        body.dark-theme .log-item { background: #2c2c3e; border-left: 4px solid #4dd0e1; color: #e0e0e0; }
-        body.dark-theme .option-btn { background: #1e1e2f; border: 2px solid #555; color: #e0e0e0; }
-        body.dark-theme .option-btn.correct { background: #1b5e20 !important; color: #fff !important; border-color: #4caf50 !important; }
-        body.dark-theme .option-btn.wrong { background: #b71c1c !important; color: #fff !important; border-color: #f44336 !important; }
-        body.dark-theme .feedback-box { background: #332b1a; border-left: 4px solid #ffb300; color: #eee; }
-        body.dark-theme input { background: #2c2c3e; color: #fff; border: 1px solid #555; }
+        body.dark-theme .brand h1, body.dark-theme .section-title, body.dark-theme .history-info h3, body.dark-theme .question-text { color: #38bdf8; }
+        body.dark-theme .menu-btn { color: #38bdf8; }
+        body.dark-theme .music-widget { background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(56, 189, 248, 0.3); color: #38bdf8; }
+        body.dark-theme .sidebar-header { border-bottom: 2px solid rgba(255,255,255,0.1); }
+        body.dark-theme .log-item { background: rgba(30, 41, 59, 0.6); border-left: 4px solid #38bdf8; color: #f1f5f9; }
+        body.dark-theme .option-btn { background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(255,255,255,0.1); color: #f1f5f9; }
+        body.dark-theme .option-btn.correct { background: rgba(22, 101, 52, 0.8) !important; color: #fff !important; border-color: #22c55e !important; }
+        body.dark-theme .option-btn.wrong { background: rgba(153, 27, 27, 0.8) !important; color: #fff !important; border-color: #ef4444 !important; }
+        body.dark-theme .feedback-box { background: rgba(50, 40, 20, 0.8); border-left: 4px solid #fbbf24; color: #fef3c7; }
+        body.dark-theme input, body.dark-theme textarea { background: rgba(30, 41, 59, 0.8); color: #fff; border: 1px solid rgba(255,255,255,0.15); }
+        body.dark-theme .chat-bubble-other { background: rgba(30, 41, 59, 0.9); color: #e2e8f0; }
 
-        /* AUTH / LOGIN SCREEN */
+        /* AUTH / LOGIN SCREEN (Liquid Glass Aesthetic) */
         #view-auth {
             display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px;
-            background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1350&q=80') no-repeat center center fixed;
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1350&q=80') no-repeat center center fixed;
             background-size: cover; position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
         }
         .auth-card {
-            background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(15px); border-radius: 20px;
-            padding: 35px 30px; width: 100%; max-width: 400px; box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-            text-align: center; border: 1px solid rgba(255,255,255,0.4); animation: fadeIn 0.5s ease;
+            background: rgba(255, 255, 255, 0.25); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px; padding: 40px 30px; width: 100%; max-width: 420px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2), inset 0 0 15px rgba(255, 255, 255, 0.5);
+            text-align: center; border: 1px solid rgba(255, 255, 255, 0.4); animation: fadeIn 0.6s ease;
         }
-        .auth-card h2 { color: #006064; margin-bottom: 20px; font-size: 1.8em; font-weight: 700; }
+        .auth-card h2 { color: #004d40; margin-bottom: 20px; font-size: 2em; font-weight: 700; text-shadow: 0 2px 4px rgba(255,255,255,0.3); }
+        body.dark-theme .auth-card h2 { color: #38bdf8; text-shadow: none; }
         .auth-input {
-            width: 100%; padding: 12px 15px; margin-bottom: 15px; border-radius: 10px; border: 2px solid #b2ebf2;
-            outline: none; font-size: 1em; background: rgba(255,255,255,0.9); transition: 0.3s;
+            width: 100%; padding: 14px 18px; margin-bottom: 15px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.6);
+            outline: none; font-size: 1em; background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(5px); color: #00332c; transition: 0.3s;
         }
-        .auth-input:focus { border-color: #00838f; box-shadow: 0 0 8px rgba(0,131,143,0.3); }
+        .auth-input:focus { border-color: #00796b; box-shadow: 0 0 12px rgba(0, 121, 107, 0.3); background: rgba(255,255,255,0.6); }
         .auth-btn {
-            width: 100%; padding: 12px; border-radius: 10px; border: none; background: linear-gradient(135deg, #00acc1, #00838f);
-            color: white; font-weight: 600; font-size: 1em; cursor: pointer; transition: 0.2s; margin-top: 5px;
+            width: 100%; padding: 14px; border-radius: 14px; border: none; background: linear-gradient(135deg, #00897b, #004d40);
+            color: white; font-weight: 600; font-size: 1.05em; cursor: pointer; transition: 0.3s; margin-top: 5px;
+            box-shadow: 0 4px 15px rgba(0, 77, 64, 0.3);
         }
-        .auth-btn:hover { opacity: 0.9; transform: translateY(-1px); }
-        .auth-switch { margin-top: 15px; font-size: 0.9em; color: #555; }
-        .auth-switch span { color: #00838f; font-weight: 600; cursor: pointer; text-decoration: underline; }
+        .auth-btn:hover { opacity: 0.95; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 77, 64, 0.4); }
+        .auth-switch { margin-top: 20px; font-size: 0.9em; color: #004d40; font-weight: 500; }
+        body.dark-theme .auth-switch { color: #cbd5e1; }
+        .auth-switch span { color: #00695c; font-weight: 700; cursor: pointer; text-decoration: underline; }
+        body.dark-theme .auth-switch span { color: #38bdf8; }
 
-        /* FOLDER UI (Accordion) CSS */
-        .folder-header {
-            background: #ffffff; padding: 15px 20px; border-radius: 12px; cursor: pointer;
-            display: flex; justify-content: space-between; align-items: center; font-weight: 600;
-            color: #00838f; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-left: 6px solid #00acc1;
-            margin-bottom: 10px; transition: all 0.3s ease; user-select: none;
+        /* LIQUID GLASS GENERAL CARDS & NAVBAR */
+        .navbar {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 15px 25px; background: rgba(255, 255, 255, 0.35); backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1); position: sticky; top: 0; z-index: 100;
         }
-        .folder-header:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.1); }
+        .menu-btn { background: none; border: none; font-size: 1.6em; color: #004d40; cursor: pointer; transition: 0.2s; }
+        .menu-btn:hover { transform: scale(1.1); }
+        .brand h1 { font-size: 1.5em; color: #004d40; display: flex; align-items: center; gap: 8px; font-weight: 700; }
+        .right-nav { display: flex; align-items: center; gap: 12px; }
+        .theme-btn { background: none; border: none; font-size: 1.4em; cursor: pointer; transition: 0.2s; }
+        .theme-btn:hover { transform: rotate(20deg); }
+
+        .music-widget {
+            display: flex; align-items: center; gap: 8px; background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px); padding: 8px 16px; border-radius: 30px; border: 1px solid rgba(255, 255, 255, 0.6);
+            font-size: 0.85em; cursor: pointer; font-weight: 600; color: #004d40; transition: 0.2s;
+        }
+        .music-widget:hover { background: rgba(255, 255, 255, 0.6); }
+
+        /* FOLDER UI (Liquid Glass Accordion) */
+        .folder-header {
+            background: rgba(255, 255, 255, 0.45); backdrop-filter: blur(12px); padding: 16px 22px; border-radius: 16px; cursor: pointer;
+            display: flex; justify-content: space-between; align-items: center; font-weight: 600;
+            color: #00695c; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border-left: 6px solid #00897b;
+            margin-bottom: 12px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); user-select: none;
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+        .folder-header:hover { transform: translateY(-3px); background: rgba(255, 255, 255, 0.65); box-shadow: 0 8px 25px rgba(0,0,0,0.08); }
         .folder-content {
-            display: none; padding: 10px 0 10px 15px; border-left: 2px dashed #00acc1;
+            display: none; padding: 10px 0 10px 15px; border-left: 2px dashed #00897b;
             margin-left: 15px; margin-bottom: 15px; animation: slideDown 0.3s ease;
         }
         .folder-content.active { display: flex; flex-direction: column; gap: 12px; }
         .chevron { transition: transform 0.3s ease; font-size: 1.2em; }
         .chevron.active { transform: rotate(180deg); }
-        body.dark-theme .folder-header { background: #2c2c3e; color: #4dd0e1; border-color: #4dd0e1; }
-        body.dark-theme .folder-content { border-left-color: #4dd0e1; }
-
-        /* Navbar & Menu */
-        .navbar {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 15px 20px; background: rgba(255, 255, 255, 0.9);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100;
-        }
-        .menu-btn { background: none; border: none; font-size: 1.5em; color: #00838f; cursor: pointer; }
-        .brand h1 { font-size: 1.5em; color: #006064; display: flex; align-items: center; gap: 8px;}
-        .right-nav { display: flex; align-items: center; gap: 10px; }
-        .theme-btn { background: none; border: none; font-size: 1.4em; cursor: pointer; }
-
-        .music-widget {
-            display: flex; align-items: center; gap: 8px; background: #e0f7fa; padding: 6px 14px;
-            border-radius: 20px; border: 1px solid #b2ebf2; font-size: 0.85em; cursor: pointer; font-weight: 600; color: #006064;
-        }
 
         /* Sidebar History */
         .sidebar {
-            position: fixed; top: 0; left: -300px; width: 300px; height: 100vh;
-            background: #fff; box-shadow: 2px 0 15px rgba(0,0,0,0.1);
-            transition: 0.3s; z-index: 200; padding: 20px; display: flex; flex-direction: column;
+            position: fixed; top: 0; left: -320px; width: 320px; height: 100vh;
+            background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            box-shadow: 5px 0 30px rgba(0,0,0,0.15); transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); z-index: 200; padding: 25px; display: flex; flex-direction: column;
+            border-right: 1px solid rgba(255,255,255,0.6);
         }
         .sidebar.active { left: 0; }
-        .sidebar-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e0f7fa; padding-bottom: 15px; margin-bottom: 15px;}
-        .close-btn { background: none; border: none; font-size: 1.5em; color: #e53935; cursor: pointer; }
+        .sidebar-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid rgba(0,105,92,0.15); padding-bottom: 15px; margin-bottom: 15px;}
+        .close-btn { background: none; border: none; font-size: 1.6em; color: #e53935; cursor: pointer; transition: 0.2s; }
+        .close-btn:hover { transform: scale(1.1); }
         .history-log { flex: 1; overflow-y: auto; padding-right: 5px; }
-        .log-item { background: #f1f8e9; padding: 12px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #8bc34a; font-size: 0.9em; line-height: 1.4; cursor: pointer; transition: 0.2s;}
-        .log-item:hover { transform: scale(1.02); }
+        .log-item { background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(5px); padding: 14px; border-radius: 12px; margin-bottom: 12px; border-left: 4px solid #2e7d32; font-size: 0.9em; line-height: 1.4; cursor: pointer; transition: 0.2s; border: 1px solid rgba(255,255,255,0.5);}
+        .log-item:hover { transform: scale(1.02); background: rgba(255, 255, 255, 0.9); }
 
         /* Modal */
         .modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); z-index: 300; justify-content: center; align-items: center; padding: 15px;
+            background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); z-index: 300; justify-content: center; align-items: center; padding: 15px;
         }
         .modal-content {
-            background: #fff; width: 100%; max-width: 600px; max-height: 85vh; border-radius: 15px;
-            padding: 20px; display: flex; flex-direction: column; animation: fadeIn 0.3s ease;
+            background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(25px); width: 100%; max-width: 600px; max-height: 85vh; border-radius: 24px;
+            padding: 25px; display: flex; flex-direction: column; animation: fadeIn 0.3s ease;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.6);
         }
         .modal-body { flex: 1; overflow-y: auto; margin-top: 15px; padding-right: 5px; }
-        .detail-soal-card { background: rgba(0,0,0,0.03); padding: 12px; border-radius: 8px; margin-bottom: 10px; font-size: 0.9em; border-left: 4px solid #00acc1; }
+        .detail-soal-card { background: rgba(255,255,255,0.5); padding: 14px; border-radius: 12px; margin-bottom: 12px; font-size: 0.9em; border-left: 4px solid #00897b; border: 1px solid rgba(255,255,255,0.6); }
 
-        .container { max-width: 900px; margin: 20px auto; padding: 0 15px; }
+        .container { max-width: 950px; margin: 25px auto; padding: 0 15px; }
+        
+        /* Main Liquid Glass Container Card */
         .card {
-            background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px);
-            border-radius: 15px; padding: 25px; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08); margin-bottom: 20px; animation: fadeIn 0.4s ease;
+            background: rgba(255, 255, 255, 0.35); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px; padding: 30px; box-shadow: 0 15px 35px rgba(31, 38, 135, 0.15), inset 0 0 20px rgba(255, 255, 255, 0.4);
+            margin-bottom: 20px; animation: fadeIn 0.5s ease; border: 1px solid rgba(255, 255, 255, 0.5);
         }
         .view { display: none; } .view.active { display: block; }
-        .section-title { font-size: 1.3em; color: #00838f; margin-bottom: 20px; border-bottom: 2px solid #b2ebf2; padding-bottom: 10px; }
+        .section-title { font-size: 1.4em; color: #004d40; margin-bottom: 20px; border-bottom: 2px solid rgba(0, 137, 123, 0.3); padding-bottom: 10px; font-weight: 700; }
 
         .history-item {
-            background: #ffffff; border-radius: 12px; padding: 15px;
+            background: rgba(255, 255, 255, 0.5); backdrop-filter: blur(10px); border-radius: 16px; padding: 18px 20px;
             display: flex; justify-content: space-between; align-items: center;
-            border-left: 4px solid #ccc; box-shadow: 0 4px 6px rgba(0,0,0,0.05); width: 100%;
+            border-left: 4px solid #00897b; box-shadow: 0 6px 20px rgba(0,0,0,0.04); width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.6); transition: 0.3s;
         }
-        .history-info h3 { font-size: 1.05em; margin-bottom: 3px;}
-        .history-info p { font-size: 0.8em; color: #666; }
+        .history-item:hover { transform: translateY(-2px); background: rgba(255, 255, 255, 0.7); }
+        .history-info h3 { font-size: 1.1em; margin-bottom: 3px; color: #004d40; }
+        .history-info p { font-size: 0.85em; color: #555; }
+        body.dark-theme .history-info p { color: #94a3b8; }
 
-        .btn { background: linear-gradient(135deg, #00acc1, #00838f); color: white; border: none; padding: 10px 18px; border-radius: 20px; font-weight: 600; cursor: pointer; transition: 0.2s; }
-        .btn-outline { background: transparent; color: #00838f; border: 2px solid #00838f; }
+        .btn { background: linear-gradient(135deg, #00897b, #004d40); color: white; border: none; padding: 12px 22px; border-radius: 30px; font-weight: 600; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 15px rgba(0,77,64,0.3); }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,77,64,0.4); opacity: 0.95; }
+        .btn-outline { background: rgba(255,255,255,0.2); color: #004d40; border: 2px solid #00897b; backdrop-filter: blur(5px); }
+        body.dark-theme .btn-outline { color: #38bdf8; border-color: #38bdf8; background: rgba(30,41,59,0.4); }
 
+        /* CHAT STYLES (Liquid Glass Chat Room) */
+        .chat-container { display: flex; flex-direction: column; height: 500px; gap: 15px; }
+        .chat-messages-box {
+            flex: 1; background: rgba(255, 255, 255, 0.3); backdrop-filter: blur(15px); border-radius: 16px;
+            padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.4); box-shadow: inset 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .chat-bubble {
+            max-width: 75%; padding: 12px 18px; border-radius: 18px; font-size: 0.95em; line-height: 1.4;
+            position: relative; animation: fadeIn 0.3s ease; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        .chat-bubble-other {
+            background: rgba(255, 255, 255, 0.7); align-self: flex-start; border-bottom-left-radius: 4px; color: #1e3d59;
+            border: 1px solid rgba(255,255,255,0.8);
+        }
+        .chat-bubble-me {
+            background: linear-gradient(135deg, #00897b, #004d40); color: white; align-self: flex-end; border-bottom-right-radius: 4px;
+            box-shadow: 0 4px 15px rgba(0,77,64,0.25);
+        }
+        .chat-sender { font-size: 0.75em; font-weight: 700; margin-bottom: 3px; opacity: 0.85; display: block; }
+        .chat-time { font-size: 0.7em; margin-top: 4px; text-align: right; opacity: 0.7; display: block; }
+        .chat-input-area { display: flex; gap: 10px; }
+        .chat-input {
+            flex: 1; padding: 14px 20px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.6);
+            background: rgba(255, 255, 255, 0.5); backdrop-filter: blur(10px); outline: none; font-size: 0.95em; color: #1e3d59;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.03); transition: 0.3s;
+        }
+        .chat-input:focus { border-color: #00897b; background: rgba(255,255,255,0.8); }
+
+        /* Quiz View specifics */
         .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .progress-bar { width: 100%; height: 8px; background: #e0e0e0; border-radius: 4px; overflow: hidden; margin-bottom: 20px;}
-        .progress-fill { height: 100%; background: #00bcd4; width: 0%; transition: width 0.3s ease; }
+        .progress-bar { width: 100%; height: 10px; background: rgba(255,255,255,0.4); border-radius: 5px; overflow: hidden; margin-bottom: 20px; backdrop-filter: blur(5px);}
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #00897b, #26a69a); width: 0%; transition: width 0.3s ease; }
         
-        .reading-box { background: #f8f9fa; border-left: 4px solid #00acc1; padding: 12px 15px; margin-bottom: 15px; border-radius: 0 8px 8px 0; font-size: 0.9em; display: none; }
-        body.dark-theme .reading-box { background: #2c2c3e; border-left-color: #4dd0e1; color: #e0e0e0; }
+        .reading-box { background: rgba(255,255,255,0.5); backdrop-filter: blur(10px); border-left: 4px solid #00897b; padding: 15px; margin-bottom: 15px; border-radius: 0 12px 12px 0; font-size: 0.9em; display: none; border: 1px solid rgba(255,255,255,0.6); }
 
-        .question-text { font-size: 1.1em; font-weight: 600; margin-bottom: 15px; }
-        .options { display: grid; gap: 10px; }
-        .option-btn { background: #fff; border: 2px solid #b2ebf2; padding: 12px; border-radius: 10px; text-align: left; font-size: 0.95em; cursor: pointer; transition: 0.2s; }
+        .question-text { font-size: 1.15em; font-weight: 600; margin-bottom: 18px; color: #004d40; }
+        body.dark-theme .question-text { color: #38bdf8; }
+        .options { display: grid; gap: 12px; }
+        .option-btn { background: rgba(255,255,255,0.45); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.7); padding: 14px 18px; border-radius: 14px; text-align: left; font-size: 0.98em; cursor: pointer; transition: 0.25s; color: #00332c; font-weight: 500;}
+        .option-btn:hover:not(:disabled) { background: rgba(255,255,255,0.75); transform: translateY(-2px); }
         .option-btn:disabled { cursor: not-allowed; }
 
-        .feedback-box { display: none; margin-top: 15px; padding: 15px; border-radius: 10px; background: #fff8e1; border-left: 4px solid #ffb300; animation: slideDown 0.3s ease; }
+        .feedback-box { display: none; margin-top: 18px; padding: 18px; border-radius: 14px; background: rgba(255, 248, 225, 0.85); backdrop-filter: blur(10px); border-left: 4px solid #ffa000; animation: slideDown 0.3s ease; border: 1px solid rgba(255,255,255,0.6); }
         .feedback-box h4 { margin-bottom: 5px; color: #ff8f00; font-size: 1em;}
         .next-btn-container { margin-top: 20px; text-align: right; display: none; }
 
-        .result-container { text-align: center; padding: 30px 10px;}
-        .score-circle { width: 120px; height: 120px; border-radius: 50%; background: #00acc1; color: white; display: flex; align-items: center; justify-content: center; font-size: 2.5em; font-weight: 700; margin: 0 auto 20px; }
+        .result-container { text-align: center; padding: 35px 10px;}
+        .score-circle { width: 130px; height: 130px; border-radius: 50%; background: linear-gradient(135deg, #00897b, #004d40); color: white; display: flex; align-items: center; justify-content: center; font-size: 2.8em; font-weight: 700; margin: 0 auto 20px; box-shadow: 0 10px 25px rgba(0,77,64,0.3); }
 
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
         @keyframes slideDown { from { transform: translateY(-10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     </style>
 </head>
@@ -180,8 +234,8 @@
 <!-- Modal Detail Histori -->
 <div class="modal" id="history-modal">
     <div class="modal-content">
-        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #b2ebf2; padding-bottom:10px;">
-            <h3 id="modal-title" style="color:#00838f;">Detail Pengerjaan</h3>
+        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid rgba(0,137,123,0.3); padding-bottom:12px;">
+            <h3 id="modal-title" style="color:#004d40;">Detail Pengerjaan</h3>
             <button class="close-btn" onclick="closeModal()">✖</button>
         </div>
         <div class="modal-body" id="modal-body-content"></div>
@@ -189,23 +243,24 @@
 </div>
 
 <div class="navbar">
-    <div style="display: flex; align-items: center; gap: 10px;">
+    <div style="display: flex; align-items: center; gap: 12px;">
         <button class="menu-btn" onclick="toggleSidebar()">☰</button>
         <div class="brand"><h1>📚 sinau bang</h1></div>
     </div>
     <div class="right-nav">
-        <span id="nav-user-badge" style="font-size: 0.85em; font-weight: 600; color: #006064; background: #b2ebf2; padding: 4px 10px; border-radius: 12px;">Halo, User</span>
+        <button class="btn btn-outline" style="padding: 6px 14px; font-size: 0.85em;" onclick="openChatRoom()">💬 Chat Room</button>
+        <span id="nav-user-badge" style="font-size: 0.85em; font-weight: 600; color: #004d40; background: rgba(255,255,255,0.5); backdrop-filter: blur(5px); padding: 5px 12px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.6);">Halo, User</span>
         <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">🌙</button>
         <div class="music-widget" onclick="toggleMusic()" id="music-btn-box">
             🎵 <span id="music-text">Putar</span>
         </div>
-        <button class="btn btn-outline" style="padding: 5px 10px; font-size: 0.8em; border-color:#e53935; color:#e53935;" onclick="logoutUser()">Keluar</button>
+        <button class="btn btn-outline" style="padding: 6px 12px; font-size: 0.85em; border-color:#e53935; color:#e53935;" onclick="logoutUser()">Keluar</button>
     </div>
 </div>
 
 <div class="sidebar" id="sidebar">
     <div class="sidebar-header">
-        <h3>Histori Akun Saya</h3>
+        <h3 style="color: #004d40;">Histori Akun Saya</h3>
         <button class="close-btn" onclick="toggleSidebar()">✖</button>
     </div>
     <div class="history-log" id="history-log"></div>
@@ -223,60 +278,78 @@
                 <span class="chevron">▼</span>
             </div>
             <div class="folder-content" id="folder-umum">
-                <div class="history-item" style="border-left-color: #00acc1;">
-                    <div class="history-info"><h3 style="color:#00838f;">PSTS BHS INDO XII</h3><p>40 Soal: Surat Lamaran Pekerjaan</p></div>
-                    <button class="btn" style="padding: 8px 15px;" onclick="startStudySession('psts_indo')">Mulai</button>
+                <div class="history-item">
+                    <div class="history-info"><h3>PSTS BHS INDO XII</h3><p>40 Soal: Surat Lamaran Pekerjaan</p></div>
+                    <button class="btn" style="padding: 8px 16px;" onclick="startStudySession('psts_indo')">Mulai</button>
                 </div>
-                <div class="history-item" style="border-left-color: #8bc34a;">
-                    <div class="history-info"><h3 style="color:#558b2f;">PSTS BING XII</h3><p>40 Soal: News Item Text</p></div>
-                    <button class="btn" style="background: linear-gradient(135deg, #8bc34a, #558b2f); padding: 8px 15px;" onclick="startStudySession('psts_bing')">Mulai</button>
+                <div class="history-item">
+                    <div class="history-info"><h3>PSTS BING XII</h3><p>40 Soal: News Item Text</p></div>
+                    <button class="btn" style="padding: 8px 16px;" onclick="startStudySession('psts_bing')">Mulai</button>
                 </div>
-                <div class="history-item" style="border-left-color: #ff9800;">
-                    <div class="history-info"><h3 style="color:#e65100;">PSTS BHS JAWA XII</h3><p>40 Soal: Teks Sandiwara (Drama)</p></div>
-                    <button class="btn" style="background: linear-gradient(135deg, #ff9800, #e65100); padding: 8px 15px;" onclick="startStudySession('psts_jawa')">Mulai</button>
+                <div class="history-item">
+                    <div class="history-info"><h3>PSTS BHS JAWA XII</h3><p>40 Soal: Teks Sandiwara (Drama)</p></div>
+                    <button class="btn" style="padding: 8px 16px;" onclick="startStudySession('psts_jawa')">Mulai</button>
                 </div>
             </div>
         </div>
 
         <!-- FOLDER 2: MPLB -->
         <div class="folder">
-            <div class="folder-header" style="border-left-color: #e91e63;" onclick="toggleFolder('folder-mplb', this)">
-                <span style="color:#c2185b;">🏢 Jurusan MPLB</span>
-                <span class="chevron" style="color:#c2185b;">▼</span>
+            <div class="folder-header" onclick="toggleFolder('folder-mplb', this)">
+                <span style="color:#ad1457;">🏢 Jurusan MPLB</span>
+                <span class="chevron" style="color:#ad1457;">▼</span>
             </div>
-            <div class="folder-content" id="folder-mplb" style="border-left-color: #f48fb1;">
-                <div class="history-item" style="border-left-color: #e91e63;">
-                    <div class="history-info"><h3 style="color:#c2185b;">SOP Pelayanan Prima</h3><p>Prosedur standar operasional perkantoran</p></div>
-                    <button class="btn" style="background: linear-gradient(135deg, #e91e63, #c2185b); padding: 8px 15px;" onclick="startStudySession('mplb_sop')">Mulai</button>
+            <div class="folder-content" id="folder-mplb">
+                <div class="history-item" style="border-left-color: #ad1457;">
+                    <div class="history-info"><h3 style="color:#ad1457;">SOP Pelayanan Prima</h3><p>Prosedur standar operasional perkantoran</p></div>
+                    <button class="btn" style="background: linear-gradient(135deg, #c2185b, #880e4f); padding: 8px 16px;" onclick="startStudySession('mplb_sop')">Mulai</button>
                 </div>
             </div>
         </div>
 
         <!-- FOLDER 3: TKJ -->
         <div class="folder">
-            <div class="folder-header" style="border-left-color: #3f51b5;" onclick="toggleFolder('folder-tkj', this)">
-                <span style="color:#303f9f;">💻 Jurusan TKJ</span>
-                <span class="chevron" style="color:#303f9f;">▼</span>
+            <div class="folder-header" onclick="toggleFolder('folder-tkj', this)">
+                <span style="color:#283593;">💻 Jurusan TKJ</span>
+                <span class="chevron" style="color:#283593;">▼</span>
             </div>
-            <div class="folder-content" id="folder-tkj" style="border-left-color: #9fa8da;">
-                <div class="history-item" style="border-left-color: #3f51b5;">
-                    <div class="history-info"><h3 style="color:#303f9f;">Config IP, DHCP & VLAN</h3><p>Administrasi Infrastruktur Jaringan</p></div>
-                    <button class="btn" style="background: linear-gradient(135deg, #3f51b5, #303f9f); padding: 8px 15px;" onclick="startStudySession('tkj_jaringan')">Mulai</button>
+            <div class="folder-content" id="folder-tkj">
+                <div class="history-item" style="border-left-color: #283593;">
+                    <div class="history-info"><h3 style="color:#283593;">Config IP, DHCP & VLAN</h3><p>Administrasi Infrastruktur Jaringan</p></div>
+                    <button class="btn" style="background: linear-gradient(135deg, #3f51b5, #1a237e); padding: 8px 16px;" onclick="startStudySession('tkj_jaringan')">Mulai</button>
                 </div>
-                <div class="history-item" style="border-left-color: #2196f3;">
-                    <div class="history-info"><h3 style="color:#1976d2;">Topologi & Sistem VSAT</h3><p>Konsep transmisi jaringan satelit</p></div>
-                    <button class="btn" style="background: linear-gradient(135deg, #2196f3, #1976d2); padding: 8px 15px;" onclick="startStudySession('tkj_vsat')">Mulai</button>
+                <div class="history-item" style="border-left-color: #0277bd;">
+                    <div class="history-info"><h3 style="color:#0277bd;">Topologi & Sistem VSAT</h3><p>Konsep transmisi jaringan satelit</p></div>
+                    <button class="btn" style="background: linear-gradient(135deg, #0288d1, #01579b); padding: 8px 16px;" onclick="startStudySession('tkj_vsat')">Mulai</button>
                 </div>
             </div>
         </div>
+    </main>
 
+    <!-- CHAT ROOM VIEW -->
+    <main id="view-chat" class="view card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h2 class="section-title" style="margin: 0; border: none;">💬 Ruang Obrolan Publik</h2>
+            <button class="btn btn-outline" style="padding: 5px 12px; font-size: 0.8em;" onclick="showView('view-dashboard')">⬅ Kembali ke Menu</button>
+        </div>
+        <p style="font-size: 0.85em; margin-bottom: 15px; opacity: 0.8;">Diskusikan materi pelajaran, tanya soal, atau ngobrol bareng teman-teman lain secara real-time di sini!</p>
+        
+        <div class="chat-container">
+            <div class="chat-messages-box" id="chat-messages-box">
+                <p style="text-align: center; color: gray; font-size: 0.9em; margin-top: 20px;">Memuat pesan obrolan...</p>
+            </div>
+            <div class="chat-input-area">
+                <input type="text" id="chat-input-field" class="chat-input" placeholder="Tulis pesan atau pertanyaanmu di sini..." onkeypress="handleChatKeyPress(event)">
+                <button class="btn" onclick="sendChatMessage()">Kirim 🚀</button>
+            </div>
+        </div>
     </main>
 
     <!-- QUIZ VIEW -->
     <main id="view-quiz" class="view card">
         <div class="quiz-header">
             <button class="btn btn-outline" style="padding: 5px 12px; font-size: 0.8em;" onclick="showView('view-dashboard')">⬅ Batal</button>
-            <h3 id="quiz-title" style="color:#00838f; font-size: 1.1em;">Judul</h3>
+            <h3 id="quiz-title" style="color:#004d40; font-size: 1.1em;">Judul</h3>
             <span id="question-tracker" style="font-weight: 600;">0/0</span>
         </div>
         <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
@@ -301,11 +374,11 @@
     <main id="view-result" class="view card result-container">
         <h2 class="section-title">Selesai! 🎉</h2>
         <div class="score-circle" id="final-score">100</div>
-        <p id="result-message" style="margin-bottom: 15px;">Luar biasa!</p>
+        <p id="result-message" style="margin-bottom: 15px; font-weight: 600;">Luar biasa!</p>
         
-        <div style="background: rgba(0,0,0,0.03); padding: 15px; border-radius: 10px; max-width: 350px; margin: 0 auto 20px;">
-            <p style="font-size: 0.9em; margin-bottom: 8px; font-weight: 600;">Skor otomatis disimpan ke akunmu:</p>
-            <b id="result-username-display" style="color:#00838f; font-size: 1.1em; display:block; margin-bottom: 15px;">-</b>
+        <div style="background: rgba(255,255,255,0.4); backdrop-filter: blur(10px); padding: 20px; border-radius: 16px; max-width: 380px; margin: 0 auto 20px; border: 1px solid rgba(255,255,255,0.6);">
+            <p style="font-size: 0.9em; margin-bottom: 8px; font-weight: 600;">Skor otomatis disimpan ke akun online-mu:</p>
+            <b id="result-username-display" style="color:#004d40; font-size: 1.15em; display:block; margin-bottom: 15px;">-</b>
             <button class="btn" onclick="saveScoreToHistory()">Simpan ke Histori Akun</button>
         </div>
     </main>
@@ -318,6 +391,7 @@
 
     const FIREBASE_USERS_URL = "https://sinaubang-web-a5069-default-rtdb.asia-southeast1.firebasedatabase.app/users.json";
     const FIREBASE_SKOR_URL = "https://sinaubang-web-a5069-default-rtdb.asia-southeast1.firebasedatabase.app/skor.json";
+    const FIREBASE_CHAT_URL = "https://sinaubang-web-a5069-default-rtdb.asia-southeast1.firebasedatabase.app/chat_global.json";
 
     window.addEventListener('DOMContentLoaded', () => {
         if (currentUser) {
@@ -359,7 +433,6 @@
                     btn.disabled = false;
                     return;
                 }
-                // Simpan akun baru ke Firebase Database
                 await fetch(`https://sinaubang-web-a5069-default-rtdb.asia-southeast1.firebasedatabase.app/users/${u}.json`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
@@ -395,6 +468,67 @@
             localStorage.removeItem('sinau_active_user');
             currentUser = null;
             location.reload();
+        }
+    }
+
+    // --- CHAT ROOM LOGIC ---
+    function openChatRoom() {
+        showView('view-chat');
+        loadChatMessages();
+    }
+
+    async function loadChatMessages() {
+        const chatBox = document.getElementById('chat-messages-box');
+        chatBox.innerHTML = '<p style="text-align: center; color: gray; font-size: 0.9em;">Memuat pesan...</p>';
+        try {
+            let res = await fetch(FIREBASE_CHAT_URL);
+            let data = await res.json();
+            chatBox.innerHTML = '';
+            if(!data) {
+                chatBox.innerHTML = '<p style="text-align: center; color: gray; font-size: 0.9em;">Belum ada pesan di ruang obrolan. Jadilah yang pertama mengirim pesan!</p>';
+                return;
+            }
+            let chats = Object.values(data);
+            chats.forEach(c => {
+                let isMe = (c.sender === currentUser);
+                let bubbleClass = isMe ? 'chat-bubble chat-bubble-me' : 'chat-bubble chat-bubble-other';
+                chatBox.innerHTML += `
+                <div class="${bubbleClass}">
+                    <span class="chat-sender">${c.sender}</span>
+                    <span>${c.message}</span>
+                    <span class="chat-time">${c.time}</span>
+                </div>`;
+            });
+            chatBox.scrollTop = chatBox.scrollHeight;
+        } catch(e) {
+            chatBox.innerHTML = '<p style="text-align: center; color: red; font-size: 0.9em;">Gagal memuat pesan chat.</p>';
+        }
+    }
+
+    async function sendChatMessage() {
+        const inputField = document.getElementById('chat-input-field');
+        const msg = inputField.value.trim();
+        if(!msg) return;
+
+        let timeString = new Date().toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'});
+        let chatData = { sender: currentUser, message: msg, time: timeString };
+
+        try {
+            inputField.value = '';
+            await fetch(FIREBASE_CHAT_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(chatData)
+            });
+            loadChatMessages();
+        } catch(e) {
+            alert("Gagal mengirim pesan.");
+        }
+    }
+
+    function handleChatKeyPress(event) {
+        if(event.key === 'Enter') {
+            sendChatMessage();
         }
     }
 
@@ -630,10 +764,10 @@
             myHistory.forEach((item) => {
                 logContainer.innerHTML += `
                 <div class="log-item" onclick="openHistoryDetail('${item.id}')">
-                    <span style="font-size:0.9em; font-weight:600; color:#00838f;">Modul: ${item.modul}</span><br>
-                    Skor: <b style="font-size:1.1em; color:#e65100;">${item.skor}</b><br>
+                    <span style="font-size:0.9em; font-weight:600; color:#004d40;">Modul: ${item.modul}</span><br>
+                    Skor: <b style="font-size:1.1em; color:#c2185b;">${item.skor}</b><br>
                     <span style="font-size:0.75em; color:gray;">📅 ${item.waktu}</span>
-                    <div style="font-size:0.75em; color:#00acc1; margin-top:3px;">👆 Klik untuk lihat detail</div>
+                    <div style="font-size:0.75em; color:#00897b; margin-top:3px;">👆 Klik untuk lihat detail</div>
                 </div>`;
             });
         } catch (error) { logContainer.innerHTML = "<p style='color:red; text-align:center;'>Gagal memuat histori.</p>"; }
@@ -647,7 +781,7 @@
         if (!record.detailJawaban) { modalBody.innerHTML = "<p style='text-align:center; color:#888;'>Detail tidak tersedia.</p>"; } 
         else {
             record.detailJawaban.forEach((ans, i) => {
-                let statusColor = ans.isTrue ? "border-left-color:#4caf50;" : "border-left-color:#f44336;";
+                let statusColor = ans.isTrue ? "border-left-color:#2e7d32;" : "border-left-color:#c62828;";
                 modalBody.innerHTML += `
                 <div class="detail-soal-card" style="${statusColor}">
                     <b>Soal ${i + 1}:</b> ${ans.soal}<br>
