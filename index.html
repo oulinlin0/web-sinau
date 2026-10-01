@@ -19,7 +19,7 @@
             background: linear-gradient(135deg, #121212 0%, #1e1e2f 50%, #1a1a2e 100%);
             color: #e0e0e0;
         }
-        body.dark-theme .navbar, body.dark-theme .card, body.dark-theme .sidebar, body.dark-theme .ai-chat-box, body.dark-theme .history-item {
+        body.dark-theme .navbar, body.dark-theme .card, body.dark-theme .sidebar, body.dark-theme .ai-chat-box, body.dark-theme .history-item, body.dark-theme .modal-content {
             background: rgba(30, 30, 42, 0.95); border-color: #333; color: #e0e0e0; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
         body.dark-theme .brand h1, body.dark-theme .section-title, body.dark-theme .history-info h3, body.dark-theme .question-text { color: #4dd0e1; }
@@ -30,7 +30,6 @@
         body.dark-theme .log-item { background: #2c2c3e; border-left: 4px solid #4dd0e1; color: #e0e0e0; }
         body.dark-theme .history-info p { color: #aaa; }
         body.dark-theme .option-btn { background: #1e1e2f; border: 2px solid #555; color: #e0e0e0; }
-        body.dark-theme .option-btn:hover:not(:disabled) { background: #2c2c3e; }
         body.dark-theme .option-btn.correct { background: #1b5e20 !important; color: #fff !important; border-color: #4caf50 !important; }
         body.dark-theme .option-btn.wrong { background: #b71c1c !important; color: #fff !important; border-color: #f44336 !important; }
         body.dark-theme .feedback-box { background: #332b1a; border-left: 4px solid #ffb300; color: #eee; }
@@ -71,7 +70,21 @@
         .sidebar-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e0f7fa; padding-bottom: 15px; margin-bottom: 15px;}
         .close-btn { background: none; border: none; font-size: 1.5em; color: #e53935; cursor: pointer; }
         .history-log { flex: 1; overflow-y: auto; padding-right: 5px; }
-        .log-item { background: #f1f8e9; padding: 12px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #8bc34a; font-size: 0.9em; line-height: 1.4;}
+        .log-item { background: #f1f8e9; padding: 12px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #8bc34a; font-size: 0.9em; line-height: 1.4; cursor: pointer; transition: 0.2s;}
+        .log-item:hover { transform: scale(1.02); background: #ecedc8; }
+
+        /* Modal Detail Histori */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 300; justify-content: center; align-items: center; padding: 15px;
+        }
+        .modal-content {
+            background: #fff; width: 100%; max-width: 600px; max-height: 85vh; border-radius: 15px;
+            padding: 20px; display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            animation: fadeIn 0.3s ease;
+        }
+        .modal-body { flex: 1; overflow-y: auto; margin-top: 15px; padding-right: 5px; }
+        .detail-soal-card { background: rgba(0,0,0,0.03); padding: 12px; border-radius: 8px; margin-bottom: 10px; font-size: 0.9em; border-left: 4px solid #00acc1; }
 
         .container { max-width: 900px; margin: 20px auto; padding: 0 15px; }
 
@@ -86,11 +99,9 @@
 
         .section-title { font-size: 1.3em; color: #00838f; margin-bottom: 15px; border-bottom: 2px solid #b2ebf2; padding-bottom: 10px; }
 
-        /* Custom Inputs */
         input.custom-input { width: 100%; max-width: 300px; padding: 12px; border-radius: 8px; border: 2px solid #b2ebf2; outline: none; font-size: 1em; margin-bottom: 15px; transition: 0.3s; }
         input.custom-input:focus { border-color: #00838f; }
 
-        /* Dashboard Items */
         .history-list { display: flex; flex-direction: column; gap: 15px; }
         .history-item {
             background: #ffffff; border-radius: 12px; padding: 15px;
@@ -100,7 +111,6 @@
         .history-info h3 { color: #006064; font-size: 1.1em; }
         .history-info p { font-size: 0.85em; color: #666; margin-top: 5px;}
 
-        /* Buttons */
         .btn {
             background: linear-gradient(135deg, #00acc1, #00838f); color: white;
             border: none; padding: 10px 18px; border-radius: 20px; font-weight: 600; cursor: pointer; transition: 0.2s;
@@ -109,7 +119,6 @@
         .btn:disabled { background: #ccc; cursor: not-allowed; }
         .btn-outline { background: transparent; color: #00838f; border: 2px solid #00838f; }
 
-        /* Quiz UI */
         .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .progress-bar { width: 100%; height: 8px; background: #e0e0e0; border-radius: 4px; overflow: hidden; margin-bottom: 20px;}
         .progress-fill { height: 100%; background: #00bcd4; width: 0%; transition: width 0.3s ease; }
@@ -136,14 +145,12 @@
         .feedback-box p { font-size: 0.9em;}
         .next-btn-container { margin-top: 20px; text-align: right; display: none; }
 
-        /* Result */
         .result-container { text-align: center; padding: 30px 10px;}
         .score-circle {
             width: 120px; height: 120px; border-radius: 50%; background: #00acc1; color: white;
             display: flex; align-items: center; justify-content: center; font-size: 2.5em; font-weight: 700; margin: 0 auto 20px;
         }
 
-        /* Gemini AI Chat UI */
         .ai-fab {
             position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px;
             background: linear-gradient(135deg, #673ab7, #3f51b5); border-radius: 50%;
@@ -173,6 +180,19 @@
 <audio id="bg-music" loop>
     <source src="DJ TEMANKU SEMUA PADA JAHAT TANTE __ DJ TANTE CULIK AKU DONG VIRAL TIKTOK TERBARU 2024.mp3" type="audio/mpeg">
 </audio>
+
+<!-- Modal Detail Histori -->
+<div class="modal" id="history-modal">
+    <div class="modal-content">
+        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #b2ebf2; padding-bottom:10px;">
+            <h3 id="modal-title" style="color:#00838f;">Detail Pengerjaan</h3>
+            <button class="close-btn" onclick="closeModal()">✖</button>
+        </div>
+        <div class="modal-body" id="modal-body-content">
+            <!-- Detail jawaban akan dimuat di sini -->
+        </div>
+    </div>
+</div>
 
 <!-- Navbar -->
 <div class="navbar">
@@ -288,7 +308,6 @@
 </div>
 
 <script>
-    // --- PENGATURAN TEMA (DARK/LIGHT MODE) ---
     function toggleTheme() {
         document.body.classList.toggle('dark-theme');
         const isDark = document.body.classList.contains('dark-theme');
@@ -303,7 +322,6 @@
         updateHistorySidebar();
     };
 
-    // --- KONTROL MUSIK INTERAKTIF ---
     const bgMusic = document.getElementById('bg-music');
     const musicText = document.getElementById('music-text');
     let isMusicPlaying = false;
@@ -319,10 +337,7 @@
                 playPromise.then(_ => {
                     musicText.innerText = "Jeda";
                     isMusicPlaying = true;
-                }).catch(error => {
-                    console.error("Gagal memutar:", error);
-                    alert("Gagal memutar audio.");
-                });
+                }).catch(error => { console.error(error); });
             }
         }
     }
@@ -339,7 +354,6 @@
         return array;
     }
 
-    // --- DATA TEKS BACAAN ---
     const readingTexts = {
         teks1: "<strong>Teks 1 (Flood)</strong><br>A massive flood hit Jakarta on Monday, Sept 14. It started at 02.00 AM. 500 refugees fled to safer places. The water reached 2 meters. The Mayor stated, 'We are sending boats.' Sadly, there were 3 casualties.",
         teks2: "<strong>Teks 2 (Robbery)</strong><br>An armed robbery occurred at a local bank at 14.00. 3 men stole $50,000. It lasted 10 minutes. The police arrived 5 minutes later. Chief Inspector Budi reported the arrest of one suspect.",
@@ -347,7 +361,6 @@
         teks4: "<strong>Teks 4 (Fire)</strong><br>A fire destroyed 20 houses last night. The government provided Rp100.000.000 in cash aid for the victims."
     };
 
-    // --- DATABASE SOAL ---
     const psts_indo_questions = [
         { q: "Surat lamaran pekerjaan yang digabungkan dengan riwayat hidup (curriculum vitae) termasuk jenis surat lamaran model...", o: ["Gabungan", "Terpisah", "Semi-blok", "Resmi"], c: 0, exp: "Model gabungan menyatukan surat dan riwayat hidup dalam satu kesatuan." },
         { q: "Kalimat penolakan lamaran pekerjaan yang halus dan santun adalah...", o: ["Maaf, kami tidak butuh tenaga Anda.", "Dengan menyesal kami belum bisa menerima Anda karena posisi telah terisi.", "Surat lamaran Anda ditolak karena tidak memenuhi syarat.", "Anda tidak kami terima, silakan cari di tempat lain."], c: 1, exp: "Penolakan harus menggunakan bahasa yang santun agar tidak menyinggung pelamar." },
@@ -493,13 +506,14 @@
     let score = 0;
     let finalCalculatedScore = 0;
     let answered = false;
+    let userSessionAnswers = []; // Menyimpan rekam jejak jawaban user
 
-    // --- FUNGSI HISTORI (TERHUBUNG KE FIREBASE DATABASE) ---
     const FIREBASE_URL = "https://sinaubang-web-a5069-default-rtdb.asia-southeast1.firebasedatabase.app/skor.json";
+    let globalHistoryCache = [];
 
     async function updateHistorySidebar() {
         const logContainer = document.getElementById('history-log');
-        logContainer.innerHTML = '<p style="text-align:center; font-size:0.9em;">Memuat data dari server...</p>';
+        logContainer.innerHTML = '<p style="text-align:center; font-size:0.9em;">Memuat data...</p>';
         
         try {
             let response = await fetch(FIREBASE_URL);
@@ -512,26 +526,60 @@
                 return;
             }
 
-            let historyData = Object.values(data);
-            
-            historyData.reverse().forEach(item => {
+            // Ubah objek firebase menjadi array dengan menyertakan id uniknya
+            globalHistoryCache = Object.keys(data).map(key => ({ id: key, ...data[key] }));
+            globalHistoryCache.reverse();
+
+            globalHistoryCache.forEach((item, index) => {
                 logContainer.innerHTML += `
-                <div class="log-item">
+                <div class="log-item" onclick="openHistoryDetail(${index})">
                     <b style="color:#00838f;">👤 ${item.nama}</b><br>
                     <span style="font-size:0.9em;">Modul: ${item.modul}</span><br>
                     Skor: <b style="font-size:1.1em; color:#e65100;">${item.skor}</b><br>
                     <span style="font-size:0.75em; color:gray;">📅 ${item.waktu}</span>
+                    <div style="font-size:0.75em; color:#00acc1; margin-top:3px;">👆 Klik untuk lihat detail jawaban</div>
                 </div>`;
             });
         } catch (error) {
-            logContainer.innerHTML = "<p style='color:red; text-align:center; font-size:0.9em;'>Gagal memuat histori. Cek koneksi internet.</p>";
+            logContainer.innerHTML = "<p style='color:red; text-align:center; font-size:0.9em;'>Gagal memuat histori.</p>";
         }
+    }
+
+    // Fungsi membuka modal detail riwayat jawaban
+    function openHistoryDetail(index) {
+        const record = globalHistoryCache[index];
+        document.getElementById('modal-title').innerText = `${record.nama} - ${record.modul} (Skor: ${record.skor})`;
+        
+        const modalBody = document.getElementById('modal-body-content');
+        modalBody.innerHTML = '';
+
+        if (!record.detailJawaban || record.detailJawaban.length === 0) {
+            modalBody.innerHTML = "<p style='text-align:center; color:#888;'>Detail jawaban tidak tersedia untuk sesi ini.</p>";
+        } else {
+            record.detailJawaban.forEach((ans, i) => {
+                let statusColor = ans.isTrue ? "border-left-color:#4caf50;" : "border-left-color:#f44336;";
+                let statusText = ans.isTrue ? "✅ Benar" : "❌ Salah";
+                
+                modalBody.innerHTML += `
+                <div class="detail-soal-card" style="${statusColor}">
+                    <b>Soal ${i + 1}:</b> ${ans.soal}<br>
+                    <span style="color:${ans.isTrue ? '#2e7d32' : '#c62828'}">Jawaban Dipilih: <b>${ans.pilihanUser}</b> (${statusText})</span><br>
+                    <span style="color:#555;">Kunci Jawaban: <b>${ans.jawabanBenar}</b></span>
+                </div>`;
+            });
+        }
+
+        document.getElementById('history-modal').style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('history-modal').style.display = 'none';
     }
 
     async function saveScoreToHistory() {
         const inputName = document.getElementById('result-username').value.trim();
         if(!inputName) {
-            alert("Harap masukkan nama kamu terlebih dahulu sebelum menyimpan!");
+            alert("Harap masukkan nama kamu terlebih dahulu!");
             return;
         }
 
@@ -542,12 +590,13 @@
             nama: inputName,
             modul: database[currentModulId].title,
             skor: finalCalculatedScore,
-            waktu: timeString
+            waktu: timeString,
+            detailJawaban: userSessionAnswers // Mengirim rekam jejak jawaban ke server
         };
         
         try {
             let btn = document.querySelector('.result-container .btn');
-            btn.innerText = "Menyimpan ke server...";
+            btn.innerText = "Menyimpan...";
             btn.disabled = true;
 
             await fetch(FIREBASE_URL, {
@@ -556,14 +605,14 @@
                 body: JSON.stringify(dataBaru)
             });
 
-            alert("Skor berhasil disimpan dan bisa dilihat semua orang!");
+            alert("Skor dan detail jawaban berhasil disimpan!");
             updateHistorySidebar(); 
             showView('view-dashboard');
 
             btn.innerText = "Simpan & Selesai";
             btn.disabled = false;
         } catch (error) {
-            alert("Gagal menyimpan skor. Pastikan koneksi internet lancar.");
+            alert("Gagal menyimpan data.");
             let btn = document.querySelector('.result-container .btn');
             btn.innerText = "Simpan & Selesai";
             btn.disabled = false;
@@ -571,27 +620,28 @@
     }
 
     function clearHistory() {
-        alert("Fitur hapus histori dinonaktifkan karena menggunakan database global.");
+        alert("Fitur hapus histori dinonaktifkan.");
     }
 
-    // --- KONTROL TAMPILAN ---
     function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
     function showView(id) { 
         document.querySelectorAll('.view').forEach(v => v.classList.remove('active')); 
         document.getElementById(id).classList.add('active'); 
     }
 
-    // --- KUIS LOGIC ---
     function startStudySession(modulId) {
         currentModulId = modulId;
         let originalQuestions = JSON.parse(JSON.stringify(database[modulId].questions));
         questions = shuffleArray(originalQuestions); 
+        currentQIndex = 0; score = 0;
+        userSessionAnswers = []; // Reset rekam jejak untuk sesi baru
         
         document.getElementById('quiz-title').innerText = database[modulId].title;
-        currentQIndex = 0; score = 0;
         showView('view-quiz');
         renderQuestion();
     }
+
+    let currentShuffledOptions = [];
 
     function renderQuestion() {
         answered = false;
@@ -615,13 +665,13 @@
         optionsContainer.innerHTML = '';
         
         let optionsArr = q.o.map((text, index) => ({ text, isCorrect: index === q.c }));
-        optionsArr = shuffleArray(optionsArr);
+        currentShuffledOptions = shuffleArray(optionsArr);
 
-        optionsArr.forEach((opt, index) => {
+        currentShuffledOptions.forEach((opt, index) => {
             const btn = document.createElement('button');
             btn.className = 'option-btn';
             btn.innerText = String.fromCharCode(65 + index) + ". " + opt.text;
-            btn.onclick = () => selectAnswer(opt.isCorrect, btn, optionsArr);
+            btn.onclick = () => selectAnswer(opt, btn);
             optionsContainer.appendChild(btn);
         });
 
@@ -629,20 +679,38 @@
         document.getElementById('next-btn-container').style.display = 'none';
     }
 
-    function selectAnswer(isCorrect, btnElement, optionsArr) {
+    function selectAnswer(selectedOpt, btnElement) {
         if (answered) return;
         answered = true;
 
+        const q = questions[currentQIndex];
         const allBtns = document.querySelectorAll('.option-btn');
-        allBtns.forEach((btn, idx) => {
-            btn.disabled = true;
-            if(optionsArr[idx].isCorrect) btn.classList.add('correct');
+        
+        let correctOptText = "";
+        currentShuffledOptions.forEach((opt, idx) => {
+            allBtns[idx].disabled = true;
+            if(opt.isCorrect) {
+                allBtns[idx].classList.add('correct');
+                correctOptText = opt.text;
+            }
         });
 
-        if (isCorrect) { btnElement.classList.add('correct'); score++; } 
-        else { btnElement.classList.add('wrong'); }
+        if (selectedOpt.isCorrect) { 
+            btnElement.classList.add('correct'); 
+            score++; 
+        } else { 
+            btnElement.classList.add('wrong'); 
+        }
 
-        document.getElementById('feedback-text').innerText = questions[currentQIndex].exp;
+        // Rekam jawaban user untuk disimpan ke database nantinya
+        userSessionAnswers.push({
+            soal: q.q,
+            pilihanUser: selectedOpt.text,
+            isTrue: selectedOpt.isCorrect,
+            jawabanBenar: correctOptText
+        });
+
+        document.getElementById('feedback-text').innerText = q.exp;
         document.getElementById('feedback-box').style.display = 'block';
         document.getElementById('next-btn-container').style.display = 'block';
     }
@@ -664,7 +732,6 @@
         }, 300);
     }
 
-    // --- AI CHATBOX ---
     function toggleChat() {
         const box = document.getElementById('ai-chat-box');
         box.style.display = box.style.display === 'flex' ? 'none' : 'flex';
@@ -683,7 +750,6 @@
             body.scrollTop = body.scrollHeight;
         }, 800);
     }
-
 </script>
 </body>
 </html>
