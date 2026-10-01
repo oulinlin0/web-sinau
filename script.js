@@ -336,7 +336,9 @@ async function sendPrivateMessage() {
 
     let resMeta = await fetch(META_URL);
     let metaData = await resMeta.json() || { unreadCount: 0 };
-    let newUnread = (metaData.lastSender !== currentUser) ? (metaData.unreadCount || 0) + 1 : 1;
+    
+    // Perbaikan Logika: Selalu tambahkan 1 dari unreadCount sebelumnya (akumulasi jumlah pesan)
+    let newUnread = (metaData.lastSender !== currentUser) ? (metaData.unreadCount || 0) + 1 : (metaData.unreadCount || 0) + 1;
 
     await fetch(META_URL, {
         method: 'PUT',
@@ -345,7 +347,7 @@ async function sendPrivateMessage() {
             lastMessage: msg, 
             time: timeString, 
             lastSender: currentUser,
-            unreadCount: (currentUser === activeChatUser) ? 0 : newUnread 
+            unreadCount: newUnread 
         })
     });
       
@@ -383,7 +385,7 @@ function openHistoryDetail(id) {
 }  
 function closeModal() { document.getElementById('history-modal').style.display = 'none'; }  
 
-// --- FULL DATABASE (120+ QUESTIONS LENGKAP) ---  
+// --- FULL DATABASE (120+ QUESTIONS) ---  
 function shuffleArray(arr) { let c = arr.length, t, r; while (c !== 0) { r = Math.floor(Math.random() * c); c -= 1; t = arr[c]; arr[c] = arr[r]; arr[r] = t; } return arr; }  
   
 const readingTexts = {  
@@ -545,7 +547,7 @@ const tkj_vsat_qs = [
 const mplb_sop_qs = [  
     { q: "Dalam SOP Front Office, sikap melayani tamu dengan ramah, cepat, dan tanggap sering disebut sebagai penerapan prinsip...", o: ["Pelayanan Prima (Service Excellence)", "Manajemen Konflik", "Arsip Dinamis", "Administrasi Keuangan"], c: 0, exp: "Pelayanan prima (Service Excellence) adalah standar tertinggi dalam melayani tamu/pelanggan." },  
     { q: "Langkah pertama yang harus dilakukan resepsionis (Front Office) ketika tamu memasuki area lobi kantor adalah...", o: ["Meminta identitas KTP", "Memberikan salam (Greeting) dengan senyum", "Menyuruh tamu langsung duduk", "Menelepon atasan"], c: 1, exp: "Memberikan salam dengan ramah adalah prosedur paling awal (SOP) di Front Office." },  
-    { q: "Saat menerima telepon keluhan dari tamu, tindakan yang paling tepat sesuai SOP adalah...", o: ["Menutup telepon secara sepihak", "Mendengarkan dengan empati, mencatat, dan menenangkan tamu", "Meminta tamu untuk datang langsung", "Menyalahkan departemen lain"], c: 1, exp: "Dalam pelayanan, keluhan harus didengarkan dengan empati dan dicatat sebelum diberikan solusi." },  
+    { q: "Saat menerima telepon keluhan dari tamu, tindakan yang paling tepat sesuai SOP adalah...", o: ["Menutup telepon secara sepihak", "Mendengarkan dengan empati, mencatat, dan menenangkan tamu", "Meminta tamu untuk datang langsung", "Menyalahkan departemen lain"], c: 1, exp: "In pelayanan, keluhan harus didengarkan dengan empati dan dicatat sebelum diberikan solusi." },  
     { q: "Standar grooming (penampilan) bagi seorang petugas Front Office umumnya meliputi, kecuali...", o: ["Pakaian seragam rapi dan disetrika", "Rambut tertata rapi atau menggunakan hijab yang sesuai standar", "Menggunakan perhiasan mencolok berlebihan", "Memakai tanda pengenal (name tag)"], c: 2, exp: "Perhiasan berlebihan tidak sesuai dengan standar penampilan profesional di perkantoran/perhotelan." },  
     { q: "Jika tamu tidak memiliki janji temu dengan pimpinan yang sedang rapat, resepsionis sebaiknya...", o: ["Mempersilakan tamu masuk menerobos rapat", "Meminta tamu menunggu di luar tanpa penjelasan", "Menjelaskan dengan sopan bahwa pimpinan sedang rapat dan meminta tamu mengisi buku tamu/meninggalkan pesan", "Menyuruh tamu pulang dengan nada kasar"], c: 2, exp: "Penyampaian informasi yang jelas dan sopan serta menawarkan alternatif (meninggalkan pesan) adalah SOP yang benar." }  
 ];  
