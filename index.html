@@ -220,6 +220,15 @@
                 </div>
                 <button class="btn" style="background: linear-gradient(135deg, #8bc34a, #558b2f);" onclick="startStudySession('psts_bing')">Mulai</button>
             </div>
+            
+            <!-- MODUL BARU B. JAWA -->
+            <div class="history-item" style="border-left-color: #ff9800;">
+                <div class="history-info">
+                    <h3 style="color: #e65100;">KISI-KISI PSTS BHS JAWA XII</h3>
+                    <p>40 Soal: Teks Sandiwara (Drama)</p>
+                </div>
+                <button class="btn" style="background: linear-gradient(135deg, #ff9800, #e65100);" onclick="startStudySession('psts_jawa')">Mulai</button>
+            </div>
         </div>
     </main>
 
@@ -401,7 +410,6 @@
         { q: "What kind of information is included in the 'Sources' section?", o: ["The writer's opinion", "The weather forecast", "Comments from witnesses or authorities", "A fairy tale story"], c: 2, exp: "Sources berisi komentar dari pihak berwenang atau saksi mata." },
         { q: "The information presented in a News Item must be...", o: ["Fictional and imaginary", "Factual and real", "Subjective opinions", "Funny and joking"], c: 1, exp: "Berita harus berdasarkan fakta yang nyata." },
         
-        // Soal dengan Teks Bacaan
         { q: "(Teks 1) What is the main topic?", o: ["A natural disaster / flood", "A traffic jam", "A car accident", "A political debate"], c: 0, passage: readingTexts.teks1, exp: "Teks membahas tentang 'massive flood' (banjir besar)." },
         { q: "(Teks 1) On what day and date did the flood happen?", o: ["Sunday, Sept 13", "Monday, Sept 14", "Tuesday, Sept 15", "Friday, Sept 14"], c: 1, passage: readingTexts.teks1, exp: "Tertulis dengan jelas 'Monday, Sept 14'." },
         { q: "(Teks 1) What time did the flood start?", o: ["12.00 PM", "02.00 AM", "04.00 AM", "08.00 PM"], c: 1, passage: readingTexts.teks1, exp: "Tertulis 'It started at 02.00 AM'." },
@@ -432,9 +440,53 @@
         { q: "(Teks 4) How many houses were destroyed?", o: ["10 houses", "15 houses", "20 houses", "25 houses"], c: 2, passage: readingTexts.teks4, exp: "Tertulis api menghancurkan '20 houses'." }
     ];
 
+    const psts_jawa_questions = [
+        { q: "Tembung sandiwara asale saka basa Jawa, yaiku sandi lan wara. Sandi tegese wadi utawa rahasia, dene wara tegese...", o: ["Wewarah utawa ajaran", "Panggonan", "Tontonan", "Guyonan"], c: 0, exp: "Sandi tegese rahasia/wadi, wara (wewarah) tegese ajaran. Dadi sandiwara iku ajaran sing disandikake sajroning tontonan." },
+        { q: "Rerangkening crita utawa urut-urutane kedadeyan ing sandiwara wiwit awal nganti pungkasan diarani...", o: ["Tema", "Alur (Plot)", "Amanat", "Latar"], c: 1, exp: "Alur utawa plot yaiku urutaning kedadeyan ing sajroning crita sandiwara." },
+        { q: "Piwulang luhur utawa pesen moral sing pengin diandharake pangripta (penulis) marang pamirsa diarani...", o: ["Tema", "Amanat", "Sudut pandang", "Konflik"], c: 1, exp: "Amanat yaiku pesen moral utawa nasehat sing bisa dijupuk saka pementasan sandiwara." },
+        { q: "Teks utawa buku sing isine pacelathon lan pituduh tingkah lakune paraga sandiwara diarani...", o: ["Naskah/Skenario", "Brosur", "Notulen", "Prosa"], c: 0, exp: "Naskah utawa skenario dadi paugeran utama paraga sadurunge main sandiwara." },
+        { q: "Wong sing tugase mimpin, ngatur, lan menehi arahan lumakune pementasan sandiwara diarani...", o: ["Aktor", "Sutradara", "Figuran", "Koreografer"], c: 1, exp: "Sutradara iku pemimpine pementasan sing ngatur kabeh paraga lan kru." },
+        { q: "Paraga sing duweni wewatak becik, jujur, lan biasane disenengi dening pamirsa diarani paraga...", o: ["Antagonis", "Protagonis", "Tritagonis", "Figuran"], c: 1, exp: "Protagonis yaiku tokoh utama sing duwe watak apik (wong sing bener)." },
+        { q: "Paraga sing tansah pasulayan (berkonflik) karo paraga utama, lan biasane duwe watak ala diarani...", o: ["Tritagonis", "Protagonis", "Antagonis", "Pembantu"], c: 2, exp: "Antagonis yaiku tokoh lawan sing biasane nggawa watak ala utawa jahat." },
+        { q: "Pirembugan utawa omong-omongan antarane paraga siji lan paraga liyane ing sandiwara diarani...", o: ["Prolog", "Epilog", "Monolog", "Dialog (Pacelathon)"], c: 3, exp: "Dialog utawa pacelathon yaiku komunikasi antarane rong paraga utawa luwih." },
+        { q: "Paraga sing guneman (ngomong) ijen ing panggung tanpa ana paraga liyane sing nemoni diarani...", o: ["Monolog", "Prolog", "Epilog", "Kramagung"], c: 0, exp: "Monolog asale saka tembung mono (siji). Yaiku paraga sing ngomong dhewe." },
+        { q: "Bagean pambuka ing sandiwara sing isine ngandharake kahanan utawa gambaran awal crita diarani...", o: ["Epilog", "Dialog", "Prolog", "Monolog"], c: 2, exp: "Prolog manggon ing ngarep (pambuka) kanggo menehi gambaran awal crita." },
+        { q: "Panutuping sandiwara sing biasane isine dudutan (kesimpulan) utawa pesen moral saka crita sing wis dipentasake diarani...", o: ["Prolog", "Epilog", "Klimaks", "Resolusi"], c: 1, exp: "Epilog manggon ing pungkasan crita minangka panutup sandiwara." },
+        { q: "Katrangan ing naskah sandiwara sing biasane ditulis ing njero kurung (...) minangka pituduh tingkah lakune paraga diarani...", o: ["Kramagung", "Wawancang", "Gancaran", "Tembang"], c: 0, exp: "Kramagung (petunjuk lakuan) nuntun paraga kudu kepriye obahing awake utawa perasaane." },
+        { q: "Sandiwara tradisional Jawa sing sumbere saka crita babad utawa legenda lan asale saka Jawa Tengah/Yogyakarta yaiku...", o: ["Ludruk", "Ketoprak", "Lenong", "Wayang Golek"], c: 1, exp: "Ketoprak yaiku kesenian tradisional Jawa Tengah sing asale diiringi tabuhan lesung utawa keprak." },
+        { q: "Kesenian sandiwara tradisional saka Jawa Timur sing biyen kabeh paragane wong lanang senajan maragakake wong wadon diarani...", o: ["Ludruk", "Ketoprak", "Wayang Wong", "Randai"], c: 0, exp: "Ludruk iku khas saka Jawa Timur (Surabaya/Jombang) kanthi paraga lanang kabeh ing jaman biyen." },
+        { q: "Sandiwara sing paragane ora guneman, nanging mung nggunakake obahing awak lan mimik praupan kanggo nyritakake kahanan diarani...", o: ["Pantomim", "Sendratari", "Opera", "Musikal"], c: 0, exp: "Pantomim ngandelake gerak tubuh lan ekspresi tanpa swara utawa dialog." },
+        { q: "Papan panggonan, wektu, lan swasana dumadine crita ing sandiwara diarani...", o: ["Alur", "Tema", "Latar (Setting)", "Amanat"], c: 2, exp: "Latar utawa setting kaperang dadi telu: latar panggonan, wektu, lan swasana." },
+        { q: "Pamilihan paraga (aktor/aktris) sing ditindakake sutradara supaya jumbuh karo wewatakane ing naskah diarani...", o: ["Blocking", "Casting", "Acting", "Directing"], c: 1, exp: "Casting yaiku proses milih paraga sing pas karo karakter ing naskah." },
+        { q: "Pengaturan obahing paraga ing panggung supaya ora nutupi paraga liyane saka pandelenge pamirsa diarani...", o: ["Blocking", "Casting", "Editing", "Dubbing"], c: 0, exp: "Blocking penting supaya posisi paraga ing panggung katon endah lan ora tumpang tindih." },
+        { q: "Yen ana paraga lali naskah, nanging tetep nerusake pacelathon nganggo ukarane dhewe sing isih jumbuh karo crita, iku diarani...", o: ["Gladi resik", "Improvisasi", "Apresiasi", "Gestur"], c: 1, exp: "Improvisasi iku tumindak dadakan tanpa naskah kanggo nutupi kaluputan ing panggung." },
+        { q: "Sing kalebu unsur intrinsik sandiwara yaiku...", o: ["Tema, alur, latar, paraga", "Agama penulis, kahanan ekonomi, budaya", "Panggung, tiket, penonton, swara", "Kamera, sutradara, produser, sponsor"], c: 0, exp: "Unsur intrinsik yaiku unsur sing mangun sandiwara saka jero naskah iku dhewe." },
+        { q: "Crita wayang wong biasane mendhet sumber saka epos...", o: ["Kancil lan Baya", "Malin Kundang", "Ramayana lan Mahabharata", "Panji Asmarabangun"], c: 2, exp: "Wayang wong njupuk lakon saka crita pewayangan klasik Ramayana lan Mahabharata." },
+        { q: "Kanggo nggambarake watake paraga, bisa dideleng saka bab-bab ing ngisor iki, kajaba...", o: ["Solah bawane paraga", "Pacelathone paraga", "Gegambaran busanane paraga", "Regane tiket pementasan"], c: 3, exp: "Rega tiket ora ana gegayutane karo watak utawa penokohan paraga." },
+        { q: "Obahing praupan (wajah) kanggo nuduhake rasa sedhih, seneng, utawa nesu diarani...", o: ["Gestur", "Mimik", "Intonasi", "Artikulasi"], c: 1, exp: "Mimik iku ekspresi wajah sing nuduhake perasaane paraga." },
+        { q: "Obahing perangan awak (tangan, sirah, lsp) kanggo nyengkuyung pacelathon diarani...", o: ["Mimik", "Gestur", "Bloking", "Monolog"], c: 1, exp: "Gestur yaiku gerak tubuh/badan sing mbantu negesake ucapan." },
+        { q: "Unggah-ungguh basa sing trep digunakake dening anak marang wong tuwa ing dialog sandiwara yaiku...", o: ["Ngoko Lugu", "Ngoko Alus", "Krama Alus (Inggil)", "Krama Lugu"], c: 2, exp: "Bocah marang wong tuwa kudu nggunakake basa Krama Alus kanggo ngajeni." },
+        { q: "Basa sing digunakake antarane kanca akrab sing padha umure ing sandiwara biasane nggunakake...", o: ["Ngoko Lugu", "Ngoko Alus", "Krama Alus", "Krama Lugu"], c: 0, exp: "Kanca akrab sing wis kulina padha nggunakake Ngoko Lugu." },
+        { q: "Latihan pungkasan sadurunge sandiwara dipentasake kanthi nggunakake busana lan tata rias sing sabenere diarani...", o: ["Gladi kotor", "Gladi resik", "Evaluasi", "Casting"], c: 1, exp: "Gladi resik (gladi bersih) iku simulasi pementasan sing padha persis karo asline." },
+        { q: "Cethaning swara nalika paraga ngucapake pacelathon (huruf vokal lan konsonan kudu jelas) ing panggung diarani...", o: ["Artikulasi", "Intonasi", "Ekspresi", "Gestur"], c: 0, exp: "Artikulasi yaiku kejelasan pengucapan kata supaya krungu jelas dening penonton." },
+        { q: "Dhuwur cendhake swara (nada) nalika ngucapake ukara ing sandiwara kanggo mbedakake ukara pitakon utawa prentah diarani...", o: ["Artikulasi", "Intonasi", "Vokal", "Improvisasi"], c: 1, exp: "Intonasi iku lagu kalimat utawa tegese dhuwur-cendhake swara." },
+        { q: "Panggung, lampu (lighting), lan sound system ing pementasan sandiwara kalebu perangan...", o: ["Tata rias", "Tata busana", "Tata panggung", "Tata swara"], c: 2, exp: "Kabeh perlengkapan sing ana ing area main paraga kalebu tata panggung/artistik." },
+        { q: "Kanggo ngowahi praupane paraga supaya jumbuh karo karakter ing naskah (umpamane bocah enom didandani dadi wong tuwa), iku dadi tugase...", o: ["Penata panggung", "Penata busana", "Penata rias", "Sutradara"], c: 2, exp: "Penata rias (makeup artist) tugase nggawe wajah paraga cocog karo karaktere." },
+        { q: "Sandiwara sing isine ngguyuhake, lucu, lan asring nggawe pamirsane gumuyu diarani sandiwara...", o: ["Komedi", "Tragedi", "Melodrama", "Kolosal"], c: 0, exp: "Komedi iku jinis sandiwara sing asipat lucu lan nyenengake." },
+        { q: "Sandiwara sing isine crita sedhih utawa pungkasaning crita paraga utamane nemahi cilaka diarani...", o: ["Komedi", "Tragedi", "Opera", "Parodi"], c: 1, exp: "Tragedi asale saka tembung tragis, tegese crita sing pungkasan e melas utawa sedhih." },
+        { q: "Wujud seni pertunjukan sing nggabungake tari lan crita tanpa nggunakake pacelathon (dialog) babar blas diarani...", o: ["Ketoprak", "Ludruk", "Sendratari", "Wayang wong"], c: 2, exp: "Sendratari (Seni Drama lan Tari) nyritakake lakon lumantar obahing tari tanpa dialog langsung." },
+        { q: "Kanggo mbedakake adegan siji lan adegan liyane (ganti wektu utawa panggonan) ing panggung, biasane ditandhani kanthi...", o: ["Ganti sutradara", "Owah-owahan lampu (mati utawa redup) utawa layar ditutup", "Penonton diwenehi maeman", "Paraga meneng kabeh sajroning jam-jaman"], c: 1, exp: "Peralihan adegan utawa babak ditandhani karo bloking lampu utawa tutup layar (kelir)." },
+        { q: "Ide pokok utawa gagasan utama sing dadi dhasar lakune crita sandiwara diarani...", o: ["Alur", "Amanat", "Tema", "Sudut pandang"], c: 2, exp: "Tema iku dhasar utawa pondasi crita (contho: tema pendidikan, perjuangan, katresnan)." },
+        { q: "Wong sing tugase nulis naskah utawa skenario sandiwara diarani...", o: ["Pangripta (Penulis)", "Aktor", "Sutradara", "Kameramen"], c: 0, exp: "Pangripta naskah utawa penulis skenario tugase nggawe crita lan pacelathon." },
+        { q: "Basa Ngoko Alus ing pacelathon sandiwara biasane digunakake dening...", o: ["Bocah cilik marang wong tuwane", "Wong tuwa marang wong enom sing luwih dhuwur derajate utawa diajeni", "Kanca akrab sing lagi wae kenal", "Abdi marang rajane"], c: 1, exp: "Ngoko alus gunane kanggo ngajeni wong sing luwih enom nanging pangkate/derajate luwih dhuwur, utawa antarane sedulur tuwa." },
+        { q: "Babagan sing BUKAN kalebu unsur ekstrinsik sandiwara yaiku...", o: ["Agamane sing nulis naskah", "Kahanan sosial budaya nalika naskah ditulis", "Latar mburi pendidikan penulis", "Watak utawa penokohan paraga"], c: 3, exp: "Watak/penokohan iku kalebu unsur intrinsik (ing njero naskah), dudu ekstrinsik." },
+        { q: "Sandiwara radio iku jinis sandiwara sing mung bisa dirasakake lumantar...", o: ["Pandeleng (mata)", "Pangrungu (kuping)", "Pangrasa (kulit)", "Pangambu (irung)"], c: 1, exp: "Sandiwara radio mung arupa swara (audio), mula mung bisa dirungokake (pangrungu)." }
+    ];
+
     const database = {
         'psts_indo': { title: "PSTS BHS INDO XII", questions: psts_indo_questions },
-        'psts_bing': { title: "PSTS BING XII", questions: psts_bing_questions }
+        'psts_bing': { title: "PSTS BING XII", questions: psts_bing_questions },
+        'psts_jawa': { title: "PSTS BHS JAWA XII", questions: psts_jawa_questions }
     };
 
     let currentModulId = '';
