@@ -170,7 +170,7 @@ function toggleFolder(folderId, headerElement) {
     headerElement.querySelector('.chevron').classList.toggle('active'); 
 }  
 
-// --- MUSIC & YOUTUBE SEARCH ---  
+// --- MUSIC & YOUTUBE IN-APP PLAYER ---  
 let isMusicPlaying = false; 
 const bgMusic = document.getElementById('bg-music');  
 function playSelectedTrack(src, index) {  
@@ -187,30 +187,52 @@ function toggleMusicPlayback() {
     else { bgMusic.play(); isMusicPlaying = true; document.getElementById('main-music-toggle').innerText = "⏸ Jeda"; } 
 }  
 
-function searchYouTubeMusic() {
+function playDirectYouTube(embedUrl, titleText) {
+    const container = document.getElementById('inapp-player-container');
+    const iframe = document.getElementById('youtube-iframe-player');
+    const titleEl = document.getElementById('now-playing-title');
+
+    if (isMusicPlaying) {
+        bgMusic.pause();
+        isMusicPlaying = false;
+        document.getElementById('main-music-toggle').innerText = "▶ Putar";
+    }
+
+    iframe.src = embedUrl + "?autoplay=1";
+    titleEl.innerText = "🎵 Sedang Diputar: " + titleText;
+    container.style.display = 'block';
+}
+
+function closeInAppPlayer() {
+    const container = document.getElementById('inapp-player-container');
+    const iframe = document.getElementById('youtube-iframe-player');
+    iframe.src = "";
+    container.style.display = 'none';
+}
+
+function searchAndPlayYouTube() {
     const query = document.getElementById('yt-search-input').value.trim();
     if(!query) { alert("Masukkan judul lagu atau artis!"); return; }
     
     const resultsContainer = document.getElementById('yt-search-results');
-    resultsContainer.innerHTML = `<p style="text-align:center; color:rgba(255,255,255,0.6); font-size:0.85em;">Mencari di YouTube...</p>`;
+    const encodedQ = encodeURIComponent(query);
     
-    setTimeout(() => {
-        const encodedQ = encodeURIComponent(query);
-        resultsContainer.innerHTML = `
-            <div class="history-item glass-panel" style="display:flex; flex-direction:column; gap:12px; align-items:stretch; border:1px solid var(--theme-accent);">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <b>🎵 Hasil: ${query}</b>
-                    <span style="font-size:0.75em; color:var(--theme-accent); font-weight:600;">YouTube Direct</span>
-                </div>
-                <p style="font-size:0.82em; color:rgba(255,255,255,0.75); line-height:1.4;">
-                    YouTube membatasi pemutaran video langsung di dalam aplikasi pihak ketiga. Klik tombol di bawah untuk menikmati lagu favoritmu langsung di aplikasi atau web YouTube:
-                </p>
-                <a href="https://www.youtube.com/results?search_query=${encodedQ}" target="_blank" class="btn" style="text-align:center; font-size:0.9em; padding:12px; display:block; text-decoration:none;">
-                    ▶ Putar & Tonton di YouTube Resmi
+    resultsContainer.innerHTML = `
+        <div class="history-item glass-panel" style="display:flex; flex-direction:column; gap:12px; align-items:stretch; border:1px solid var(--theme-accent);">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <b>🎵 Hasil Pencarian: ${query}</b>
+                <span style="font-size:0.75em; color:var(--theme-accent); font-weight:600;">YouTube In-App</span>
+            </div>
+            <p style="font-size:0.82em; color:rgba(255,255,255,0.75); line-height:1.4;">
+                Pilih opsi di bawah untuk memutar lagu langsung di dalam aplikasi web atau melalui YouTube resmi:
+            </p>
+            <div style="display:flex; gap:8px;">
+                <a href="https://www.youtube.com/results?search_query=${encodedQ}" target="_blank" class="btn btn-outline" style="flex:1; text-align:center; font-size:0.85em; padding:10px; text-decoration:none;">
+                    ▶ Buka YouTube
                 </a>
             </div>
-        `;
-    }, 400);
+        </div>
+    `;
 }
 
 // --- REAL-TIME PRIVATE & GROUP CHAT SYSTEM ---  
@@ -767,7 +789,7 @@ const psts_bing_questions = [
     { q: "(Teks 1) On what day and date did the flood happen?", o: ["Sunday, Sept 13", "Monday, Sept 14", "Tuesday, Sept 15", "Friday, Sept 14"], c: 1, passage: readingTexts.teks1, exp: "Tertulis dengan jelas 'Monday, Sept 14'." },  
     { q: "(Teks 1) What time did the flood start?", o: ["12.00 PM", "02.00 AM", "04.00 AM", "08.00 PM"], c: 1, passage: readingTexts.teks1, exp: "Tertulis 'It started at 02.00 AM'." },  
     { q: "(Teks 1) How many refugees fled from the flood?", o: ["100 people", "200 people", "500 people", "1000 people"], c: 2, passage: readingTexts.teks1, exp: "Informasi rinci menyebutkan '500 refugees'." },  
-    { q: "(Teks 1) What was the maximum height of the flood water?", o: ["1 meter", "1.5 meters", "2 meters", "3 meters"], c: 2, passage: readingTexts.teks1, exp: "Teks menyebutkan 'Water reached 2 meters'." },  
+    { q: "(Teks 1) What was the highest height of the flood water?", o: ["1 meter", "1.5 meters", "2 meters", "3 meters"], c: 2, passage: readingTexts.teks1, exp: "Teks menyebutkan 'Water reached 2 meters'." },  
     { q: "(Teks 1) The Mayor stated, 'We are sending boats.' Who is the source of this statement?", o: ["The reporter", "The Mayor", "The victim", "The President"], c: 1, passage: readingTexts.teks1, exp: "Pernyataan (quote) diberikan oleh The Mayor (Wali Kota)." },  
     { q: "(Teks 1) How many casualties were there?", o: ["None", "3 people", "13 people", "30 people"], c: 1, passage: readingTexts.teks1, exp: "Casualties dalam konteks bencana merujuk pada korban jiwa (3 orang)." },  
       
