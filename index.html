@@ -175,9 +175,7 @@
     </div>
     
     <div class="right-nav">
-        <!-- Tombol Dark Mode -->
         <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">🌙</button>
-        <!-- Tombol Musik Interaktif -->
         <div class="music-widget" onclick="toggleMusic()" id="music-btn-box">
             🎵 <span id="music-text">Putar</span>
         </div>
@@ -223,7 +221,7 @@
         <div class="quiz-header">
             <button class="btn btn-outline" style="padding: 5px 12px; font-size: 0.8em;" onclick="showView('view-dashboard')">⬅ Batal</button>
             <h3 id="quiz-title" style="color:#00838f; font-size: 1.1em;">Judul</h3>
-            <span id="question-tracker" style="font-weight: 600;">1/40</span>
+            <span id="question-tracker" style="font-weight: 600;">0/0</span>
         </div>
         <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
 
@@ -313,7 +311,6 @@
         }
     }
 
-    // Algoritma Pengacak Fisher-Yates yang Lebih Kuat dan Valid
     function shuffleArray(array) {
         let currentIndex = array.length, temporaryValue, randomIndex;
         while (currentIndex !== 0) {
@@ -328,24 +325,90 @@
 
     // --- DATABASE SOAL ---
     const psts_indo_questions = [
-        { q: "Surat lamaran pekerjaan yang digabungkan dengan riwayat hidup (curriculum vitae) termasuk jenis surat lamaran...", o: ["Model gabungan", "Model terpisah", "Model semi-blok", "Model resmi"], c: 0, exp: "Surat lamaran yang digabung dengan riwayat hidup disebut model gabungan." },
-        { q: "Berikut ini yang merupakan contoh kalimat penolakan lamaran pekerjaan yang halus dan tepat adalah...", o: ["Maaf, kami tidak butuh tenaga Anda.", "Dengan menyesal kami tidak dapat menerima Anda karena posisi telah terisi.", "Surat lamaran Anda ditolak karena tidak memenuhi syarat.", "Anda tidak kami terima, silakan cari di tempat lain."], c: 1, exp: "Kalimat penolakan harus santun dan memberikan alasan yang logis tanpa menyakiti pelamar." },
-        { q: "Perhatikan kalimat berikut: 'Berdasarkan informasi yang saya peroleh dari teman saya, bahwa PT Maju Jaya membutuhkan staf administrasi...'. Kalimat tersebut merupakan alenia pembuka berdasarkan sumber informasi dari...", o: ["Iklan media cetak", "Informasi seseorang/teman", "Inisiatif sendiri", "Pengumuman resmi instansi"], c: 1, exp: "Sumber informasi jelas disebutkan dari 'teman saya'." },
-        { q: "Alenia pembuka surat lamaran pekerjaan yang tepat berdasarkan iklan di koran Kompas tanggal 5 September 2024 adalah...", o: ["Sesuai iklan di Kompas, saya melamar pekerjaan...", "Berdasarkan iklan yang dimuat pada harian Kompas tanggal 5 September 2024, saya mengajukan lamaran...", "Membaca iklan di koran, saya berniat melamar...", "Saya melihat iklan di Kompas dan saya ingin bekerja di perusahaan Bapak."], c: 1, exp: "Penulisan sumber iklan harus mencantumkan nama media dan tanggal terbit secara formal." },
-        { q: "Penulisan alamat surat yang benar sesuai dengan EYD/PUEBI adalah...", o: ["Kepada Yth. Bapak Direktur PT Sukses Makmur Jl. Melati 10 Jakarta", "Yth. Direktur PT Sukses Makmur Jalan Melati No. 10 Jakarta", "Yth. Pimpinan PT. Sukses Makmur, Jalan Melati 10, Jakarta.", "Kepada Yth. Pimpinan PT Sukses Makmur di Jakarta"], c: 1, exp: "Alamat surat tidak menggunakan kata 'Kepada', tidak menggunakan titik setelah 'PT', dan menggunakan kata 'Jalan' tanpa disingkat." }
+        { q: "Surat lamaran pekerjaan yang digabungkan dengan riwayat hidup (curriculum vitae) termasuk jenis surat lamaran model...", o: ["Gabungan", "Terpisah", "Semi-blok", "Resmi"], c: 0, exp: "Model gabungan menyatukan surat dan riwayat hidup dalam satu kesatuan." },
+        { q: "Kalimat penolakan lamaran pekerjaan yang halus dan santun adalah...", o: ["Maaf, kami tidak butuh tenaga Anda.", "Dengan menyesal kami belum bisa menerima Anda karena posisi telah terisi.", "Surat lamaran Anda ditolak karena tidak memenuhi syarat.", "Anda tidak kami terima, silakan cari di tempat lain."], c: 1, exp: "Penolakan harus menggunakan bahasa yang santun agar tidak menyinggung pelamar." },
+        { q: "'Berdasarkan informasi yang saya peroleh dari teman saya...'. Alenia pembuka ini dibuat berdasarkan sumber...", o: ["Iklan cetak", "Informasi seseorang", "Inisiatif sendiri", "Pengumuman resmi"], c: 1, exp: "Terdapat frasa 'dari teman saya' yang menunjukkan informasi dari seseorang." },
+        { q: "Alenia pembuka yang tepat berdasarkan iklan di koran Kompas tanggal 5 September 2024 adalah...", o: ["Sesuai iklan di Kompas, saya melamar...", "Berdasarkan iklan yang dimuat pada harian Kompas tanggal 5 September 2024, saya mengajukan lamaran...", "Membaca iklan di koran, saya berniat melamar...", "Saya melihat iklan di Kompas dan ingin bekerja."], c: 1, exp: "Sumber informasi cetak harus menyebutkan nama media dan tanggal secara spesifik." },
+        { q: "Penulisan alamat surat yang benar sesuai dengan EYD/PUEBI adalah...", o: ["Kepada Yth. Bapak Direktur PT Sukses Jl. Melati 10 Jakarta", "Yth. Direktur PT Sukses Jalan Melati 10 Jakarta", "Yth. Pimpinan PT. Sukses, Jl. Melati 10, Jakarta.", "Kepada Yth. Pimpinan PT Sukses di Jakarta"], c: 1, exp: "Kata 'Jalan' tidak disingkat, tidak memakai 'Kepada', dan tidak ada titik setelah 'PT'." },
+        { q: "Kalimat penutup surat lamaran pekerjaan yang paling tepat adalah...", o: ["Atas perhatiannya, saya ucapkan terima kasih.", "Atas perhatian Bapak/Ibu, saya mengucapkan terima kasih.", "Atas perhatiannya, diucapkan terima kasih.", "Maka saya ucapkan terima kasih yang sebesar-besarnya."], c: 1, exp: "Penggunaan 'nya' salah karena merujuk pada kata ganti orang ketiga, seharusnya 'Bapak/Ibu'." },
+        { q: "Struktur teks surat lamaran pekerjaan yang benar secara berurutan adalah...", o: ["Tesis, argumen, penegasan", "Orientasi, komplikasi, resolusi", "Pembuka, isi, penutup", "Salam, isi, salam penutup"], c: 0, exp: "Secara tekstual, surat lamaran terdiri dari tesis (pembuka), argumen (kualifikasi/lampiran), dan penegasan (penutup/harapan)." },
+        { q: "'Saya yang bertanda tangan di bawah ini...'. Kalimat ini merupakan alenia pembuka yang berasal dari...", o: ["Iklan lowongan", "Pengumuman", "Inisiatif sendiri", "Bursa kerja"], c: 2, exp: "Frasa tersebut menunjukkan pelamar membuat surat murni atas inisiatif pribadi tanpa merujuk sumber spesifik." },
+        { q: "Penulisan tempat dan tanggal pembuatan surat yang benar adalah...", o: ["Pati, 8-9-2024", "Pati 8 September 2024", "Pati, 8 September 2024", "pati, 08 September 2024"], c: 2, exp: "Tempat dan tanggal dipisah dengan koma, nama bulan ditulis huruf, dan diawali huruf kapital." },
+        { q: "Hal yang tidak perlu dilampirkan dalam surat lamaran pekerjaan umumnya adalah...", o: ["Daftar riwayat hidup", "Fotokopi ijazah", "Surat keterangan catatan kepolisian (SKCK)", "Akta kelahiran orang tua"], c: 3, exp: "Akta kelahiran orang tua tidak relevan dengan kualifikasi kerja pelamar." },
+        { q: "Bagian surat yang terletak paling atas sebelah kanan atau kiri adalah...", o: ["Alamat surat", "Tempat dan tanggal surat", "Hal dan lampiran", "Salam pembuka"], c: 1, exp: "Tempat dan tanggal surat selalu ditempatkan di bagian paling awal/atas." },
+        { q: "Tujuan utama pembuatan surat lamaran pekerjaan adalah...", o: ["Mendapatkan informasi gaji", "Memohon untuk diterima bekerja di suatu instansi", "Menunjukkan keahlian menulis", "Mengajukan protes kepada perusahaan"], c: 1, exp: "Fungsi utama surat lamaran adalah memohon pekerjaan." },
+        { q: "Isi argumen dalam surat lamaran pekerjaan biasanya dibuktikan dengan...", o: ["Tanda tangan", "Materai", "Lampiran dokumen (ijazah, sertifikat)", "Salam penutup"], c: 2, exp: "Argumen pelamar (kompetensi) didukung oleh bukti berupa lampiran dokumen." },
+        { q: "Hal yang harus diperhatikan dalam penulisan surat lamaran pekerjaan adalah...", o: ["Menggunakan bahasa gaul", "Menggunakan kertas berwarna-warni", "Menggunakan bahasa baku, sopan, dan format rapi", "Menulis sepanjang mungkin"], c: 2, exp: "Surat resmi harus menggunakan ragam bahasa baku dan format yang bersih/rapi." },
+        { q: "Alenia pembuka: 'Setelah membaca iklan di harian Suara Merdeka...'. Ini menunjukkan pelamar merespons dari...", o: ["Brosur", "Iklan media cetak", "Radio", "Internet"], c: 1, exp: "Harian Suara Merdeka adalah bentuk media cetak (koran)." },
+        { q: "Bahasa yang digunakan dalam surat lamaran pekerjaan harus bersifat...", o: ["Konotatif", "Persuasif dan formal", "Fiksi", "Santai"], c: 1, exp: "Surat lamaran harus formal namun persuasif agar perusahaan tertarik." },
+        { q: "Berikut adalah hal yang dikemukakan dalam surat lamaran pekerjaan, kecuali...", o: ["Identitas diri", "Kualifikasi pendidikan", "Pengalaman kerja", "Hobi yang tidak relevan"], c: 3, exp: "Hanya informasi yang mendukung kompetensi kerja yang perlu ditulis." },
+        { q: "Dokumen yang memuat rincian data pribadi, pendidikan, dan pengalaman kerja disebut...", o: ["Surat keterangan", "Daftar Riwayat Hidup (CV)", "Portofolio", "Sertifikat"], c: 1, exp: "Daftar Riwayat Hidup (CV) berisi biodata lengkap pelamar." },
+        { q: "Salam pembuka yang paling lazim digunakan dalam surat lamaran pekerjaan resmi adalah...", o: ["Halo Bapak/Ibu,", "Dengan hormat,", "Assalamualaikum,", "Salam sejahtera,"], c: 1, exp: "'Dengan hormat,' adalah salam pembuka paling standar dan resmi." },
+        { q: "Lampiran dalam surat lamaran pekerjaan berfungsi untuk...", o: ["Menebalkan surat", "Melengkapi dan memperkuat argumen kualifikasi pelamar", "Hanya formalitas", "Menghabiskan kertas"], c: 1, exp: "Lampiran membuktikan kebenaran data yang ditulis di surat." },
+        { q: "Kalimat 'Sebagai bahan pertimbangan, saya lampirkan...' berada pada bagian...", o: ["Pembuka surat", "Isi surat", "Penutup surat", "Alamat surat"], c: 1, exp: "Kalimat tersebut merinci dokumen yang ada di bagian isi (argumen)." },
+        { q: "Paragraf pembuka yang santun dan efektif adalah...", o: ["Beri saya pekerjaan ini.", "Saya ingin melamar kerja di tempat Bapak.", "Melalui surat ini, saya bermaksud mengajukan lamaran pekerjaan untuk mengisi posisi...", "Apakah ada lowongan di kantor Bapak?"], c: 2, exp: "Kalimat C menyatakan maksud dengan jelas, formal, dan santun." },
+        { q: "Penulisan tempat tanggal surat: 'Semarang, 12 oktober 2024'. Kesalahannya terletak pada...", o: ["Penggunaan koma", "Angka tahun", "Penulisan huruf 'o' pada bulan", "Nama kota"], c: 2, exp: "Nama bulan harus diawali huruf kapital: 'Oktober'." },
+        { q: "Surat lamaran pekerjaan pada dasarnya termasuk ke dalam jenis surat...", o: ["Dinas", "Pribadi resmi", "Niaga", "Keluarga"], c: 1, exp: "Surat lamaran dibuat oleh individu (pribadi) yang ditujukan ke instansi (resmi)." },
+        { q: "Sistematika surat lamaran pekerjaan yang tepat setelah tanggal surat adalah...", o: ["Isi surat", "Hal dan Lampiran", "Salam pembuka", "Tanda tangan"], c: 1, exp: "Setelah tempat dan tanggal, di sebelah kiri bawahnya biasanya diisi Hal dan Lampiran." },
+        { q: "Alenia pembuka untuk iklan lowongan yang tepat biasanya diawali dengan kata...", o: ["Berdasarkan", "Menyatakan", "Sehubungan", "Adapun"], c: 0, exp: "Kata 'Berdasarkan (iklan...)' sering digunakan untuk merujuk sumber informasi." },
+        { q: "Penulisan rincian identitas (nama, tempat tanggal lahir) yang tepat adalah...", o: ["Nama: Budi, Tempat: Pati", "nama : Budi, tempat, tanggal lahir : Pati, 12 Mei 2000", "Nama : Budi, Tempat, Tanggal Lahir : Pati, 12 Mei 2000", "NAMA: BUDI"], c: 1, exp: "Jika merinci dari kalimat sebelumnya, awal kata (nama, tempat, pendidikan) menggunakan huruf kecil." },
+        { q: "Sistematika surat lamaran pekerjaan setelah 'Hal dan Lampiran' adalah...", o: ["Tanggal surat", "Alamat tujuan surat", "Salam penutup", "Isi surat"], c: 1, exp: "Setelah Hal dan Lampiran, kita menuliskan Alamat tujuan surat (Yth. ...)." },
+        { q: "Surat yang dikirimkan oleh pencari kerja kepada instansi disebut surat...", o: ["Penawaran", "Pemberitahuan", "Lamaran Pekerjaan", "Perjanjian"], c: 2, exp: "Definisi dasar dari surat lamaran pekerjaan." },
+        { q: "Berdasarkan iklan di Instagram resmi PT XYZ... Sumber informasinya berasal dari...", o: ["Media cetak", "Media sosial (internet)", "Televisi", "Radio"], c: 1, exp: "Instagram adalah platform media sosial di internet." },
+        { q: "Hal yang wajib ada dalam daftar riwayat hidup, KECUALI...", o: ["Data pribadi", "Riwayat pendidikan", "Riwayat penyakit keturunan", "Pengalaman kerja/organisasi"], c: 2, exp: "Riwayat penyakit keturunan umumnya tidak dicantumkan kecuali diminta khusus (kesehatan)." },
+        { q: "Surat lamaran pekerjaan memiliki sifat...", o: ["Fiktif", "Objektif dan faktual", "Subjektif imajinatif", "Bebas"], c: 1, exp: "Semua data pelamar harus berdasarkan fakta yang bisa dipertanggungjawabkan." },
+        { q: "Penulisan alamat tujuan: 'Yth. Pimpinan HRD PT Maju Terus'. Penulisan ini...", o: ["Benar", "Salah, karena pakai 'PT'", "Salah, harusnya pakai 'Kepada'", "Salah, tidak boleh disingkat HRD"], c: 0, exp: "Penulisan tersebut sudah cukup tepat, efisien tanpa pemborosan kata 'Kepada'." },
+        { q: "Manakah yang BUKAN penulisan alamat surat yang benar?", o: ["Yth. Direktur PT Abadi", "Kepada Yth. Bapak Direktur", "Yth. HRD Manager PT Makmur", "Yth. Kepala Personalia PT Sukses"], c: 1, exp: "Penggunaan 'Kepada' dan 'Yth.' sekaligus adalah pemborosan kata." },
+        { q: "Identifikasi kesalahan: 'Dengan hormat. Bersama ini saya melamar...'. Kesalahannya adalah...", o: ["Titik setelah 'hormat'", "Kata 'saya'", "Kata 'melamar'", "Tidak ada yang salah"], c: 0, exp: "Salam pembuka 'Dengan hormat' harus diakhiri dengan tanda koma (,), bukan titik (.)." },
+        { q: "Bagian yang berisi harapan agar diterima dan ucapan terima kasih disebut...", o: ["Pembuka", "Tesis", "Argumen", "Penutup (Penegasan)"], c: 3, exp: "Harapan dan terima kasih berada di paragraf penutup." },
+        { q: "Kata ganti sapaan yang paling tepat untuk pimpinan instansi dalam surat adalah...", o: ["Kamu", "Anda", "Bapak/Ibu", "Saudara"], c: 2, exp: "Sapaan Bapak/Ibu dinilai paling sopan dan formal." },
+        { q: "Tanda tangan pelamar diletakkan di...", o: ["Pojok kiri atas", "Kanan bawah, di bawah salam penutup", "Kiri bawah", "Tengah bawah"], c: 1, exp: "Format standar surat lamaran menempatkan tanda tangan di kanan bawah." },
+        { q: "Nama terang pelamar ditulis...", o: ["Di dalam kurung tanpa kapital", "Tepat di bawah tanda tangan pelamar", "Di sebelah salam pembuka", "Di belakang ijazah"], c: 1, exp: "Nama terang selalu menyertai tanda tangan untuk kejelasan identitas." },
+        { q: "Format surat di mana seluruh teks rata kiri disebut...", o: ["Indented style", "Block style (Bentuk lurus)", "Semi block style", "Official style"], c: 1, exp: "Bentuk lurus (block style) mengetik semua bagian surat rata dari tepi kiri." }
     ];
-    for(let i=5; i<40; i++) {
-        psts_indo_questions.push({ q: `Manakah penulisan alamat surat yang salah? (${i+1})`, o: ["Yth. Direktur PT Abadi", "Kepada Yth. Bapak Direktur", "Yth. Pimpinan HRD", "Yth. Kepala HRD PT Makmur"], c: 1, exp: "Penggunaan 'Kepada' dan 'Yth.' secara bersamaan adalah pemborosan kata (salah)." });
-    }
 
     const psts_bing_questions = [
-        { q: "What is the social function of a News Item text?", o: ["To entertain", "To persuade", "To inform newsworthy events", "To describe a place"], c: 2, exp: "Fungsi News Item adalah menginformasikan berita harian (newsworthy events)." },
-        { q: "Which one is NOT a generic structure of News Item?", o: ["Newsworthy Event", "Background Event", "Sources", "Resolution"], c: 3, exp: "Resolution ada di Narrative text, bukan News Item." },
-        { q: "The summary of the main event is written in the...", o: ["Orientation", "Newsworthy Event", "Sources", "Background"], c: 1, exp: "Newsworthy event berisi ringkasan/inti kejadian utama." }
+        { q: "What is the social function / purpose of a News Item text?", o: ["To entertain the readers", "To persuade people", "To inform readers about newsworthy events", "To describe a specific place"], c: 2, exp: "Tujuan News Item adalah menginformasikan berita harian (newsworthy events)." },
+        { q: "Which one is NOT a generic structure of News Item?", o: ["Newsworthy Event", "Background Events", "Sources", "Resolution"], c: 3, exp: "Resolution adalah struktur teks Narrative, bukan News Item." },
+        { q: "The part of the structure that contains the summary of the main event is called...", o: ["Orientation", "Newsworthy Event", "Sources", "Background Events"], c: 1, exp: "Newsworthy event/Main event berisi ringkasan atau inti dari kejadian berita." },
+        { q: "The term for witnesses or experts who provide quotes in the news is...", o: ["Headline", "Background", "Event", "Sources"], c: 3, exp: "Sources (Sumber) adalah pernyataan saksi, ahli, atau pihak terkait dalam berita." },
+        { q: "What is the main tense used to retell the past events in a news item?", o: ["Simple Present Tense", "Simple Future Tense", "Simple Past Tense", "Present Continuous Tense"], c: 2, exp: "Kejadian berita sudah terjadi di masa lalu, sehingga menggunakan Simple Past Tense." },
+        { q: "Which of the following belongs to 'Saying Verbs'?", o: ["Walked, ran", "Said, stated, reported", "Beautiful, tall", "In, on, at"], c: 1, exp: "Saying verbs adalah kata kerja pelapor (berkata, menyatakan)." },
+        { q: "Where can we usually find a News Item text?", o: ["Fairy tale books", "Newspaper or news websites", "Personal diaries", "Poetry books"], c: 1, exp: "Teks berita (News Item) ditemukan di koran atau portal berita." },
+        { q: "To gather complete details of a news story, journalists use the formula...", o: ["SWOT", "5W + 1H", "SPOK", "ABC"], c: 1, exp: "Wartawan menggunakan rumus 5W (Who, What, Where, When, Why) + 1H (How)." },
+        { q: "Which of the following is a Past Tense verb (Verb 2)?", o: ["Go", "Went", "Going", "Goes"], c: 1, exp: "'Went' adalah bentuk past (V2) dari kata kerja 'go'." },
+        { q: "The title of a news article printed in large letters is called...", o: ["Footnote", "Headline", "Source", "Quote"], c: 1, exp: "Headline adalah judul artikel berita." },
+        { q: "The section that elaborates what happened, to whom, and in what circumstances is...", o: ["Background Events", "Sources", "Headline", "Newsworthy Event"], c: 0, exp: "Background events menceritakan latar belakang kronologi kejadian." },
+        { q: "Identify the main event: 'An earthquake measuring 5.6 magnitude struck Cianjur today.'", o: ["A festival in Cianjur", "An earthquake in Cianjur", "A speech by the mayor", "A robbery"], c: 1, exp: "Peristiwa utamanya adalah gempa bumi di Cianjur." },
+        { q: "Choose the correct sentence using a saying verb:", o: ["The police jumped quickly.", "The building was very tall.", "The witness said that he saw the thief.", "She is eating an apple."], c: 2, exp: "Kata 'said' adalah saying verb." },
+        { q: "What kind of information is included in the 'Sources' section?", o: ["The writer's opinion", "The weather forecast", "Comments from witnesses or authorities", "A fairy tale story"], c: 2, exp: "Sources berisi komentar dari pihak berwenang atau saksi mata." },
+        { q: "The information presented in a News Item must be...", o: ["Fictional and imaginary", "Factual and real", "Subjective opinions", "Funny and joking"], c: 1, exp: "Berita harus berdasarkan fakta yang nyata." },
+        { q: "(Teks 1) 'A massive flood hit Jakarta on Monday, Sept 14. It started at 02.00 AM. 500 refugees fled. Water reached 2 meters.' What is the main topic?", o: ["A natural disaster / flood", "A traffic jam", "A car accident", "A political debate"], c: 0, exp: "Teks membahas tentang 'massive flood' (banjir besar)." },
+        { q: "(Teks 1) On what day and date did the flood happen?", o: ["Sunday, Sept 13", "Monday, Sept 14", "Tuesday, Sept 15", "Friday, Sept 14"], c: 1, exp: "Tertulis dengan jelas 'Monday, Sept 14'." },
+        { q: "(Teks 1) What time did the flood start?", o: ["12.00 PM", "02.00 AM", "04.00 AM", "08.00 PM"], c: 1, exp: "Tertulis 'It started at 02.00 AM'." },
+        { q: "(Teks 1) How many refugees fled from the flood?", o: ["100 people", "200 people", "500 people", "1000 people"], c: 2, exp: "Informasi rinci menyebutkan '500 refugees'." },
+        { q: "(Teks 1) What was the maximum height of the flood water?", o: ["1 meter", "1.5 meters", "2 meters", "3 meters"], c: 2, exp: "Teks menyebutkan 'Water reached 2 meters'." },
+        { q: "(Teks 1) The Mayor stated, 'We are sending boats.' Who is the source of this statement?", o: ["The reporter", "The Mayor", "The victim", "The President"], c: 1, exp: "Pernyataan (quote) diberikan oleh The Mayor (Wali Kota)." },
+        { q: "(Teks 1) If the text says 'There were 3 casualties', how many people died?", o: ["None", "3 people", "13 people", "30 people"], c: 1, exp: "Casualties dalam konteks bencana merujuk pada korban jiwa (3 orang)." },
+        { q: "(Teks 2) 'An armed robbery occurred at a local bank at 14.00. 3 men stole $50,000. It lasted 10 minutes.' The main topic is...", o: ["Bank promotion", "A crime / robbery", "A new bank opening", "A security training"], c: 1, exp: "Teks membahas 'armed robbery' (perampokan bersenjata)." },
+        { q: "(Teks 2) What time did the robbery occur?", o: ["10.00", "12.00", "14.00", "16.00"], c: 2, exp: "Tertulis 'occurred at a local bank at 14.00'." },
+        { q: "(Teks 2) How many criminals/robbers were involved?", o: ["1 man", "2 men", "3 men", "4 men"], c: 2, exp: "Tertulis '3 men stole...'." },
+        { q: "(Teks 2) What was the estimated money lost?", o: ["$5,000", "$15,000", "$50,000", "$500,000"], c: 2, exp: "Tertulis mereka mencuri '$50,000'." },
+        { q: "(Teks 2) How long did the robbery incident last?", o: ["5 minutes", "10 minutes", "30 minutes", "1 hour"], c: 1, exp: "Tertulis 'It lasted 10 minutes'." },
+        { q: "(Teks 2) 'The police arrived 5 minutes later.' When did they arrive?", o: ["Before the robbery", "Exactly at 14.00", "At 14.05", "At 15.00"], c: 2, exp: "Perampokan jam 14.00, polisi datang 5 menit kemudian, berarti 14.05." },
+        { q: "(Teks 2) 'Chief Inspector Budi reported the arrest.' Who is the authority giving information?", o: ["The bank teller", "Chief Inspector Budi", "The robber", "The manager"], c: 1, exp: "Narasumber resminya adalah Chief Inspector Budi." },
+        { q: "(Teks 3) 'A fatal bus crash happened on Sunday, Oct 10 at 06.00. The bus carried 40 passengers. 5 died and 10 were heavily injured due to brake failure.' The topic is...", o: ["A bus tour", "A traffic accident / bus crash", "Buying a new bus", "Road construction"], c: 1, exp: "Topik membahas kecelakaan lalu lintas (bus crash)." },
+        { q: "(Teks 3) On what day and date did the bus crash occur?", o: ["Saturday, Oct 9", "Sunday, Oct 10", "Monday, Oct 11", "Sunday, Nov 10"], c: 1, exp: "Tertulis 'Sunday, Oct 10'." },
+        { q: "(Teks 3) What time did the accident happen?", o: ["05.00", "06.00", "07.00", "08.00"], c: 1, exp: "Tertulis kejadian pada '06.00'." },
+        { q: "(Teks 3) What was the total number of passengers?", o: ["10", "15", "30", "40"], c: 3, exp: "Bus membawa '40 passengers'." },
+        { q: "(Teks 3) How many victims died in the accident?", o: ["2", "5", "10", "40"], c: 1, exp: "Tertulis '5 died'." },
+        { q: "(Teks 3) How many victims were heavily injured?", o: ["5", "10", "15", "35"], c: 1, exp: "Tertulis '10 were heavily injured'." },
+        { q: "(Teks 3) What was the main cause of the crash?", o: ["Sleepy driver", "Bad weather", "Brake failure", "Speeding"], c: 2, exp: "Tertulis penyebabnya adalah 'due to brake failure' (rem blong)." },
+        { q: "(Teks 4) 'A fire destroyed 20 houses last night. The government provided Rp100.000.000 in cash aid for the victims.' The main topic is...", o: ["House renovation", "Government aid for fire victims", "Buying a new house", "Firefighter training"], c: 1, exp: "Topik berfokus pada bantuan pemerintah pasca kebakaran." },
+        { q: "(Teks 4) How much cash aid did the government provide?", o: ["Rp10.000.000", "Rp50.000.000", "Rp100.000.000", "Rp200.000.000"], c: 2, exp: "Dana bantuan sebesar 'Rp100.000.000'." },
+        { q: "(Teks 4) When did the fire happen?", o: ["This morning", "Yesterday afternoon", "Last night", "Two days ago"], c: 2, exp: "Tertulis kejadian 'last night' (tadi malam)." },
+        { q: "(Teks 4) How many houses were destroyed?", o: ["10 houses", "15 houses", "20 houses", "25 houses"], c: 2, exp: "Tertulis api menghancurkan '20 houses'." }
     ];
-    for(let i=3; i<40; i++) {
-        psts_bing_questions.push({ q: `Which of the following is a Past Tense verb? (${i+1})`, o: ["Go", "Went", "Going", "Goes"], c: 1, exp: "'Went' is the past form of 'go'." });
-    }
 
     const database = {
         'psts_indo': { title: "PSTS BHS INDO XII", questions: psts_indo_questions },
@@ -400,7 +463,7 @@
     // --- KUIS LOGIC (Acak Total Setiap Masuk) ---
     function startStudySession(modulId) {
         currentModulId = modulId;
-        // Menduplikasi array asli menggunakan JSON.parse(JSON.stringify(...)) agar pengacakan benar-benar baru dari awal
+        // Menduplikasi array asli agar pengacakan benar-benar baru dari awal
         let originalQuestions = JSON.parse(JSON.stringify(database[modulId].questions));
         questions = shuffleArray(originalQuestions); 
         
@@ -414,6 +477,7 @@
         answered = false;
         const q = questions[currentQIndex];
         
+        // Memperbarui UI Tracker
         document.getElementById('question-tracker').innerText = `${currentQIndex + 1}/${questions.length}`;
         document.getElementById('progress-fill').style.width = `${((currentQIndex) / questions.length) * 100}%`;
 
@@ -422,7 +486,7 @@
         const optionsContainer = document.getElementById('options-container');
         optionsContainer.innerHTML = '';
         
-        // Memetakan dan mengacak pilihan ganda (A, B, C, D)
+        // Memetakan dan mengacak pilihan ganda
         let optionsArr = q.o.map((text, index) => ({ text, isCorrect: index === q.c }));
         optionsArr = shuffleArray(optionsArr);
 
