@@ -24,16 +24,24 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-// --- VARIABEL PRIVATE & GROUP CHAT ---
+// --- VARIABEL CHAT & STATE ---
 let activeChatUser = null;
 let activeGroup = null; 
 let currentChatInterval = null;
 let chatListInterval = null; 
-let lastMessageCount = 0; 
+let lastPrivateChatDataJson = "";
+let lastOtherReadTime = 0;
+let lastGroupChatDataJson = "";
+let lastGroupReadTimestampsStr = "";
 
-// --- WHATSAPP CHECKMARK HELPER (Rapat & Dinamis Abu/Biru) ---
-function getWhatsAppCheckmark(isRead) {
-    let color = isRead ? "#53bdeb" : "#8696a7"; // #53bdeb = Biru WA, #8696a7 = Abu-abu WA
+// --- WHATSAPP CHECKMARK HELPER (Rapat & Kontras) ---
+function getWhatsAppCheckmark(isRead, isInsideBlueBubble = false) {
+    let color;
+    if (isInsideBlueBubble) {
+        color = isRead ? "#53bdeb" : "rgba(255, 255, 255, 0.6)"; 
+    } else {
+        color = isRead ? "#53bdeb" : "#8696a7"; 
+    }
     return `<span style="display: inline-block; position: relative; width: 13px; height: 10px; margin-left: 4px; vertical-align: baseline;">
         <i class="fa-solid fa-check" style="position: absolute; left: 0; top: 0; font-size: 0.75em; color: ${color};"></i>
         <i class="fa-solid fa-check" style="position: absolute; left: 4px; top: 0; font-size: 0.75em; color: ${color};"></i>
@@ -207,7 +215,6 @@ async function loadChatUsersList() {
         let otherUsers = Object.keys(usersDB).filter(u => u !== currentUser);  
         let chatItems = [];
 
-        // 1. Ambil Data Grup Chat Utama ("Grup Diskusi Sinau Bang")
         const groupId = "grup_diskusi_umum";
         const groupName = "Grup Diskusi Sinau Bang";
         let groupMetaRes = await fetch(`https://sinaubang-web-a5069-default-rtdb.asia-southeast1.firebasedatabase.app/group_meta/${groupId}.json`);
@@ -242,7 +249,6 @@ async function loadChatUsersList() {
             isRead: isGroupMsgRead
         });
 
-        // 2. Ambil Data Chat Pribadi
         for (let user of otherUsers) {  
             const avatarPath = getAvatarUrl(user);  
             const roomId = getRoomId(currentUser, user);
@@ -281,13 +287,11 @@ async function loadChatUsersList() {
             });
         }  
 
-        // 3. URUTKAN BERDASARKAN WAKTU TERBARU
         chatItems.sort((a, b) => b.maxTimestamp - a.maxTimestamp);
 
-        // 4. Render Tampilan Aktif Atas & Daftar Chat
         let activeUsersHTML = `  
             <div class="active-user-item" onclick="openGroupChat('${groupId}', '${groupName}')">  
-                <div class="avatar-wrapper online" style="border: 2px solid var(--theme-1);">  
+                <div class="avatar-wrapper online" style="border: 2px solid var(--theme-accent);">  
                     <img src="https://ui-avatars.com/api/?name=Grup&background=0284c7&color=fff&bold=true" alt="Grup">  
                 </div>  
                 <span>Grup</span>  
@@ -308,7 +312,7 @@ async function loadChatUsersList() {
 
         let recentChatHTML = '';
         for (let item of chatItems) {
-            let checkIcon = getWhatsAppCheckmark(item.isRead);
+            let checkIcon = getWhatsAppCheckmark(item.isRead, false);
             
             if (item.isGroup) {
                 let previewText = item.meta.lastMessage || "Ketuk untuk gabung diskusi grup...";
@@ -316,12 +320,12 @@ async function loadChatUsersList() {
                     previewText = `${checkIcon} ${item.meta.lastMessage || ''}`; 
                 }
                 recentChatHTML += `  
-                    <div class="chat-list-item" onclick="openGroupChat('${item.groupId}', '${item.groupName}')" style="background: rgba(2, 132, 199, 0.04);">  
+                    <div class="chat-list-item" onclick="openGroupChat('${item.groupId}', '${item.groupName}')">  
                         <div class="avatar-wrapper" style="width: 50px; height: 50px; margin-bottom: 0; flex-shrink: 0;">  
                             <img src="${item.avatarPath}" alt="${item.groupName}">  
                         </div>  
                         <div class="chat-list-info">  
-                            <div class="chat-list-name"><i class="fa-solid fa-users" style="color:var(--theme-1); margin-right:5px;"></i> ${item.groupName}</div>  
+                            <div class="chat-list-name"><i class="fa-solid fa-users" style="color:var(--theme-accent); margin-right:5px;"></i> ${item.groupName}</div>  
                             <div class="chat-list-msg">${previewText}</div>  
                         </div>  
                         <div class="chat-list-meta">  
@@ -345,7 +349,7 @@ async function loadChatUsersList() {
                             <div class="chat-list-msg">${previewText}</div>  
                         </div>  
                         <div class="chat-list-meta">  
-                            <span style="font-weight: ${item.isUnread ? '700' : 'normal'}; color: ${item.isUnread ? '#22c55e' : 'inherit'};">${item.meta.time || ''}</span>  
+                            <span style="font-weight: ${item.isUnread ? '700' : 'normal'}; color: ${item.isUnread ? '#8EB69B' : 'inherit'};">${item.meta.time || ''}</span>  
                             ${badgeHTML}  
                         </div>  
                     </div>  
@@ -364,7 +368,8 @@ async function loadChatUsersList() {
 function openPrivateChat(targetUser) {  
     activeChatUser = targetUser;  
     activeGroup = null;  
-    lastMessageCount = 0;   
+    lastPrivateChatDataJson = ""; 
+    lastOtherReadTime = 0;
     
     const roomId = getRoomId(currentUser, targetUser);
     const META_URL = `https://sinaubang-web-a5069-default-rtdb.asia-southeast1.firebasedatabase.app/chat_meta/${roomId}.json`;
@@ -398,7 +403,8 @@ function openPrivateChat(targetUser) {
 function openGroupChat(groupId, groupName) {
     activeGroup = groupId;
     activeChatUser = null;  
-    lastMessageCount = 0;
+    lastGroupChatDataJson = "";
+    lastGroupReadTimestampsStr = "";
     
     const META_URL = `https://sinaubang-web-a5069-default-rtdb.asia-southeast1.firebasedatabase.app/group_meta/${groupId}.json`;
     try {
@@ -450,24 +456,24 @@ async function loadUserPrivateMessages() {
         let meta = await resMeta.json() || {};
         let otherReadTime = (meta.lastReadTimestamps && meta.lastReadTimestamps[activeChatUser]) || 0;
         
+        let dataJson = JSON.stringify(data);
+        
+        if (dataJson === lastPrivateChatDataJson && otherReadTime === lastOtherReadTime) return;
+        lastPrivateChatDataJson = dataJson;
+        lastOtherReadTime = otherReadTime;
+        
         if(!data) {  
-            if (lastMessageCount !== 0) {
-                lastMessageCount = 0;
-                chatBox.innerHTML = '<p style="text-align:center; color:rgba(255,255,255,0.5);">Belum ada pesan. Sapa temanmu!</p>';  
-            }
+            chatBox.innerHTML = '<p style="text-align:center; color:rgba(255,255,255,0.5);">Belum ada pesan. Sapa temanmu!</p>';  
             return;  
         }  
         
         let messagesArray = Object.values(data);
-        if (messagesArray.length === lastMessageCount) return; 
-        lastMessageCount = messagesArray.length;
-        
         let htmlContent = '';
         messagesArray.forEach(c => {  
             let isMe = (c.sender === currentUser);  
             let bClass = isMe ? 'chat-bubble-me' : 'chat-bubble-other';  
             let isRead = (c.timestamp || 0) <= otherReadTime;
-            let checkmarkHTML = isMe ? getWhatsAppCheckmark(isRead) : '';
+            let checkmarkHTML = isMe ? getWhatsAppCheckmark(isRead, true) : ''; 
             
             htmlContent += `  
                 <div class="chat-bubble ${bClass}">  
@@ -494,23 +500,24 @@ async function loadGroupMessages() {
         let meta = await resMeta.json() || {};
         let readTimestamps = meta.lastReadTimestamps || {};
         
+        let dataJson = JSON.stringify(data);
+        let readTimestampsStr = JSON.stringify(readTimestamps);
+        
+        if (dataJson === lastGroupChatDataJson && readTimestampsStr === lastGroupReadTimestampsStr) return;
+        lastGroupChatDataJson = dataJson;
+        lastGroupReadTimestampsStr = readTimestampsStr;
+        
         if(!data) {  
-            if (lastMessageCount !== 0) {
-                lastMessageCount = 0;
-                chatBox.innerHTML = '<p style="text-align:center; color:rgba(255,255,255,0.5);">Belum ada pesan di grup. Mulai diskusi!</p>';  
-            }
+            chatBox.innerHTML = '<p style="text-align:center; color:rgba(255,255,255,0.5);">Belum ada pesan di grup. Mulai diskusi!</p>';  
             return;  
         }  
         
         let messagesArray = Object.values(data);
-        if (messagesArray.length === lastMessageCount) return; 
-        lastMessageCount = messagesArray.length;
-        
         let htmlContent = '';
         messagesArray.forEach(c => {  
             let isMe = (c.sender === currentUser);  
             let bClass = isMe ? 'chat-bubble-me' : 'chat-bubble-other';  
-            let senderLabel = !isMe ? `<b style="color:var(--theme-1); font-size:0.85em; display:block; margin-bottom:2px;">${c.sender}</b>` : '';
+            let senderLabel = !isMe ? `<b style="color:var(--theme-accent); font-size:0.85em; display:block; margin-bottom:2px;">${c.sender}</b>` : '';
             
             let isReadByAnyone = false;
             Object.keys(readTimestamps).forEach(u => {
@@ -519,7 +526,7 @@ async function loadGroupMessages() {
                 }
             });
 
-            let checkmarkHTML = isMe ? getWhatsAppCheckmark(isReadByAnyone) : '';
+            let checkmarkHTML = isMe ? getWhatsAppCheckmark(isReadByAnyone, true) : '';
             
             htmlContent += `  
                 <div class="chat-bubble ${bClass}">  
@@ -644,7 +651,7 @@ function openHistoryDetail(id) {
 }  
 function closeModal() { document.getElementById('history-modal').style.display = 'none'; }  
 
-// --- FULL DATABASE (120+ QUESTIONS) ---  
+// --- FULL DATABASE (120+ QUESTIONS & QUIZ LOGIC) ---  
 function shuffleArray(arr) { let c = arr.length, t, r; while (c !== 0) { r = Math.floor(Math.random() * c); c -= 1; t = arr[c]; arr[c] = arr[r]; arr[r] = t; } return arr; }  
   
 const readingTexts = {  
@@ -807,7 +814,7 @@ const mplb_sop_qs = [
     { q: "Dalam SOP Front Office, sikap melayani tamu dengan ramah, cepat, dan tanggap sering disebut sebagai penerapan prinsip...", o: ["Pelayanan Prima (Service Excellence)", "Manajemen Konflik", "Arsip Dinamis", "Administrasi Keuangan"], c: 0, exp: "Pelayanan prima (Service Excellence) adalah standar tertinggi dalam melayani tamu/pelanggan." },  
     { q: "Langkah pertama yang harus dilakukan resepsionis (Front Office) ketika tamu memasuki area lobi kantor adalah...", o: ["Meminta identitas KTP", "Memberikan salam (Greeting) dengan senyum", "Menyuruh tamu langsung duduk", "Menelepon atasan"], c: 1, exp: "Memberikan salam dengan ramah adalah prosedur paling awal (SOP) di Front Office." },  
     { q: "Saat menerima telepon keluhan dari tamu, tindakan yang paling tepat sesuai SOP adalah...", o: ["Menutup telepon secara sepihak", "Mendengarkan dengan empati, mencatat, dan menenangkan tamu", "Meminta tamu untuk datang langsung", "Menyalahkan departemen lain"], c: 1, exp: "Dalam pelayanan, keluhan harus didengarkan dengan empati dan dicatat sebelum diberikan solusi." },  
-    { q: "Standar grooming (penampilan) bagi seorang petugas Front Office umumnya meliputi, kecuali...", o: ["Pakaian seragam rapi dan disetrika", "Rambut tertata rapi atau menggunakan hijab yang sesuai standar", "Menggunakan perhiasan mencolok berlebihan", "Memakai tanda pengenal (name tag)"], c: 2, exp: "Perhiasan berlebihan tidak sesuai dengan standar penampilan profesional di perkontoran/perhotelan." },  
+    { q: "Standar grooming (penampilan) bagi seorang petugas Front Office umumnya meliputi, kecuali...", o: ["Pakaian seragam rapi dan disetrika", "Rambut tertata rapi atau menggunakan hijab yang sesuai standar", "Menggunakan perhiasan mencolok berlebihan", "Memakai tanda pengenal (name tag)"], c: 2, exp: "Perhiasan berlebihan tidak sesuai dengan standar penampilan profesional di perkantoran/perhotelan." },  
     { q: "Jika tamu tidak memiliki janji temu dengan pimpinan yang sedang rapat, resepsionis sebaiknya...", o: ["Mempersilakan tamu masuk menerobos rapat", "Meminta tamu menunggu di luar tanpa penjelasan", "Menjelaskan dengan sopan bahwa pimpinan sedang rapat dan meminta tamu mengisi buku tamu/meninggalkan pesan", "Menyuruh tamu pulang dengan nada kasar"], c: 2, exp: "Penyampaian informasi yang jelas dan sopan serta menawarkan alternatif (meninggalkan pesan) adalah SOP yang benar." }  
 ];  
 
