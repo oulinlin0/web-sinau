@@ -1,191 +1,229 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>sinau bang - Liquid Glass UI</title>
-​<!-- Google Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-​<!-- FontAwesome Icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-​<!-- Menghubungkan File CSS Eksternal -->
-<link rel="stylesheet" href="style.css">
-</head>
-<body>
-<audio id="bg-music" loop><source id="audio-source" src="" type="audio/mpeg"></audio>
-​<!-- LOGIN SCREEN -->
-<div id="view-auth">
-<div class="auth-card glass-panel" id="auth-box">
-<h2 id="auth-title">Masuk Akun</h2>
-<input type="text" id="auth-user" class="auth-input" placeholder="Username unik kamu...">
-<input type="password" id="auth-pass" class="auth-input" placeholder="Password rahasia...">
-<button class="auth-btn" id="auth-main-btn" onclick="handleAuth()">Masuk</button>
-<div class="auth-switch" id="auth-switch-text">Belum punya akun? <span onclick="switchAuthMode('register')">Daftar</span></div>
-</div>
-</div>
-​<!-- Modal Histori -->
-<div class="modal" id="history-modal">
-<div class="modal-content glass-panel">
-<div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.2); padding-bottom:12px;">
-<h3 id="modal-title" style="color:#ffffff; font-size:1.1em;">Detail</h3>
-<button class="btn btn-outline" style="padding: 2px 10px; border-color: #ef4444; color: #fca5a5;" onclick="closeModal()">Tutup</button>
-</div>
-<div class="modal-body" id="modal-body-content"></div>
-</div>
-</div>
-​<div class="top-header glass-panel" id="top-header"><h1>📚 sinau bang</h1></div>
-​<div class="container">
-<!-- 1. HOME -->
-<main id="view-dashboard" class="view card glass-panel">
-<h2 class="section-title">Kategori Modul Belajar</h2>
-<div class="folder">
-<div class="folder-header glass-panel" onclick="toggleFolder('folder-umum', this)">
-<span>📚 Mata Pelajaran Umum</span><span class="chevron">▼</span>
-</div>
-<div class="folder-content" id="folder-umum">
-<div class="history-item glass-panel"><div class="history-info"><h3>PSTS BHS INDO XII</h3><p>40 Soal: Surat Lamaran</p></div><button class="btn" onclick="startStudySession('psts_indo')">Mulai</button></div>
-<div class="history-item glass-panel"><div class="history-info"><h3>PSTS BING XII</h3><p>40 Soal: News Item Text</p></div><button class="btn" onclick="startStudySession('psts_bing')">Mulai</button></div>
-<div class="history-item glass-panel"><div class="history-info"><h3>PSTS BHS JAWA XII</h3><p>40 Soal: Teks Sandiwara</p></div><button class="btn" onclick="startStudySession('psts_jawa')">Mulai</button></div>
-</div>
-</div>
-​<div class="folder">
-<div class="folder-header glass-panel" onclick="toggleFolder('folder-mplb', this)">
-<span>🏢 Jurusan MPLB</span><span class="chevron">▼</span>
-</div>
-<div class="folder-content" id="folder-mplb">
-<div class="history-item glass-panel"><div class="history-info"><h3>SOP Pelayanan Prima</h3><p>Prosedur standar</p></div><button class="btn" onclick="startStudySession('mplb_sop')">Mulai</button></div>
-</div>
-</div>
-​<div class="folder">
-<div class="folder-header glass-panel" onclick="toggleFolder('folder-tkj', this)">
-<span>💻 Jurusan TKJ</span><span class="chevron">▼</span>
-</div>
-<div class="folder-content" id="folder-tkj">
-<div class="history-item glass-panel"><div class="history-info"><h3>Config IP, DHCP, VLAN</h3><p>Administrasi Jaringan</p></div><button class="btn" onclick="startStudySession('tkj_jaringan')">Mulai</button></div>
-<div class="history-item glass-panel"><div class="history-info"><h3>Sistem VSAT</h3><p>Transmisi satelit</p></div><button class="btn" onclick="startStudySession('tkj_vsat')">Mulai</button></div>
-</div>
-</div>
-</main>
-​<!-- 2A. DAFTAR CHAT UTAMA -->
-<main id="view-chat" class="view card glass-panel" style="padding: 20px 15px;">
-<div class="chat-header-top">
-<h2 style="font-size: 1.6em; font-weight: 700;">Chat</h2>
-<div style="position: relative; display: flex; align-items: center; justify-content: center;">
-<i class="fa-regular fa-bell" style="font-size: 1.2em;"></i>
-<div id="global-bell-badge" style="display: none; position: absolute; top: -5px; right: -8px; background: #22c55e; color: white; font-size: 0.65rem; font-weight: 700; padding: 1px 5px; border-radius: 50%; border: 2px solid var(--bg-dark-1);">0</div>
-</div>
-</div>
-​<div class="chat-search">
-<i class="fa-solid fa-search" style="color: rgba(255,255,255,0.5);"></i>
-<input type="text" placeholder="Cari teman..." id="chat-search-input">
-</div>
-​<!-- Horizontal Active Users -->
-<div class="chat-active-users" id="active-users-list">
-<p style="font-size: 0.8em; color: rgba(255,255,255,0.5);">Memuat kontak...</p>
-</div>
-​<!-- Vertical Recent Chats -->
-<div class="chat-recent-list" id="chat-recent-list">
-<p style="text-align: center; color:rgba(255,255,255,0.5);">Memuat chat...</p>
-</div>
-</main>
-​<!-- 2B. RUANG OBROLAN PRIBADI / GRUP -->
-<main id="view-private-room" class="view card glass-panel" style="padding: 15px;">
-<div style="display: flex; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; margin-bottom: 15px;">
-<button class="btn btn-outline" style="padding: 5px 12px; margin-right: 15px;" onclick="switchTab(1, 'view-chat', '<i class=\'fa-solid fa-message\'></i>')">⬅</button>
-<div class="avatar-wrapper" style="width: 40px; height: 40px; margin-bottom: 0; margin-right: 10px;">
-<img id="private-chat-avatar" src="" style="width:100%; border-radius:50%;" alt="">
-</div>
-<h3 id="private-chat-name" style="font-size: 1.1em; flex: 1;">Nama</h3>
-</div>
-​<div class="chat-container">
-<div class="chat-messages-box glass-panel" id="private-messages-box">
-<p style="text-align: center; color:rgba(255,255,255,0.5);">Mulai obrolan...</p>
-</div>
-<div class="chat-input-area">
-<input type="text" id="private-input-field" class="chat-input" placeholder="Ketik pesan..." onkeypress="handlePrivateKeyPress(event)">
-<button class="btn" style="padding: 10px 15px;" onclick="sendPrivateMessage()">🚀</button>
-</div>
-</div>
-</main>
-​<!-- 3. MUSIC -->
-<main id="view-music" class="view card glass-panel">
-<h2 class="section-title">🎵 Pemutar Musik</h2>
-<div style="display: flex; flex-direction: column; gap: 10px;">
-<div class="history-item glass-panel">
-<div class="history-info"><h3>DJ TikTok Viral 2024 (Audio)</h3></div>
-<button class="btn" id="btn-play-1" onclick="playSelectedTrack('DJ TEMANKU SEMUA PADA JAHAT TANTE __ DJ TANTE CULIK AKU DONG VIRAL TIKTOK TERBARU 2024.mp3', 1)">Putar ▶</button>
-</div>
-</div>
-</main>
-​<!-- 4. HISTORY -->
-<main id="view-history" class="view card glass-panel">
-<h2 class="section-title">📜 Histori Belajar</h2>
-<div id="main-history-log"><p style="text-align: center; color:rgba(255,255,255,0.5);">Memuat histori...</p></div>
-</main>
-​<!-- 5. PROFILE & SETTING TEMA -->
-<main id="view-profile" class="view card glass-panel" style="text-align: center; padding-top: 30px;">
-<div style="font-size: 4em; margin-bottom: 10px;">🧑‍‍🎓</div>
-<h2 id="profile-name-display" style="font-weight: 700; font-size: 1.8em; margin-bottom: 25px;">User</h2>
-​<!-- TOMBOL TEMA TERANG / GELAP -->
-<div class="glass-panel" style="padding: 20px; border-radius: 16px; margin-bottom: 25px;">
-<h4 style="margin-bottom:5px;">🎨 Tampilan Tema</h4>
-<p style="font-size:0.75em; color:rgba(255,255,255,0.7); margin-bottom:15px;">Pilih mode terang atau gelap untuk kenyamanan belajarmu!</p>
-​<div class="theme-toggle-wrapper" style="display: flex; justify-content: center; margin-top: 15px;">
-<button id="themeToggleBtn" class="btn btn-outline" style="width: 100%; max-width: 250px;">
-☀️ Beralih ke Mode Terang
-</button>
-</div>
-</div>
-​<div style="display: flex; flex-direction: column; gap: 12px;">
-<a href="https://github.com/oulinlin0" target="_blank" class="btn btn-outline">💻 GitHub Developer</a>
-<button class="btn" style="background: linear-gradient(135deg, #ef5350, #c62828);" onclick="logoutUser()">🚪 Keluar Akun</button>
-</div>
-</main>
-​<!-- 6. QUIZ -->
-<main id="view-quiz" class="view card glass-panel">
-<div class="quiz-header">
-<button class="btn btn-outline" style="padding: 5px 12px;" onclick="switchTab(0, 'view-dashboard', '<i class=\'fa-solid fa-house\'></i>')">⬅ Batal</button>
-<h3 id="quiz-title" style="font-size: 1em;">Judul</h3>
-<span id="question-tracker">0/0</span>
-</div>
-<div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
-<div class="question-area"><div id="reading-text" class="reading-box glass-panel"></div><div id="question-text" class="question-text">Memuat...</div><div id="options-container" class="options"></div></div>
-<div id="feedback-box" class="feedback-box glass-panel"><h4>💡 Pembahasan:</h4><p id="feedback-text"></p></div>
-<div id="next-btn-container" style="margin-top:20px; text-align:right; display:none;"><button class="btn" onclick="nextQuestion()">Lanjut ➡</button></div>
-</main>
-​<!-- 7. RESULT -->
-<main id="view-result" class="view card glass-panel" style="text-align: center; padding: 40px 15px;">
-<h2>Selesai! 🎉</h2>
-<div style="width: 130px; height: 130px; border-radius: 50%; background: linear-gradient(135deg, var(--theme-1), #080c14); color: white; display: flex; align-items: center; justify-content: center; font-size: 3em; font-weight: 700; margin: 20px auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5);" id="final-score">100</div>
-<p id="result-message" style="margin-bottom: 25px;">Luar biasa!</p>
-<button class="btn" style="width: 100%;" onclick="saveScoreToHistory()">💾 Simpan & Kembali</button>
-</main>
-</div>
-​<!-- BOTTOM NAVIGATION -->
-<nav class="bottom-nav" id="bottom-nav">
-<div class="nav-glass-slider-container">
-<div class="nav-bg-glass" id="bg-wrapper"></div>
-</div>
-<div class="nav-indicator-wrapper" id="indicator-wrapper">
-<div class="nav-floating-icon" id="nav-floating-icon"><i class="fa-solid fa-house"></i></div>
-</div>
-<div class="nav-item active" onclick="switchTab(0, 'view-dashboard', '<i class=\'fa-solid fa-house\'></i>')">
-<span class="nav-icon"><i class="fa-solid fa-house"></i></span><span class="nav-text">Home</span>
-</div>
-<div class="nav-item" onclick="switchTab(1, 'view-chat', '<i class=\'fa-solid fa-message\'></i>')">
-<span class="nav-icon"><i class="fa-solid fa-message"></i></span><span class="nav-text">Chat</span>
-</div>
-<div class="nav-item" onclick="switchTab(2, 'view-music', '<i class=\'fa-solid fa-music\'></i>')">
-<span class="nav-icon"><i class="fa-solid fa-music"></i></span><span class="nav-text">Musik</span>
-</div>
-<div class="nav-item" onclick="switchTab(3, 'view-history', '<i class=\'fa-solid fa-scroll\'></i>')">
-<span class="nav-icon"><i class="fa-solid fa-scroll"></i></span><span class="nav-text">Histori</span>
-</div>
-<div class="nav-item" onclick="switchTab(4, 'view-profile', '<i class=\'fa-solid fa-user\'></i>')">
-<span class="nav-icon"><i class="fa-solid fa-user"></i></span><span class="nav-text">Profile</span>
-</div>
-</nav>
-​<!-- Menghubungkan File JavaScript Eksternal -->
-<script src="script.js"></script>
-</body>
+<!DOCTYPE html>  
+<html lang="id">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title>sinau bang - Liquid Glass UI</title>  
+    
+    <!-- Google Fonts -->  
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">  
+      
+    <!-- FontAwesome Icons -->  
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">  
+  
+    <!-- Menghubungkan File CSS Eksternal -->  
+    <link rel="stylesheet" href="style.css">  
+</head>  
+<body>  
+    <audio id="bg-music" loop><source id="audio-source" src="" type="audio/mpeg"></audio>
+
+    <!-- LOGIN SCREEN -->  
+    <div id="view-auth">  
+        <div class="auth-card glass-panel" id="auth-box">  
+            <h2 id="auth-title">Masuk Akun</h2>  
+            <input type="text" id="auth-user" class="auth-input" placeholder="Username unik kamu...">  
+            <input type="password" id="auth-pass" class="auth-input" placeholder="Password rahasia...">  
+            <button class="auth-btn" id="auth-main-btn" onclick="handleAuth()">Masuk</button>  
+            <div class="auth-switch" id="auth-switch-text">Belum punya akun? <span onclick="switchAuthMode('register')">Daftar</span></div>  
+        </div>  
+    </div>  
+
+    <!-- Modal Histori -->  
+    <div class="modal" id="history-modal">  
+        <div class="modal-content glass-panel">  
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.2); padding-bottom:12px;">  
+                <h3 id="modal-title" style="color:#ffffff; font-size:1.1em;">Detail</h3>  
+                <button class="btn btn-outline" style="padding: 2px 10px; border-color: #ef4444; color: #fca5a5;" onclick="closeModal()">Tutup</button>  
+            </div>  
+            <div class="modal-body" id="modal-body-content"></div>  
+        </div>  
+    </div>  
+
+    <div class="top-header glass-panel" id="top-header"><h1>📚 sinau bang</h1></div>  
+
+    <div class="container">  
+        <!-- 1. HOME -->  
+        <main id="view-dashboard" class="view card glass-panel">  
+            <h2 class="section-title">Kategori Modul Belajar</h2>  
+            <div class="folder">  
+                <div class="folder-header glass-panel" onclick="toggleFolder('folder-umum', this)">  
+                    <span>📚 Mata Pelajaran Umum</span><span class="chevron">▼</span>  
+                </div>  
+                <div class="folder-content" id="folder-umum">  
+                    <div class="history-item glass-panel"><div class="history-info"><h3>PSTS BHS INDO XII</h3><p>40 Soal: Surat Lamaran</p></div><button class="btn" onclick="startStudySession('psts_indo')">Mulai</button></div>  
+                    <div class="history-item glass-panel"><div class="history-info"><h3>PSTS BING XII</h3><p>40 Soal: News Item Text</p></div><button class="btn" onclick="startStudySession('psts_bing')">Mulai</button></div>  
+                    <div class="history-item glass-panel"><div class="history-info"><h3>PSTS BHS JAWA XII</h3><p>40 Soal: Teks Sandiwara</p></div><button class="btn" onclick="startStudySession('psts_jawa')">Mulai</button></div>  
+                </div>  
+            </div>  
+
+            <div class="folder">  
+                <div class="folder-header glass-panel" onclick="toggleFolder('folder-mplb', this)">  
+                    <span>🏢 Jurusan MPLB</span><span class="chevron">▼</span>  
+                </div>  
+                <div class="folder-content" id="folder-mplb">  
+                    <div class="history-item glass-panel"><div class="history-info"><h3>SOP Pelayanan Prima</h3><p>Prosedur standar</p></div><button class="btn" onclick="startStudySession('mplb_sop')">Mulai</button></div>  
+                </div>  
+            </div>  
+
+            <div class="folder">  
+                <div class="folder-header glass-panel" onclick="toggleFolder('folder-tkj', this)">  
+                    <span>💻 Jurusan TKJ</span><span class="chevron">▼</span>  
+                </div>  
+                <div class="folder-content" id="folder-tkj">  
+                    <div class="history-item glass-panel"><div class="history-info"><h3>Config IP, DHCP, VLAN</h3><p>Administrasi Jaringan</p></div><button class="btn" onclick="startStudySession('tkj_jaringan')">Mulai</button></div>  
+                    <div class="history-item glass-panel"><div class="history-info"><h3>Sistem VSAT</h3><p>Transmisi satelit</p></div><button class="btn" onclick="startStudySession('tkj_vsat')">Mulai</button></div>  
+                </div>  
+            </div>  
+        </main>  
+
+        <!-- 2A. DAFTAR CHAT UTAMA -->  
+        <main id="view-chat" class="view card glass-panel" style="padding: 20px 15px;">  
+            <div class="chat-header-top">
+                <h2 style="font-size: 1.6em; font-weight: 700;">Chat</h2>
+                <div style="position: relative; display: flex; align-items: center; justify-content: center;">
+                    <i class="fa-regular fa-bell" style="font-size: 1.2em;"></i>
+                    <div id="global-bell-badge" style="display: none; position: absolute; top: -5px; right: -8px; background: #22c55e; color: white; font-size: 0.65rem; font-weight: 700; padding: 1px 5px; border-radius: 50%; border: 2px solid var(--bg-dark-1);">0</div>
+                </div>
+            </div>
+
+            <div class="chat-search">
+                <i class="fa-solid fa-search" style="color: rgba(255,255,255,0.5);"></i>
+                <input type="text" placeholder="Cari teman..." id="chat-search-input">
+            </div>
+
+            <!-- Horizontal Active Users -->
+            <div class="chat-active-users" id="active-users-list">
+                <p style="font-size: 0.8em; color: rgba(255,255,255,0.5);">Memuat kontak...</p>
+            </div>
+
+            <!-- Vertical Recent Chats -->
+            <div class="chat-recent-list" id="chat-recent-list">
+                <p style="text-align: center; color:rgba(255,255,255,0.5);">Memuat chat...</p>
+            </div>
+        </main>  
+
+        <!-- 2B. RUANG OBROLAN PRIBADI / GRUP -->
+        <main id="view-private-room" class="view card glass-panel" style="padding: 15px;">
+            <div style="display: flex; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; margin-bottom: 15px;">
+                <button class="btn btn-outline" style="padding: 5px 12px; margin-right: 15px;" onclick="switchTab(1, 'view-chat', '<i class=\'fa-solid fa-message\'></i>')">⬅</button>
+                <div class="avatar-wrapper" style="width: 40px; height: 40px; margin-bottom: 0; margin-right: 10px;">
+                    <img id="private-chat-avatar" src="" style="width:100%; border-radius:50%;" alt="">
+                </div>
+                <h3 id="private-chat-name" style="font-size: 1.1em; flex: 1;">Nama</h3>
+            </div>
+            
+            <div class="chat-container">  
+                <div class="chat-messages-box glass-panel" id="private-messages-box">
+                    <p style="text-align: center; color:rgba(255,255,255,0.5);">Mulai obrolan...</p>
+                </div>  
+                <div class="chat-input-area">  
+                    <input type="text" id="private-input-field" class="chat-input" placeholder="Ketik pesan..." onkeypress="handlePrivateKeyPress(event)">  
+                    <button class="btn" style="padding: 10px 15px;" onclick="sendPrivateMessage()">🚀</button>  
+                </div>  
+            </div>
+        </main>
+
+        <!-- 3. MUSIC PLAYER WITH MULTI-TRACK PLAYLIST -->  
+        <main id="view-music" class="view card glass-panel">  
+            <h2 class="section-title">🎵 Pemutar Musik</h2>  
+            <div style="display: flex; flex-direction: column; gap: 12px;">  
+                <!-- Lagu 1 -->
+                <div class="history-item glass-panel">  
+                    <div class="history-info">
+                        <h3>DJ TikTok Viral 2024</h3>
+                        <p style="font-size:0.75em; color:rgba(255,255,255,0.6);">DJ Temanku Semua Pada Jahat Tante</p>
+                    </div>  
+                    <button class="btn" id="btn-play-1" onclick="playSelectedTrack('DJ TEMANKU SEMUA PADA JAHAT TANTE __ DJ TANTE CULIK AKU DONG VIRAL TIKTOK TERBARU 2024.mp3', 1)">Putar ▶</button>  
+                </div>  
+
+                <!-- Lagu 2 (Baru Ditambahkan) -->
+                <div class="history-item glass-panel">  
+                    <div class="history-info">
+                        <h3>DJ Helikopter - Bukannya Ku Tak Cinta</h3>
+                        <p style="font-size:0.75em; color:rgba(255,255,255,0.6);">TikTok Remix Viral 2024</p>
+                    </div>  
+                    <button class="btn" id="btn-play-2" onclick="playSelectedTrack('DJ Helikopter - Bukannya Ku Tak Cinta.mp3', 2)">Putar ▶</button>  
+                </div>  
+            </div>  
+        </main>  
+
+        <!-- 4. HISTORY -->  
+        <main id="view-history" class="view card glass-panel">  
+            <h2 class="section-title">📜 Histori Belajar</h2>  
+            <div id="main-history-log"><p style="text-align: center; color:rgba(255,255,255,0.5);">Memuat histori...</p></div>  
+        </main>  
+
+        <!-- 5. PROFILE & SETTING TEMA -->  
+        <main id="view-profile" class="view card glass-panel" style="text-align: center; padding-top: 30px;">  
+            <div style="font-size: 4em; margin-bottom: 10px;">🧑‍‍🎓</div>  
+            <h2 id="profile-name-display" style="font-weight: 700; font-size: 1.8em; margin-bottom: 25px;">User</h2>  
+              
+            <!-- TOMBOL TEMA TERANG / GELAP -->  
+            <div class="glass-panel" style="padding: 20px; border-radius: 16px; margin-bottom: 25px;">  
+                <h4 style="margin-bottom:5px;">🎨 Tampilan Tema</h4>  
+                <p style="font-size:0.75em; color:rgba(255,255,255,0.7); margin-bottom:15px;">Pilih mode terang atau gelap untuk kenyamanan belajarmu!</p>  
+                
+                <div class="theme-toggle-wrapper" style="display: flex; justify-content: center; margin-top: 15px;">
+                    <button id="themeToggleBtn" class="btn btn-outline" style="width: 100%; max-width: 250px;">
+                        ☀️ Beralih ke Mode Terang
+                    </button>
+                </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 12px;">  
+                <a href="https://github.com/oulinlin0" target="_blank" class="btn btn-outline">💻 GitHub Developer</a>  
+                <button class="btn" style="background: linear-gradient(135deg, #ef5350, #c62828);" onclick="logoutUser()">🚪 Keluar Akun</button>  
+            </div>  
+        </main>  
+
+        <!-- 6. QUIZ -->  
+        <main id="view-quiz" class="view card glass-panel">  
+            <div class="quiz-header">  
+                <button class="btn btn-outline" style="padding: 5px 12px;" onclick="switchTab(0, 'view-dashboard', '<i class=\'fa-solid fa-house\'></i>')">⬅ Batal</button>  
+                <h3 id="quiz-title" style="font-size: 1em;">Judul</h3>  
+                <span id="question-tracker">0/0</span>  
+            </div>  
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>  
+            <div class="question-area"><div id="reading-text" class="reading-box glass-panel"></div><div id="question-text" class="question-text">Memuat...</div><div id="options-container" class="options"></div></div>  
+            <div id="feedback-box" class="feedback-box glass-panel"><h4>💡 Pembahasan:</h4><p id="feedback-text"></p></div>  
+            <div id="next-btn-container" style="margin-top:20px; text-align:right; display:none;"><button class="btn" onclick="nextQuestion()">Lanjut ➡</button></div>  
+        </main>  
+
+        <!-- 7. RESULT -->  
+        <main id="view-result" class="view card glass-panel" style="text-align: center; padding: 40px 15px;">  
+            <h2>Selesai! 🎉</h2>  
+            <div style="width: 130px; height: 130px; border-radius: 50%; background: linear-gradient(135deg, var(--theme-1), #080c14); color: white; display: flex; align-items: center; justify-content: center; font-size: 3em; font-weight: 700; margin: 20px auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5);" id="final-score">100</div>  
+            <p id="result-message" style="margin-bottom: 25px;">Luar biasa!</p>  
+            <button class="btn" style="width: 100%;" onclick="saveScoreToHistory()">💾 Simpan & Kembali</button>  
+        </main>  
+    </div>  
+
+    <!-- BOTTOM NAVIGATION -->  
+    <nav class="bottom-nav" id="bottom-nav">  
+        <div class="nav-glass-slider-container">  
+            <div class="nav-bg-glass" id="bg-wrapper"></div>  
+        </div>  
+        <div class="nav-indicator-wrapper" id="indicator-wrapper">  
+            <div class="nav-floating-icon" id="nav-floating-icon"><i class="fa-solid fa-house"></i></div>  
+        </div>  
+        <div class="nav-item active" onclick="switchTab(0, 'view-dashboard', '<i class=\'fa-solid fa-house\'></i>')">  
+            <span class="nav-icon"><i class="fa-solid fa-house"></i></span><span class="nav-text">Home</span>  
+        </div>  
+        <div class="nav-item" onclick="switchTab(1, 'view-chat', '<i class=\'fa-solid fa-message\'></i>')">  
+            <span class="nav-icon"><i class="fa-solid fa-message"></i></span><span class="nav-text">Chat</span>  
+        </div>  
+        <div class="nav-item" onclick="switchTab(2, 'view-music', '<i class=\'fa-solid fa-music\'></i>')">  
+            <span class="nav-icon"><i class="fa-solid fa-music"></i></span><span class="nav-text">Musik</span>  
+        </div>  
+        <div class="nav-item" onclick="switchTab(3, 'view-history', '<i class=\'fa-solid fa-scroll\'></i>')">  
+            <span class="nav-icon"><i class="fa-solid fa-scroll"></i></span><span class="nav-text">Histori</span>  
+        </div>  
+        <div class="nav-item" onclick="switchTab(4, 'view-profile', '<i class=\'fa-solid fa-user\'></i>')">  
+            <span class="nav-icon"><i class="fa-solid fa-user"></i></span><span class="nav-text">Profile</span>  
+        </div>  
+    </nav>  
+
+    <!-- Menghubungkan File JavaScript Eksternal -->  
+    <script src="script.js"></script>  
+</body>  
 </html>
