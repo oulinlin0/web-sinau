@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 themeBtn.innerHTML = "🌙 Beralih ke Mode Gelap";
                 localStorage.setItem("app_theme", "light");
             } else {
-                themeBtn.innerHTML = "☀️ Beralih ke Mode Terang";
+                themeBtn.innerHTML = "☀️️ Beralih ke Mode Terang";
                 localStorage.setItem("app_theme", "dark");
             }
         });
@@ -170,7 +170,7 @@ function toggleFolder(folderId, headerElement) {
     headerElement.querySelector('.chevron').classList.toggle('active'); 
 }  
 
-// --- MUSIC PLAYER LOGIC (MULTI-TRACK WITH INDIVIDUAL TOGGLE) ---  
+// --- MUSIC PLAYER LOGIC (MULTI-TRACK WITH TOGGLE) ---  
 let isMusicPlaying = false; 
 let currentTrackIndex = null;
 const bgMusic = document.getElementById('bg-music');  
@@ -190,7 +190,7 @@ function playSelectedTrack(src, index) {
     const btn = document.getElementById(`btn-play-${index}`);
     const audioSource = document.getElementById('audio-source');
 
-    // jika lagu yang sama sedang diputar -> jeda
+    // Jika lagu yang sama sedang diputar -> jeda
     if (isMusicPlaying && currentTrackIndex === index) {
         bgMusic.pause();
         isMusicPlaying = false;
@@ -198,15 +198,16 @@ function playSelectedTrack(src, index) {
         return;
     }
 
-    // jika lagu lain sedang diputar -> reset tombol lagu sebelumnya
+    // Jika lagu lain sedang diputar -> reset tombol lagu sebelumnya
     if (currentTrackIndex !== null && currentTrackIndex !== index) {
         const prevBtn = document.getElementById(`btn-play-${currentTrackIndex}`);
         if (prevBtn) prevBtn.innerHTML = "Putar ▶";
     }
 
-    // ganti audio source dan putar lagu baru
-    if (audioSource && (audioSource.getAttribute('src') !== src)) {
-        audioSource.src = src; 
+    // Ganti audio source dan putar lagu baru
+    const encodedSrc = encodeURI(src);
+    if (audioSource && (audioSource.getAttribute('src') !== encodedSrc)) {
+        audioSource.src = encodedSrc; 
         bgMusic.load();  
     }
 
@@ -214,7 +215,10 @@ function playSelectedTrack(src, index) {
         isMusicPlaying = true; 
         currentTrackIndex = index;
         if (btn) btn.innerHTML = "Jeda ⏸"; 
-    }).catch(e => console.log("Audio play error:", e));  
+    }).catch(e => {
+        console.log("Audio play error:", e);
+        alert(`File audio "${src}" tidak ditemukan. Pastikan nama file di GitHub sudah diubah menjadi "${src}".`);
+    });  
 }
 
 // --- REAL-TIME PRIVATE & GROUP CHAT SYSTEM ---  
