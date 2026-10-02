@@ -204,7 +204,7 @@ function playSelectedTrack(src, index) {
         if (prevBtn) prevBtn.innerHTML = "Putar ▶";
     }
 
-    // Ganti audio source dan putar lagu baru
+    // Ganti audio source dan putar lagu baru (dengan encodeURI agar aman dari karakter khusus)
     const encodedSrc = encodeURI(src);
     if (audioSource && (audioSource.getAttribute('src') !== encodedSrc)) {
         audioSource.src = encodedSrc; 
@@ -217,7 +217,7 @@ function playSelectedTrack(src, index) {
         if (btn) btn.innerHTML = "Jeda ⏸"; 
     }).catch(e => {
         console.log("Audio play error:", e);
-        alert(`File audio "${src}" tidak ditemukan. Pastikan nama file di GitHub sudah diubah menjadi "${src}".`);
+        alert(`File audio tidak ditemukan. Pastikan nama file di GitHub sudah diunggah sesuai.`);
     });  
 }
 
@@ -934,4 +934,4 @@ async function saveScoreToHistory() {
         alert("Skor berhasil disimpan ke akun online-mu!"); loadHistoryView(); switchTab(0, 'view-dashboard', '<i class=\'fa-solid fa-house\'></i>');  
         btn.innerText = "💾 Simpan & Kembali"; btn.disabled = false;  
     } catch (error) { alert("Gagal menyimpan data."); }  
-}
+            }
