@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 themeBtn.innerHTML = "🌙 Beralih ke Mode Gelap";
                 localStorage.setItem("app_theme", "light");
             } else {
-                themeBtn.innerHTML = "☀️️ Beralih ke Mode Terang";
+                themeBtn.innerHTML = "☀️ Beralih ke Mode Terang";
                 localStorage.setItem("app_theme", "dark");
             }
         });
@@ -77,7 +77,7 @@ function switchTab(index, viewId, iconSymbol = '<i class="fa-solid fa-house"></i
         targetView.classList.add('active');  
     }  
 
-    if (viewId === 'view-quiz' || viewId === 'view-result' || viewId === 'view-private-room') {  
+    if (viewId === 'view-quiz' || viewId === 'view-result' || viewId === 'view-private-room' || viewId === 'view-call') {  
         document.getElementById('bottom-nav').style.display = 'none';  
         document.getElementById('top-header').style.display = 'none';  
     } else {  
@@ -204,7 +204,7 @@ function playSelectedTrack(src, index) {
         if (prevBtn) prevBtn.innerHTML = "Putar ▶";
     }
 
-    // Ganti audio source dan putar lagu baru (dengan encodeURI agar aman dari karakter khusus)
+    // Ganti audio source dan putar lagu baru (dengan encodeURI agar aman)
     const encodedSrc = encodeURI(src);
     if (audioSource && (audioSource.getAttribute('src') !== encodedSrc)) {
         audioSource.src = encodedSrc; 
@@ -217,9 +217,83 @@ function playSelectedTrack(src, index) {
         if (btn) btn.innerHTML = "Jeda ⏸"; 
     }).catch(e => {
         console.log("Audio play error:", e);
-        alert(`File audio tidak ditemukan. Pastikan nama file di GitHub sudah diunggah sesuai.`);
+        alert(`File audio tidak ditemukan. Pastikan kamu sudah upload lagu tersebut di GitHub-mu!`);
     });  
 }
+
+// --- CALL SYSTEM (SIMULASI PANGGILAN) ---
+let activeCallInterval = null;
+let callDurationSeconds = 0;
+let isMicMuted = false;
+let isCameraOff = false;
+
+function startCall(isVideo = false) {
+    const targetName = activeGroup ? "Grup Diskusi Sinau Bang" : activeChatUser;
+    if (!targetName) return;
+
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById('view-call').classList.add('active');
+
+    document.getElementById('call-target-name').innerText = targetName;
+    document.getElementById('call-type-label').innerText = isVideo ? "Memanggil (Video Call)..." : "Memanggil (Voice Call)...";
+    document.getElementById('call-avatar').src = activeGroup ? `https://ui-avatars.com/api/?name=Grup&background=0284c7&color=fff&bold=true` : getAvatarUrl(targetName);
+    
+    const videoContainer = document.getElementById('video-stream-container');
+    if (isVideo) {
+        videoContainer.style.display = 'block';
+    } else {
+        videoContainer.style.display = 'none';
+    }
+
+    callDurationSeconds = 0;
+    isMicMuted = false;
+    isCameraOff = false;
+    document.getElementById('mic-btn-icon').className = "fa-solid fa-microphone";
+    document.getElementById('video-btn-icon').className = "fa-solid fa-video";
+
+    setTimeout(() => {
+        document.getElementById('call-type-label').innerText = "Menyambungkan...";
+        setTimeout(() => {
+            document.getElementById('call-type-label').innerText = "00:00";
+            if (activeCallInterval) clearInterval(activeCallInterval);
+            activeCallInterval = setInterval(() => {
+                callDurationSeconds++;
+                let mins = Math.floor(callDurationSeconds / 60).toString().padStart(2, '0');
+                let secs = (callDurationSeconds % 60).toString().padStart(2, '0');
+                document.getElementById('call-type-label').innerText = `${mins}:${secs}`;
+            }, 1000);
+        }, 1500);
+    }, 2000);
+}
+
+function endCall() {
+    if (activeCallInterval) {
+        clearInterval(activeCallInterval);
+        activeCallInterval = null;
+    }
+    if (activeGroup) {
+        openGroupChat(activeGroup, "Grup Diskusi Sinau Bang");
+    } else if (activeChatUser) {
+        openPrivateChat(activeChatUser);
+    } else {
+        switchTab(1, 'view-chat', '<i class=\'fa-solid fa-message\'></i>');
+    }
+}
+
+function toggleMuteMic() {
+    isMicMuted = !isMicMuted;
+    const icon = document.getElementById('mic-btn-icon');
+    icon.className = isMicMuted ? "fa-solid fa-microphone-slash" : "fa-solid fa-microphone";
+}
+
+function toggleVideoCamera() {
+    isCameraOff = !isCameraOff;
+    const icon = document.getElementById('video-btn-icon');
+    icon.className = isCameraOff ? "fa-solid fa-video-slash" : "fa-solid fa-video";
+    const videoBox = document.getElementById('video-stream-container');
+    videoBox.style.opacity = isCameraOff ? "0.2" : "1";
+}
+
 
 // --- REAL-TIME PRIVATE & GROUP CHAT SYSTEM ---  
 function getAvatarUrl(name) {
@@ -233,6 +307,15 @@ function getRoomId(user1, user2) {
 async function loadChatUsersList() {  
     const activeUsersList = document.getElementById('active-users-list');  
     const recentChatList = document.getElementById('chat-recent-list');  
+      
+    if (activeUsersList && activeUsersList.innerHTML.trim() === "") {
+        activeUsersList.innerHTML = `  
+            <div class="active-user-item">  
+                <div class="avatar-wrapper new-chat"><i class="fa-solid fa-plus"></i></div>  
+                <span>New</span>  
+            </div>  
+        `;  
+    }
 
     try {  
         let res = await fetch(FIREBASE_USERS_URL);  
@@ -327,6 +410,7 @@ async function loadChatUsersList() {
 
         chatItems.sort((a, b) => b.maxTimestamp - a.maxTimestamp);
 
+        // Update Notification Bell Badge in Header
         const bellBadge = document.getElementById('global-bell-badge');
         if (bellBadge) {
             if (totalUnreadGlobal > 0) {
@@ -447,7 +531,7 @@ function openPrivateChat(targetUser) {
     loadPrivateMessages();  
       
     if(currentChatInterval) clearInterval(currentChatInterval);  
-    currentChatInterval = setInterval(loadPrivateMessages, 1500);  
+    currentChatInterval = setInterval(loadPrivateMessages, 1000);  
 }  
 
 function openGroupChat(groupId, groupName) {
@@ -480,7 +564,7 @@ function openGroupChat(groupId, groupName) {
     loadPrivateMessages();  
       
     if(currentChatInterval) clearInterval(currentChatInterval);  
-    currentChatInterval = setInterval(loadPrivateMessages, 1500);  
+    currentChatInterval = setInterval(loadPrivateMessages, 1000);  
 }
 
 async function loadPrivateMessages() {  
@@ -711,47 +795,47 @@ const readingTexts = {
     teks4: "<strong>Teks 4 (Fire)</strong><br>A fire destroyed 20 houses last night. The government provided Rp100.000.000 in cash aid for the victims."  
 };  
 
-const psts_indo_questions = [  
-    { q: "Surat lamaran pekerjaan yang digabungkan dengan riwayat hidup (curriculum vitae) termasuk jenis surat lamaran model...", o: ["Gabungan", "Terpisah", "Semi-blok", "Resmi"], c: 0, exp: "Model gabungan menyatukan surat dan riwayat hidup dalam satu kesatuan." },  
-    { q: "Kalimat penolakan lamaran pekerjaan yang halus dan santun adalah...", o: ["Maaf, kami tidak butuh tenaga Anda.", "Dengan menyesal kami belum bisa menerima Anda karena posisi telah terisi.", "Surat lamaran Anda ditolak karena tidak memenuhi syarat.", "Anda tidak kami terima, silakan cari di tempat lain."], c: 1, exp: "Penolakan harus menggunakan bahasa yang santun agar tidak menyinggung pelamar." },  
-    { q: "'Berdasarkan informasi yang saya peroleh dari teman saya...'. Alenia pembuka ini dibuat berdasarkan sumber...", o: ["Iklan cetak", "Informasi seseorang", "Inisiatif sendiri", "Pengumuman resmi"], c: 1, exp: "Terdapat frasa 'dari teman saya' yang menunjukkan informasi dari seseorang." },  
-    { q: "Alenia pembuka yang tepat berdasarkan iklan di koran Kompas tanggal 5 September 2024 adalah...", o: ["Sesuai iklan di Kompas, saya melamar...", "Berdasarkan iklan yang dimuat pada harian Kompas tanggal 5 September 2024, saya mengajukan lamaran...", "Membaca iklan di koran, saya berniat melamar...", "Saya melihat iklan di Kompas dan ingin bekerja."], c: 1, exp: "Sumber informasi cetak harus menyebutkan nama media dan tanggal secara spesifik." },  
-    { q: "Penulisan alamat surat yang benar sesuai dengan EYD/PUEBI adalah...", o: ["Kepada Yth. Bapak Direktur PT Sukses Jl. Melati 10 Jakarta", "Yth. Direktur PT Sukses Jalan Melati 10 Jakarta", "Yth. Pimpinan PT. Sukses, Jl. Melati 10, Jakarta.", "Kepada Yth. Pimpinan PT Sukses di Jakarta"], c: 1, exp: "Kata 'Jalan' tidak disingkat, tidak memakai 'Kepada', dan tidak ada titik setelah 'PT'." },  
-    { q: "Kalimat penutup surat lamaran pekerjaan yang paling tepat adalah...", o: ["Atas perhatiannya, saya ucapkan terima kasih.", "Atas perhatian Bapak/Ibu, saya mengucapkan terima kasih.", "Atas perhatiannya, diucapkan terima kasih.", "Maka saya ucapkan terima kasih yang sebesar-besarnya."], c: 1, exp: "Penggunaan 'nya' salah karena merujuk pada kata ganti orang ketiga, seharusnya 'Bapak/Ibu'." },  
-    { q: "Struktur teks surat lamaran pekerjaan yang benar secara berurutan adalah...", o: ["Tesis, argumen, penegasan", "Orientasi, komplikasi, resolusi", "Pembuka, isi, penutup", "Salam, isi, salam penutup"], c: 0, exp: "Secara tekstual, surat lamaran terdiri dari tesis (pembuka), argumen (kualifikasi/lampiran), dan penegasan (penutup/harapan)." },  
-    { q: "'Saya yang bertanda tangan di bawah ini...'. Kalimat ini merupakan alenia pembuka yang berasal dari...", o: ["Iklan lowongan", "Pengumuman", "Inisiatif sendiri", "Bursa kerja"], c: 2, exp: "Frasa tersebut menunjukkan pelamar membuat surat murni atas inisiatif pribadi tanpa merujuk sumber spesifik." },  
-    { q: "Penulisan tempat dan tanggal pembuatan surat yang benar adalah...", o: ["Pati, 8-9-2024", "Pati 8 September 2024", "Pati, 8 September 2024", "pati, 08 September 2024"], c: 2, exp: "Tempat dan tanggal dipisah dengan koma, nama bulan ditulis huruf, dan diawali huruf kapital." },  
-    { q: "Hal yang tidak perlu dilampirkan dalam surat lamaran pekerjaan umumnya adalah...", o: ["Daftar riwayat hidup", "Fotokopi ijazah", "Surat keterangan catatan kepolisian (SKCK)", "Akta kelahiran orang tua"], c: 3, exp: "Akta kelahiran orang tua tidak relevan dengan kualifikasi kerja pelamar." },  
-    { q: "Bagian surat yang terletak paling atas sebelah kanan atau kiri adalah...", o: ["Alamat surat", "Tempat dan tanggal surat", "Hal dan lampiran", "Salam pembuka"], c: 1, exp: "Tempat dan tanggal surat selalu ditempatkan di bagian paling awal/atas." },  
-    { q: "Tujuan utama pembuatan surat lamaran pekerjaan adalah...", o: ["Mendapatkan informasi gaji", "Memohon untuk diterima bekerja di suatu instansi", "Menunjukkan keahlian menulis", "Mengajukan protes kepada perusahaan"], c: 1, exp: "Fungsi utama surat lamaran pekerjaan adalah memohon pekerjaan." },  
-    { q: "Isi argumen dalam surat lamaran pekerjaan biasanya dibuktikan dengan...", o: ["Tanda tangan", "Materai", "Lampiran dokumen (ijazah, sertifikat)", "Salam penutup"], c: 2, exp: "Argumen pelamar (kompetensi) didukung oleh bukti berupa lampiran dokumen." },  
-    { q: "Hal yang harus diperhatikan dalam penulisan surat lamaran pekerjaan adalah...", o: ["Menggunakan bahasa gaul", "Menggunakan kertas berwarna-warni", "Menggunakan bahasa baku, sopan, dan format rapi", "Menulis sepanjang mungkin"], c: 2, exp: "Surat resmi harus menggunakan ragam bahasa baku dan format yang bersih/rapi." },  
-    { q: "Alenia pembuka: 'Setelah membaca iklan di harian Suara Merdeka...'. Ini menunjukkan pelamar merespons dari...", o: ["Brosur", "Iklan media cetak", "Radio", "Internet"], c: 1, exp: "Harian Suara Merdeka adalah bentuk media cetak (koran)." },  
-    { q: "Bahasa yang digunakan dalam surat lamaran pekerjaan harus bersifat...", o: ["Konotatif", "Persuasif dan formal", "Fiksi", "Santai"], c: 1, exp: "Surat lamaran harus formal namun persuasif agar perusahaan tertarik." },  
-    { q: "Berikut adalah hal yang dikemukakan dalam surat lamaran pekerjaan, kecuali...", o: ["Identitas diri", "Kualifikasi pendidikan", "Pengalaman kerja", "Hobi yang tidak relevan"], c: 3, exp: "Hanya informasi yang mendukung kompetensi kerja yang perlu ditulis." },  
-    { q: "Dokumen yang memuat rincian data pribadi, pendidikan, dan pengalaman kerja disebut...", o: ["Surat keterangan", "Daftar Riwayat Hidup (CV)", "Portofolio", "Sertifikat"], c: 1, exp: "Daftar Riwayat Hidup (CV) berisi biodata lengkap pelamar." },  
-    { q: "Salam pembuka yang paling lazim digunakan dalam surat lamaran pekerjaan resmi adalah...", o: ["Halo Bapak/Ibu,", "Dengan hormat,", "Assalamualaikum,", "Salam sejahtera,"], c: 1, exp: "'Dengan hormat,' adalah salam pembuka paling standar dan resmi." },  
-    { q: "Lampiran dalam surat lamaran pekerjaan berfungsi untuk...", o: ["Menebalkan surat", "Melengkapi dan memperkuat argumen kualifikasi pelamar", "Hanya formalitas", "Menghabiskan kertas"], c: 1, exp: "Lampiran membuktikan kebenaran data yang ditulis di surat." },  
-    { q: "Kalimat 'Sebagai bahan pertimbangan, saya lampirkan...' berada pada bagian...", o: ["Pembuka surat", "Isi surat", "Penutup surat", "Alamat surat"], c: 1, exp: "Kalimat tersebut merinci dokumen yang ada di bagian isi (argumen)." },  
-    { q: "Paragraf pembuka yang santun dan efektif adalah...", o: ["Beri saya pekerjaan ini.", "Saya ingin melamar kerja di tempat Bapak.", "Melalui surat ini, saya bermaksud mengajukan lamaran pekerjaan untuk mengisi posisi...", "Apakah ada lowongan di kantor Bapak?"], c: 2, exp: "Kalimat C menyatakan maksud dengan jelas, formal, dan santun." },  
-    { q: "Penulisan tempat tanggal surat: 'Semarang, 12 oktober 2024'. Kesalahannya terletak pada...", o: ["Penggunaan koma", "Angka tahun", "Penulisan huruf 'o' pada bulan", "Nama kota"], c: 2, exp: "Nama bulan harus diawali huruf kapital: 'Oktober'." },  
-    { q: "Surat lamaran pekerjaan pada dasarnya termasuk ke dalam jenis surat...", o: ["Dinas", "Pribadi resmi", "Niaga", "Keluarga"], c: 1, exp: "Surat lamaran dibuat oleh individu (pribadi) yang ditujukan ke instansi (resmi)." },  
-    { q: "Sistematika surat lamaran pekerjaan yang tepat setelah tanggal surat adalah...", o: ["Isi surat", "Hal dan Lampiran", "Salam pembuka", "Tanda tangan"], c: 1, exp: "Setelah tempat dan tanggal, di sebelah kiri bawahnya biasanya diisi Hal dan Lampiran." },  
-    { q: "Alenia pembuka untuk iklan lowongan yang tepat biasanya diawali dengan kata...", o: ["Berdasarkan", "Menyatakan", "Sehubungan", "Adapun"], c: 0, exp: "Kata 'Berdasarkan (iklan...)' sering digunakan untuk merujuk sumber informasi." },  
-    { q: "Penulisan rincian identitas (nama, tempat tanggal lahir) yang tepat adalah...", o: ["Nama: Budi, Tempat: Pati", "nama : Budi, tempat, tanggal lahir : Pati, 12 Mei 2000", "Nama : Budi, Tempat, Tanggal Lahir : Pati, 12 Mei 2000", "NAMA: BUDI"], c: 1, exp: "Jika merinci dari kalimat sebelumnya, awal kata (nama, tempat, pendidikan) menggunakan huruf kecil." },  
-    { q: "Sistematika surat lamaran pekerjaan setelah 'Hal dan Lampiran' adalah...", o: ["Tanggal surat", "Alamat tujuan surat", "Salam penutup", "Isi surat"], c: 1, exp: "Setelah Hal dan Lampiran, kita menuliskan Alamat tujuan surat (Yth. ...)." },  
-    { q: "Surat yang dikirimkan oleh pencari kerja kepada instansi disebut surat...", o: ["Penawaran", "Pemberitahuan", "Lamaran Pekerjaan", "Perjanjian"], c: 2, exp: "Definisi dasar dari surat lamaran pekerjaan." },  
-    { q: "Berdasarkan iklan di Instagram resmi PT XYZ... Sumber informasinya berasal dari...", o: ["Media cetak", "Media sosial (internet)", "Televisi", "Radio"], c: 1, exp: "Instagram adalah platform media sosial di internet." },  
-    { q: "Hal yang wajib ada dalam daftar riwayat hidup, KECUALI...", o: ["Data pribadi", "Riwayat pendidikan", "Riwayat penyakit keturunan", "Pengalaman kerja/organisasi"], c: 2, exp: "Riwayat penyakit keturunan umumnya tidak dicantumkan kecuali diminta khusus (kesehatan)." },  
-    { q: "Surat lamaran pekerjaan memiliki sifat...", o: ["Fiktif", "Objektif dan faktual", "Subjektif imajinatif", "Bebas"], c: 1, exp: "Semua data pelamar harus berdasarkan fakta yang bisa dipertanggungjawabkan." },  
-    { q: "Penulisan alamat tujuan: 'Yth. Pimpinan HRD PT Maju Terus'. Penulisan ini...", o: ["Benar", "Salah, karena pakai 'PT'", "Salah, harusnya pakai 'Kepada'", "Salah, tidak boleh disingkat HRD"], c: 0, exp: "Penulisan tersebut sudah cukup tepat, efisien tanpa pemborosan kata 'Kepada'." },  
-    { q: "Manakah yang BUKAN penulisan alamat surat yang benar?", o: ["Yth. Direktur PT Abadi", "Kepada Yth. Bapak Direktur", "Yth. HRD Manager PT Makmur", "Yth. Kepala Personalia PT Sukses"], c: 1, exp: "Penggunaan 'Kepada' dan 'Yth.' sekaligus adalah pemborosan kata." },  
-    { q: "Identifikasi kesalahan: 'Dengan hormat. Bersama ini saya melamar...'. Kesalahannya adalah...", o: ["Titik setelah 'hormat'", "Kata 'saya'", "Kata 'melamar'", "Tidak ada yang salah"], c: 0, exp: "Salam pembuka 'Dengan hormat' harus diakhiri dengan tanda koma (,), bukan titik (.)." },  
-    { q: "Bagian yang berisi harapan agar diterima dan ucapan terima kasih disebut...", o: ["Pembuka", "Tesis", "Argumen", "Penutup (Penegasan)"], c: 3, exp: "Harapan dan terima kasih berada di paragraf penutup." },  
-    { q: "Kata ganti sapaan yang paling tepat untuk pimpinan instansi dalam surat adalah...", o: ["Kamu", "Anda", "Bapak/Ibu", "Saudara"], c: 2, exp: "Sapaan Bapak/Ibu dinilai paling sopan dan formal." },  
-    { q: "Tanda tangan pelamar diletakkan di...", o: ["Pojok kiri atas", "Kanan bawah, di bawah salam penutup", "Kiri bawah", "Tengah bawah"], c: 1, exp: "Format standar surat lamaran menempatkan tanda tangan di kanan bawah." },  
-    { q: "Nama terang pelamar ditulis...", o: ["Di dalam kurung tanpa kapital", "Tepat di bawah tanda tangan pelamar", "Di sebelah salam pembuka", "Di belakang ijazah"], c: 1, exp: "Nama terang selalu menyertai tanda tangan untuk kejelasan identitas." },  
-    { q: "Format surat di mana seluruh teks rata kiri disebut...", o: ["Indented style", "Block style (Bentuk lurus)", "Semi block style", "Official style"], c: 1, exp: "Bentuk lurus (block style) mengetik semua bagian surat rata dari tepi kiri." }  
+const psts_indo_questions = [
+    { q: "Surat lamaran pekerjaan termasuk jenis surat ...", o: ["dinas", "niaga", "pribadi yang bersifat resmi", "pribadi yang bersifat kekeluargaan", "edaran"], c: 2, exp: "Surat lamaran kerja ditulis oleh individu ke instansi/lembaga resmi, sehingga termasuk surat pribadi yang bersifat resmi." },
+    { q: "Sebagai petugas bagian personalia PT Bintang Sejahtera, Anda harus membalas surat lamaran Dewi yang belum dapat diterima karena kualifikasinya belum sesuai. Kalimat penolakan yang paling tepat dan santun adalah ...", o: ["Lamaran Anda kami tolak karena Anda tidak pantas bekerja di perusahaan ini.", "Kami tidak tertarik dengan lamaran Anda, jadi jangan mengirim surat lagi kepada kami.", "Lamaran kamu nggak bisa kami terima soalnya kamu kurang pintar.", "Kami menerima lamaran Saudari, tetapi Saudari harus bersedia bekerja tanpa digaji.", "Mohon maaf, setelah melalui proses seleksi, lamaran Saudari belum dapat kami terima karena belum sesuai dengan kualifikasi yang kami butuhkan saat ini."], c: 4, exp: "Penolakan harus menggunakan bahasa yang santun, halus, dan tidak menyinggung perasaan pelamar." },
+    { q: "Bacalah iklan berikut!<br><em>LOWONGAN KERJA<br>Bengkel Resmi Sinar Motor membutuhkan: MEKANIK SEPEDA MOTOR... (Harian Radar Pati, 8 September 2026)</em><br><br>Alinea pembuka surat lamaran yang sesuai dengan iklan tersebut adalah ...", o: ["Berdasarkan iklan lowongan kerja di Harian Radar Pati tanggal 8 September 2026, saya bermaksud mengajukan lamaran sebagai mekanik sepeda motor di Bengkel Resmi Sinar Motor.", "Saya sangat membutuhkan pekerjaan sebagai mekanik sepeda motor sehingga saya mohon Bapak menerima saya.", "Berdasarkan iklan di Harian Radar Pati tanggal 8 September 2026, saya bermaksud melamar sebagai staf administrasi di Bengkel Resmi Sinar Motor.", "Berdasarkan informasi dari teman saya, Bengkel Resmi Sinar Motor membutuhkan mekanik sepeda motor, sehingga saya mengajukan lamaran.", "Bersama surat ini saya kirimkan daftar riwayat hidup, fotokopi ijazah, dan pas foto terbaru saya."], c: 0, exp: "Alinea pembuka harus mencantumkan sumber informasi (Harian Radar Pati), tanggal terbit, dan posisi yang dilamar (Mekanik Sepeda Motor) secara jelas." },
+    { q: "Berdasarkan iklan lowongan Bengkel Resmi Sinar Motor di Harian Radar Pati (8 September 2026), kutipan berikut yang merupakan alinea pembuka surat lamaran adalah ...", o: ["Saya lulusan SMK Teknik Sepeda Motor, jujur, disiplin, dan pernah melaksanakan praktik kerja lapangan di bengkel sepeda motor.", "Demikian surat lamaran ini saya buat dengan sebenarnya. Atas perhatian Bapak/Ibu, saya ucapkan terima kasih.", "Sebagai bahan pertimbangan, saya lampirkan daftar riwayat hidup, fotokopi ijazah, dan pas foto terbaru.", "Sehubungan dengan iklan lowongan kerja Bengkel Resmi Sinar Motor yang dimuat di Harian Radar Pati tanggal 8 September 2026, saya mengajukan diri sebagai mekanik sepeda motor.", "Hormat saya, Dina Aprilia"], c: 3, exp: "Alinea pembuka menguraikan dari mana informasi didapat dan apa maksud pelamar (mengajukan diri sebagai posisi tertentu)." },
+    { q: "Penulisan alamat surat lamaran yang sesuai dengan ejaan yang benar adalah ...", o: ["Kepada Yth. Direktur PT. Sumber Jaya, Jl. Pemuda No. 8, Semarang.", "Yth. Direktur PT Sumber Jaya<br>Jalan Pemuda Nomor 8<br>Semarang 50131", "yth. direktur pt sumber jaya<br>jalan pemuda nomor 8<br>semarang 50131", "Yth Direktur PT Sumber Jaya<br>Jalan Pemuda Nomor 8<br>Semarang 50131", "Yth. Direktur PT Sumber Jaya;<br>Jalan Pemuda Nomor 8;<br>Semarang 50131."], c: 1, exp: "Penulisan yang benar tidak menggunakan kata 'Kepada', 'Jalan' tidak disingkat, tidak ada titik setelah 'PT', dan tidak diakhiri tanda titik pada baris akhir alamat." },
+    { q: "Kalimat penutup surat lamaran pekerjaan yang tepat adalah ...", o: ["Sekian dulu ya, Pak. Semoga lamaran saya langsung diterima.", "Pokoknya saya mau bekerja di perusahaan Bapak, titik.", "Demikian surat lamaran ini saya buat dengan sebenarnya. Atas perhatian dan kebijaksanaan Bapak/Ibu, saya ucapkan terima kasih.", "Saya berharap Bapak membalas surat ini secepatnya karena saya sedang butuh uang.", "Semoga surat ini sampai. Terima kasih banyak, Bos."], c: 2, exp: "Penutup surat harus menggunakan kalimat yang efektif, formal, dan santun." },
+    { q: "Surat lamaran pekerjaan memiliki struktur sebagai berikut, kecuali ...", o: ["kop surat", "tempat dan tanggal pembuatan surat", "salam pembuka", "alamat tujuan surat", "tanda tangan dan nama terang"], c: 0, exp: "Surat lamaran kerja bersifat pribadi yang ditujukan ke instansi, sehingga tidak menggunakan kop surat (kepala surat) seperti surat dinas." },
+    { q: "Rizal mengetahui bahwa PT Mandiri Motor di Kudus membutuhkan tenaga mekanik mobil dari temannya, Andi, yang bekerja di perusahaan tersebut. Alinea pembuka surat lamaran Rizal yang tepat adalah ...", o: ["Berdasarkan iklan di surat kabar, PT Mandiri Motor membutuhkan tenaga mekanik mobil sehingga saya mengajukan lamaran.", "Saya mengajukan lamaran pekerjaan di perusahaan Bapak sebagai tenaga administrasi.", "Saya sangat ingin bekerja di perusahaan Bapak karena gajinya besar.", "Bersama ini saya lampirkan fotokopi ijazah dan daftar riwayat hidup saya.", "Berdasarkan informasi dari teman saya, Saudara Andi, bahwa PT Mandiri Motor membutuhkan tenaga mekanik mobil, saya bermaksud mengajukan lamaran pekerjaan."], c: 4, exp: "Jika informasi lowongan berasal dari seseorang/teman, harus disebutkan nama narasumbernya pada alinea pembuka." },
+    { q: "Perhatikan penulisan tempat dan tanggal pembuatan surat berikut!<br><em>pati 8 september 2026.</em><br>Kesalahan penulisan tersebut ditunjukkan oleh pernyataan berikut:<br>1) Nama kota tidak diawali huruf kapital.<br>2) Tidak ada tanda koma setelah nama kota.<br>3) Nama bulan tidak diawali huruf kapital.<br>4) Tanggal harus ditulis dengan kata 'tanggal'.<br>5) Terdapat tanda titik di akhir penulisan.<br>Pernyataan yang benar tentang kesalahan penulisan tersebut adalah ...", o: ["1), 2), dan 3)", "1), 2), 3), dan 5)", "2), 3), 4), dan 5)", "1), 3), 4), dan 5)", "1), 2), 4), dan 5)"], c: 1, exp: "Kesalahan: p kecil, tidak ada koma setelah nama kota, s kecil pada nama bulan, dan diakhiri dengan titik. (Format yang benar: Pati, 8 September 2026)" },
+    { q: "Perhatikan bagian surat berikut!<br><em>Lampiran : 1 (satu) berkas<br>Hal : Lamaran pekerjaan</em><br>Bagian surat tersebut disebut ...", o: ["kepala surat dan alamat surat", "alamat tujuan dan salam pembuka", "paragraf pembuka dan paragraf isi", "lampiran dan perihal", "identitas pengirim dan penerima"], c: 3, exp: "Bagian tersebut merupakan Lampiran (berisi jumlah dokumen yang disertakan) dan Hal/Perihal (maksud surat)." },
+    { q: "Bagian surat lamaran yang terletak di antara paragraf penutup dan tanda tangan adalah ...", o: ["salam pembuka", "paragraf isi", "salam penutup", "alamat tujuan surat", "tempat dan tanggal pembuatan surat"], c: 2, exp: "Struktur di akhir surat lamaran: Paragraf penutup -> Salam penutup (Hormat saya,) -> Tanda tangan dan nama terang." },
+    { q: "Tujuan utama dibuatnya surat lamaran pekerjaan adalah ...", o: ["menawarkan diri dan kemampuan kepada perusahaan agar diterima bekerja", "memberitahukan adanya lowongan pekerjaan kepada masyarakat", "mengundang pimpinan perusahaan untuk menghadiri suatu acara", "menawarkan barang dan jasa kepada perusahaan", "memberikan laporan kegiatan kepada pimpinan perusahaan"], c: 0, exp: "Fungsi utama surat lamaran adalah permohonan agar diterima bekerja di sebuah instansi/perusahaan." },
+    { q: "Argumen yang dikemukakan pelamar dalam isi surat lamaran pekerjaan berupa ...", o: ["tuntutan gaji yang diinginkan pelamar", "keluhan terhadap tempat bekerja sebelumnya", "penjelasan tentang sejarah berdirinya perusahaan", "daftar kekurangan perusahaan yang dilamar", "alasan atau keyakinan bahwa pelamar memiliki kemampuan yang sesuai dengan kebutuhan perusahaan"], c: 4, exp: "Argumen dalam surat lamaran berisi kualifikasi, pengalaman, atau keahlian untuk meyakinkan perusahaan." },
+    { q: "Hal yang perlu diperhatikan dalam pembuatan surat lamaran pekerjaan adalah ...", o: ["menggunakan bahasa gaul agar terlihat akrab dengan pimpinan", "menggunakan bahasa baku, sopan, dan ringkas, serta ditulis rapi tanpa banyak coretan", "menulis sepanjang mungkin agar semua pengalaman terbaca", "menggunakan singkatan seperti pada pesan singkat agar hemat kertas", "mencantumkan permintaan gaji yang tinggi pada alinea pembuka"], c: 1, exp: "Surat resmi harus ditulis dengan format yang rapi, bersih, dan menggunakan bahasa baku serta sopan." },
+    { q: "Bacalah iklan berikut!<br><em>LOWONGAN KERJA CV Pratama Computer membutuhkan: TEKNISI JARINGAN KOMPUTER ... (Sumber: Instagram resmi @pratamacomputer, 3 September 2026)</em><br><br>Alinea pembuka surat lamaran yang tepat berdasarkan iklan tersebut adalah ...", o: ["Berdasarkan iklan di surat kabar tanggal 3 September 2026, saya mengajukan lamaran sebagai teknisi jaringan komputer di CV Pratama Computer.", "Sehubungan dengan informasi di Instagram resmi CV Pratama Computer tanggal 3 September 2026, saya mengajukan lamaran sebagai staf administrasi.", "Saya sangat tertarik bekerja di CV Pratama Computer karena perusahaan tersebut terkenal di Jepara.", "Sehubungan dengan informasi lowongan kerja yang saya baca di Instagram resmi CV Pratama Computer tanggal 3 September 2026, saya mengajukan lamaran sebagai teknisi jaringan komputer.", "Saya membaca informasi lowongan kerja dan ingin menjadi teknisi jaringan komputer di perusahaan Bapak."], c: 3, exp: "Sumber informasi dari media sosial (Instagram) harus disebutkan secara spesifik beserta tanggal dan posisi yang dilamar (teknisi jaringan komputer)." },
+    { q: "Ragam bahasa yang digunakan dalam surat lamaran pekerjaan adalah ...", o: ["ragam bahasa baku (resmi)", "ragam bahasa gaul", "ragam bahasa daerah", "ragam bahasa akrab", "ragam bahasa percakapan sehari-hari"], c: 0, exp: "Surat lamaran pekerjaan menggunakan ragam bahasa resmi atau baku sesuai PUEBI." },
+    { q: "Hal yang perlu dikemukakan pelamar dalam isi surat lamaran pekerjaan adalah ...", o: ["kelemahan perusahaan beserta saran perbaikannya", "keinginan pelamar untuk langsung menduduki jabatan tertinggi", "identitas diri, pendidikan, pengalaman, dan keterampilan pelamar", "kisah pribadi pelamar sejak masa kecil", "kondisi keuangan keluarga pelamar"], c: 2, exp: "Isi surat lamaran pekerjaan memuat data yang mendukung kualifikasi seperti biodata, riwayat pendidikan, dan keahlian." },
+    { q: "Kelengkapan yang perlu dilampirkan dalam surat lamaran pekerjaan adalah ...", o: ["daftar harga barang, brosur, dan kartu nama", "surat undangan, surat edaran, dan proposal", "surat tagihan listrik, kuitansi, dan faktur", "foto keluarga, rapor SD, dan akta nikah orang tua", "daftar riwayat hidup, fotokopi ijazah, dan pas foto terbaru"], c: 4, exp: "Lampiran standar untuk lamaran pekerjaan adalah CV/Daftar Riwayat Hidup, ijazah, dan foto." },
+    { q: "Salam pembuka yang tepat dalam surat lamaran pekerjaan adalah ...", o: ["Hai, Bapak/Ibu Pimpinan!", "Dengan hormat,", "Hormat saya,", "Wassalam,", "Halo, apa kabar, Pak?"], c: 1, exp: "Salam pembuka paling lazim dan formal untuk surat lamaran adalah 'Dengan hormat,'." },
+    { q: "Berikut ini yang tidak perlu dilampirkan dalam surat lamaran pekerjaan adalah ...", o: ["fotokopi ijazah terakhir", "daftar riwayat hidup", "pas foto terbaru", "foto keluarga besar", "fotokopi sertifikat keahlian"], c: 3, exp: "Foto keluarga besar tidak relevan dengan kualifikasi lamaran kerja." },
+    { q: "Kalimat <em>'Saya lulusan SMK Kesuma Margoyoso Kompetensi Keahlian Akuntansi dan terampil mengoperasikan komputer.'</em> merupakan bagian dari ... surat lamaran.", o: ["paragraf isi", "paragraf pembuka", "paragraf penutup", "salam pembuka", "alamat tujuan"], c: 0, exp: "Penjelasan kualifikasi, keahlian, dan riwayat pendidikan termasuk dalam paragraf isi (argumen pelamar)." },
+    { q: "Alinea pembuka surat lamaran yang menggunakan bahasa santun dan sesuai kaidah adalah ...", o: ["Saya lagi cari kerja, jadi saya kirim surat ini biar Bapak kasih saya pekerjaan.", "Hai, Pak! Saya lihat iklan di koran, saya mau kerja di tempat Bapak, titik!", "Setelah membaca iklan lowongan kerja di Harian Suara Merdeka tanggal 4 September 2026, dengan hormat saya mengajukan lamaran sebagai staf administrasi di perusahaan yang Bapak pimpin.", "Terimalah saya bekerja di perusahaan ini sekarang juga karena saya sudah lama menganggur.", "Perusahaan Bapak pasti butuh orang pintar seperti saya, jadi cepat terima lamaran saya."], c: 2, exp: "Kalimat C lengkap mencantumkan sumber dan tujuan, serta dirangkai dengan bahasa formal dan santun." },
+    { q: "Surat lamaran dibuat di Kudus pada tanggal 12 September 2026. Penulisan tempat dan tanggal pembuatan surat yang sesuai dengan kaidah kebahasaan adalah ...", o: ["Kudus 12 September 2026", "Kudus, 12 september 2026", "Kudus, tgl 12-9-2026", "Kudus, 12 September 2026", "kudus, 12 September 2026."], c: 3, exp: "Nama kota diawali huruf kapital, diikuti koma, tanggal berupa angka, bulan berupa huruf kapital di awal, tahun angka, dan tanpa titik di akhir." },
+    { q: "Berikut ini yang termasuk surat pribadi bersifat resmi adalah ...", o: ["surat Andi kepada sahabatnya tentang rencana liburan", "surat edaran kepala sekolah kepada seluruh guru", "surat penawaran barang dari toko kepada pelanggan", "surat undangan rapat dari OSIS kepada pengurus ekstrakurikuler", "surat izin tidak masuk sekolah yang ditulis Dina kepada wali kelasnya"], c: 4, exp: "Surat dari individu (Dina) yang ditujukan ke instansi/lembaga (sekolah) masuk ke dalam kategori surat pribadi resmi (seperti halnya lamaran kerja)." },
+    { q: "Perhatikan urutan sistematika surat lamaran pekerjaan berikut!<br>1) Tempat dan tanggal<br>2) Salam pembuka<br>3) Alamat tujuan surat<br>4) Paragraf pembuka<br>5) Paragraf isi<br>6) Paragraf penutup<br>7) Salam penutup, tanda tangan, nama terang<br>Kesalahan urutan sistematika tersebut terdapat pada nomor ...", o: ["1) dan 2)", "2) dan 3)", "3) dan 4)", "4) dan 5)", "6) dan 7)"], c: 1, exp: "Urutan yang benar seharusnya 'Alamat tujuan surat' ditulis lebih dahulu sebelum 'Salam pembuka'." },
+    { q: "Bacalah iklan berikut!<br><em>LOWONGAN KERJA PT Kreasi Otomotif membutuhkan: STAF ADMINISTRASI KEUANGAN... (Harian Suara Merdeka, 4 September 2026)</em><br><br>Alinea pembuka surat lamaran yang sesuai dengan seluruh informasi dalam iklan tersebut adalah ...", o: ["Menanggapi iklan lowongan kerja di Harian Suara Merdeka tanggal 4 September 2026, saya mengajukan lamaran sebagai staf administrasi keuangan pada PT Kreasi Otomotif.", "Menanggapi iklan lowongan kerja di Harian Suara Merdeka tanggal 5 September 2026, saya mengajukan lamaran sebagai staf administrasi keuangan pada PT Kreasi Otomotif.", "Menanggapi iklan lowongan kerja di Harian Suara Merdeka tanggal 4 September 2026, saya mengajukan lamaran sebagai kasir pada PT Kreasi Otomotif.", "Menanggapi iklan lowongan kerja di Harian Suara Merdeka tanggal 4 September 2026, saya mengajukan lamaran sebagai staf administrasi keuangan pada PT Kreasi Motor.", "Menanggapi iklan lowongan kerja di Harian Radar Kudus tanggal 4 September 2026, saya mengajukan lamaran sebagai staf administrasi keuangan pada PT Kreasi Otomotif."], c: 0, exp: "Pilihan A merujuk tepat pada surat kabar yang benar, tanggal yang benar, serta lowongan staf administrasi keuangan pada PT Kreasi Otomotif." },
+    { q: "Dewi Lestari lahir di Pati pada 14 Mei 2008. Pendidikan SMK Kesuma Margoyoso, alamat Jl Kartini 7. Penulisan identitas pelamar dalam surat lamaran yang sesuai dengan kaidah kebahasaan adalah ...", o: ["Nama : dewi lestari<br>Tempat, tanggal lahir : Pati, 14 Mei 2008<br>...", "Nama : Dewi Lestari<br>Tempat, tanggal lahir : Pati 14 mei 2008<br>...", "Nama : Dewi Lestari<br>Tempat, tanggal lahir : Pati, 14 Mei 2008<br>Pendidikan terakhir : smk kesuma margoyoso<br>...", "Nama : Dewi Lestari.<br>Tempat, tanggal lahir : Pati, 14 Mei 2008.<br>...", "Nama : Dewi Lestari<br>Tempat, tanggal lahir : Pati, 14 Mei 2008<br>Pendidikan terakhir : SMK Kesuma Margoyoso<br>Alamat : Jalan Kartini Nomor 7, Margoyoso, Pati"], c: 4, exp: "Rincian identitas ditulis huruf awal kapital untuk data diri (Dewi, Pati), dan tidak diakhiri tanda titik pada setiap baris." },
+    { q: "Sistematika surat lamaran pekerjaan yang benar adalah ...", o: ["alamat tujuan – tempat dan tanggal – lampiran dan hal – salam pembuka...", "tempat dan tanggal – salam pembuka – alamat tujuan – lampiran dan hal...", "tempat dan tanggal – lampiran dan hal – alamat tujuan – salam pembuka – paragraf pembuka – paragraf isi – paragraf penutup – salam penutup – tanda tangan dan nama terang", "tempat dan tanggal – lampiran dan hal – alamat tujuan – paragraf pembuka – salam pembuka...", "tempat dan tanggal – lampiran dan hal – alamat tujuan – salam pembuka – paragraf isi – paragraf pembuka..."], c: 2, exp: "Urutan standar: 1. Tempat/tanggal, 2. Hal/Lampiran, 3. Alamat, 4. Salam Pembuka, 5. Isi (pembuka, inti, penutup), 6. Salam Penutup & TTD." },
+    { q: "Kepala SMK Kesuma Margoyoso mengirim surat kepada orang tua siswa perihal pengambilan rapor. Surat tersebut termasuk jenis surat ...", o: ["pribadi yang bersifat kekeluargaan", "pribadi yang bersifat resmi", "niaga", "dinas", "sahabat pena"], c: 3, exp: "Surat resmi dari instansi/organisasi (sekolah) kepada pihak luar (orang tua wali) dikategorikan sebagai surat dinas." },
+    { q: "Bacalah iklan berikut!<br><em>LOWONGAN KERJA PT Alat Berat Perkasa membutuhkan: MEKANIK ALAT BERAT... (Laman resmi BKK SMK Kesuma Margoyoso, 6 September 2026)</em><br><br>Alinea pembuka surat lamaran yang tepat berdasarkan iklan tersebut adalah ...", o: ["Berdasarkan iklan di surat kabar tanggal 6 September 2026, saya mengajukan lamaran sebagai mekanik alat berat di PT Alat Berat Perkasa.", "Berdasarkan informasi lowongan kerja yang saya peroleh dari laman resmi BKK SMK Kesuma Margoyoso tanggal 6 September 2026, saya mengajukan lamaran sebagai mekanik alat berat di PT Alat Berat Perkasa.", "Berdasarkan informasi dari laman resmi BKK SMK Kesuma Margoyoso tanggal 6 September 2026, saya mengajukan lamaran sebagai operator forklift.", "Saya mengajukan lamaran sebagai mekanik alat berat karena saya menyukai dunia otomotif sejak kecil.", "Berdasarkan informasi dari laman resmi BKK SMK Kesuma Margoyoso, saya mengajukan lamaran sebagai mekanik alat berat di PT Perkasa Motor."], c: 1, exp: "Mencantumkan dengan tepat sumber informasi internet (laman web), posisi mekanik, dan nama PT yang sesuai." },
+    { q: "Hal yang ditulis dalam daftar riwayat hidup adalah ...", o: ["alasan melamar dan tuntutan gaji", "daftar harga dan spesifikasi barang", "sumber informasi lowongan dan maksud melamar", "kegiatan harian dan hobi orang tua", "data pribadi, riwayat pendidikan, pengalaman, dan keterampilan"], c: 4, exp: "Daftar Riwayat Hidup (CV) berisi biodata atau data diri lengkap, latar belakang pendidikan, hingga pengalaman kerja." },
+    { q: "Surat yang dibuat untuk keperluan bisnis, misalnya penawaran dan pemesanan barang, disebut surat ...", o: ["niaga", "dinas", "pribadi yang bersifat kekeluargaan", "edaran", "sosial"], c: 0, exp: "Surat yang terkait dengan kegiatan jual beli, perdagangan, atau bisnis disebut surat niaga." },
+    { q: "Surat lamaran akan dikirim kepada Manajer Personalia PT Mitra Sejahtera, Jalan Gatot Subroto Nomor 45, Kudus 59312. Penulisan alamat surat yang sesuai dengan kaidah kebahasaan adalah ...", o: ["Yth. Manajer personalia pt mitra sejahtera<br>jalan gatot subroto nomor 45<br>kudus 59312", "Yth. Manajer Personalia PT. Mitra Sejahtera,<br>Jalan Gatot Subroto Nomor 45,<br>Kudus 59312.", "Yth. Manajer Personalia PT Mitra Sejahtera<br>Jalan Gatot Subroto Nomor 45<br>Kudus 59312", "Yth. Manajer Personalia PT Mitra Sejahtera<br>Jalan Gatot Subroto Nomor 45<br>kudus 59312", "Yth. Manajer Personalia PT Mitra Sejahtera<br>Jalan Gatot Subroto Nomor 45<br>Kudus 59312."], c: 2, exp: "Format benar: Yth. ditulis kapital awal + titik, PT tanpa titik, setiap baris tidak diakhiri tanda baca, dan menggunakan huruf kapital di awal setiap kata penting." },
+    { q: "Rani akan mengirim surat lamaran kepada Bapak Hendra Wijaya, HRD CV Bintang Terang, yang beralamat di Jalan Sudirman Nomor 5, Jepara. Penulisan alamat surat yang benar adalah ...", o: ["Yth. Jepara<br>Jalan Sudirman Nomor 5<br>HRD CV Bintang Terang<br>Bapak Hendra Wijaya", "Yth. Bapak Hendra Wijaya<br>HRD CV Bintang Terang<br>Jalan Sudirman Nomor 5<br>Jepara", "Yth. Bapak Hendra Wijaya<br>Jalan Sudirman Nomor 5<br>HRD CV Bintang Terang<br>Jepara", "Yth. Bapak Hendra Wijaya di Jepara<br>HRD CV Bintang Terang<br>Jalan Sudirman Nomor 5", "Yth. HRD CV Bintang Terang<br>Jepara<br>Jalan Sudirman Nomor 5<br>Bapak Hendra Wijaya"], c: 1, exp: "Urutan dari spesifik ke luas: Nama penerima -> Jabatan/Instansi -> Nama Jalan -> Nama Kota." },
+    { q: "Perhatikan bagian-bagian surat berikut!<br><em>Pati, 10 September 2026<br>Lampiran : 1 (satu) berkas<br>Hal : Lamaran pekerjaan<br>Yth. Pimpinan PT Maju Jaya<br>Jalan Merdeka Nomor 10<br>Kudus<br>Dengan hormat.</em><br><br>Bagian surat yang penulisannya salah adalah ...", o: ["tempat dan tanggal", "lampiran", "perihal", "salam pembuka", "alamat tujuan"], c: 3, exp: "Salam pembuka 'Dengan hormat.' salah karena diakhiri tanda titik, seharusnya tanda koma (Dengan hormat,)." },
+    { q: "Bacalah surat lamaran berikut untuk menjawab soal!<br><em>(1) Pati, 12 Sept 2026 ... (3) Yth. Manajer Personalia ... (4) Dengan hormat, (5) Berdasarkan iklan... (6) Saya Rizky Ramadhan, lulusan SMK... (7) Demikian surat...</em><br><br>Sumber informasi lowongan pekerjaan dikemukakan pelamar pada bagian bernomor ...", o: ["(2)", "(3)", "(4)", "(5)", "(6)"], c: 3, exp: "Sumber informasi terletak di kalimat pembuka (paragraf pembuka), yang ditunjukkan oleh nomor (5)." },
+    { q: "Keterampilan dan pengalaman pelamar dituliskan pada bagian bernomor ...", o: ["(6)", "(5)", "(7)", "(8)", "(9)"], c: 0, exp: "Keterampilan (merawat/memperbaiki mesin mobil) dan pendidikan berada di paragraf isi/argumen, yaitu nomor (6)." },
+    { q: "Ucapan terima kasih pelamar terdapat pada bagian bernomor ...", o: ["(3)", "(4)", "(5)", "(6)", "(7)"], c: 4, exp: "Ucapan terima kasih ('Atas perhatian Bapak/Ibu, saya ucapkan terima kasih.') berada pada paragraf penutup di nomor (7)." },
+    { q: "Jabatan orang yang dituju oleh surat tersebut tertulis pada bagian bernomor ...", o: ["(1)", "(3)", "(2)", "(4)", "(5)"], c: 1, exp: "Jabatan penerima ('Manajer Personalia') berada pada alamat tujuan surat, yang ditunjukkan oleh nomor (3)." },
+    { q: "Salam penutup surat lamaran tersebut terdapat pada bagian bernomor ...", o: ["(6)", "(7)", "(8)", "(9)", "(1)"], c: 2, exp: "Salam penutup surat adalah frasa 'Hormat saya,' yang ditunjukkan pada nomor (8)." }
 ];  
 
 const psts_bing_questions = [  
@@ -833,7 +917,7 @@ const psts_jawa_questions = [
     { q: "Dhuwur cendhake swara (nada) nalika ngucapake ukara ing sandiwara kanggo mbedakake ukara pitakon utawa prentah diarani...", o: ["Artikulasi", "Intonasi", "Vokal", "Improvisasi"], c: 1, exp: "Intonasi iku lagu kalimat utawa tegese dhuwur-cendhake swara." },  
     { q: "Panggung, lampu (lighting), lan sound system ing pementasan sandiwara kalebu perangan...", o: ["Tata rias", "Tata busana", "Tata panggung", "Tata swara"], c: 2, exp: "Kabeh perlengkapan sing ana ing area main paraga kalebu tata panggung/artistik." },  
     { q: "Kanggo ngowahi praupane paraga supaya jumbuh karo karakter ing naskah (umpamane bocah enom didandani dadi wong tuwa), iku dadi tugase...", o: ["Penata panggung", "Penata busana", "Penata rias", "Sutradara"], c: 2, exp: "Penata rias (makeup artist) tugase nggawe wajah paraga cocog karo karaktere." },  
-    { q: "Sandiwara sing isine ngguyuhake, lucu, lan asring nggawe pamirsane gumuyu diarani sandiwara...", o: ["Komedi", "Tragedi", "Melodrama", "Kolosal"], c: 0, exp: "Komedi iku jinis sandiwara sing asipat lucu lan nyenengake." },  
+    { q: "Sandiwara sing isine ngguyuhake, lucu, lan asring nggawe pamirsane gumuyu diarani sandiwara...", o: ["Komedi", "Tragedi", "Melodrama", "Kolosal"], c: 0, exp: "Komedi iku jinis sandiwara sing asipat lucu dan nyenengake." },  
     { q: "Sandiwara sing isine crita sedhih utawa pungkasaning crita paraga utamane nemahi cilaka diarani...", o: ["Komedi", "Tragedi", "Opera", "Parodi"], c: 1, exp: "Tragedi asale saka tembung tragis, tegese crita sing pungkasan e melas utawa sedhih." },  
     { q: "Wujud seni pertunjukan sing nggabungake tari lan crita tanpa nggunakake pacelathon (dialog) babar blas diarani...", o: ["Ketoprak", "Ludruk", "Sendratari", "Wayang wong"], c: 2, exp: "Sendratari (Seni Drama lan Tari) nyritakake lakon lumantar obahing tari tanpa dialog langsung." },  
     { q: "Kanggo mbedakake adegan siji lan adegan liyane (ganti wektu utawa panggonan) ing panggung, biasane ditandhani kanthi...", o: ["Ganti sutradara", "Owah-owahan lampu (mati utawa redup) atau layar ditutup", "Penonton diwenehi maeman", "Paraga meneng kabeh sajroning jam-jaman"], c: 1, exp: "Peralihan adegan utawa babak ditandhani karo bloking lampu utawa tutup layar (kelir)." },  
@@ -893,11 +977,11 @@ function renderQuestion() {
     document.getElementById('progress-fill').style.width = `${((currentQIndex) / questions.length) * 100}%`;  
     const readingBox = document.getElementById('reading-text');  
     if (q.passage) { readingBox.innerHTML = q.passage; readingBox.style.display = 'block'; } else { readingBox.style.display = 'none'; readingBox.innerHTML = ''; }  
-    document.getElementById('question-text').innerText = `${currentQIndex + 1}. ${q.q}`;  
+    document.getElementById('question-text').innerHTML = `${currentQIndex + 1}. ${q.q}`;  
     const optC = document.getElementById('options-container'); optC.innerHTML = '';  
     currentOpts = shuffleArray(q.o.map((text, i) => ({ text, isCorrect: i === q.c })));  
     currentOpts.forEach((opt, i) => {  
-        const btn = document.createElement('button'); btn.className = 'option-btn'; btn.innerText = String.fromCharCode(65 + i) + ". " + opt.text;  
+        const btn = document.createElement('button'); btn.className = 'option-btn'; btn.innerHTML = String.fromCharCode(65 + i) + ". " + opt.text;  
         btn.onclick = () => selectAnswer(opt, btn); optC.appendChild(btn);  
     });  
     document.getElementById('feedback-box').style.display = 'none'; document.getElementById('next-btn-container').style.display = 'none';  
@@ -934,4 +1018,4 @@ async function saveScoreToHistory() {
         alert("Skor berhasil disimpan ke akun online-mu!"); loadHistoryView(); switchTab(0, 'view-dashboard', '<i class=\'fa-solid fa-house\'></i>');  
         btn.innerText = "💾 Simpan & Kembali"; btn.disabled = false;  
     } catch (error) { alert("Gagal menyimpan data."); }  
-            }
+}
