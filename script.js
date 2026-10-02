@@ -170,30 +170,36 @@ function toggleFolder(folderId, headerElement) {
     headerElement.querySelector('.chevron').classList.toggle('active'); 
 }  
 
-// --- MUSIC PLAYER LOGIC (PLAY & PAUSE TOGGLE) ---  
+// --- MUSIC PLAYER LOGIC (PUTAR / JEDA TOGGLE DIRECTLY) ---  
 let isMusicPlaying = false; 
 const bgMusic = document.getElementById('bg-music');  
+
+if (bgMusic) {
+    bgMusic.onended = () => {
+        isMusicPlaying = false;
+        const btn = document.getElementById('btn-play-1');
+        if (btn) btn.innerHTML = "Putar ▶";
+    };
+}
 
 function playSelectedTrack(src, index) {  
     const btn = document.getElementById(`btn-play-${index}`);
     const audioSource = document.getElementById('audio-source');
 
-    if (!bgMusic.paused) {
-        if (audioSource.src.includes(src)) {
-            bgMusic.pause();
-            isMusicPlaying = false;
-            btn.innerHTML = "Putar ▶";
-            return;
+    if (isMusicPlaying) {
+        bgMusic.pause();
+        isMusicPlaying = false;
+        if (btn) btn.innerHTML = "Putar ▶";
+    } else {
+        if (audioSource && (!audioSource.getAttribute('src') || audioSource.getAttribute('src') !== src)) {
+            audioSource.src = src; 
+            bgMusic.load();  
         }
+        bgMusic.play().then(() => { 
+            isMusicPlaying = true; 
+            if (btn) btn.innerHTML = "Jeda ⏸"; 
+        }).catch(e => console.log("Audio play error:", e));  
     }
-
-    audioSource.src = src; 
-    bgMusic.load();  
-    bgMusic.play().then(() => { 
-        isMusicPlaying = true; 
-        document.querySelectorAll('[id^="btn-play-"]').forEach(b => b.innerHTML = "Putar ▶");
-        btn.innerHTML = "Jeda ⏸"; 
-    }).catch(e=>console.log(e));  
 }
 
 // --- REAL-TIME PRIVATE & GROUP CHAT SYSTEM ---  
@@ -676,7 +682,7 @@ function openHistoryDetail(id) {
 }  
 function closeModal() { document.getElementById('history-modal').style.display = 'none'; }  
 
-// --- FULL DATABASE & QUIZ LOGIC ---  
+// --- FULL DATABASE (120+ QUESTIONS & QUIZ LOGIC) ---  
 function shuffleArray(arr) { let c = arr.length, t, r; while (c !== 0) { r = Math.floor(Math.random() * c); c -= 1; t = arr[c]; arr[c] = arr[r]; arr[r] = t; } return arr; }  
   
 const readingTexts = {  
@@ -838,7 +844,7 @@ const tkj_vsat_qs = [
 const mplb_sop_qs = [  
     { q: "Dalam SOP Front Office, sikap melayani tamu dengan ramah, cepat, dan tanggap sering disebut sebagai penerapan prinsip...", o: ["Pelayanan Prima (Service Excellence)", "Manajemen Konflik", "Arsip Dinamis", "Administrasi Keuangan"], c: 0, exp: "Pelayanan prima (Service Excellence) adalah standar tertinggi dalam melayani tamu/pelanggan." },  
     { q: "Langkah pertama yang harus dilakukan resepsionis (Front Office) ketika tamu memasuki area lobi kantor adalah...", o: ["Meminta identitas KTP", "Memberikan salam (Greeting) dengan senyum", "Menyuruh tamu langsung duduk", "Menelepon atasan"], c: 1, exp: "Memberikan salam dengan ramah adalah prosedur paling awal (SOP) di Front Office." },  
-    { q: "Saat menerima telepon keluhan dari tamu, tindakan yang paling tepat sesuai SOP adalah...", o: ["Menutup telepon secara sepihak", "Mendengarkan dengan empati, mencatat, dan menenangkan tamu", "Meminta tamu untuk datang langsung", "Menyalahkan departemen lain"], c: 1, exp: "In pelayanan, keluhan harus didengarkan dengan empati dan dicatat sebelum diberikan solusi." },  
+    { q: "Saat menerima telepon keluhan dari tamu, tindakan yang paling tepat sesuai SOP adalah...", o: ["Menutup telepon secara sepihak", "Mendengarkan dengan empati, mencatat, dan menenangkan tamu", "Meminta tamu untuk datang langsung", "Menyalahkan departemen lain"], c: 1, exp: "Dalam pelayanan, keluhan harus didengarkan dengan empati dan dicatat sebelum diberikan solusi." },  
     { q: "Standar grooming (penampilan) bagi seorang petugas Front Office umumnya meliputi, kecuali...", o: ["Pakaian seragam rapi dan disetrika", "Rambut tertata rapi atau menggunakan hijab yang sesuai standar", "Menggunakan perhiasan mencolok berlebihan", "Memakai tanda pengenal (name tag)"], c: 2, exp: "Perhiasan berlebihan tidak sesuai dengan standar penampilan profesional di perkantoran/perhotelan." },  
     { q: "Jika tamu tidak memiliki janji temu dengan pimpinan yang sedang rapat, resepsionis sebaiknya...", o: ["Mempersilakan tamu masuk menerobos rapat", "Meminta tamu menunggu di luar tanpa penjelasan", "Menjelaskan dengan sopan bahwa pimpinan sedang rapat dan meminta tamu mengisi buku tamu/meninggalkan pesan", "Menyuruh tamu pulang dengan nada kasar"], c: 2, exp: "Penyampaian informasi yang jelas dan sopan serta menawarkan alternatif (meninggalkan pesan) adalah SOP yang benar." }  
 ];  
@@ -909,4 +915,4 @@ async function saveScoreToHistory() {
         alert("Skor berhasil disimpan ke akun online-mu!"); loadHistoryView(); switchTab(0, 'view-dashboard', '<i class=\'fa-solid fa-house\'></i>');  
         btn.innerText = "💾 Simpan & Kembali"; btn.disabled = false;  
     } catch (error) { alert("Gagal menyimpan data."); }  
-            }
+}
