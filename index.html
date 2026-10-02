@@ -109,37 +109,13 @@
 </main>
 ​<!-- 3. MUSIC -->
 <main id="view-music" class="view card glass-panel">
-<h2 class="section-title">🎵 Pemutar Musik & YouTube Langsung</h2>
-​<!-- In-App Embedded YouTube Player Container -->
-<div id="inapp-player-container" class="glass-panel" style="display:none; margin-bottom:20px; padding:10px; border:1px solid var(--theme-accent);">
-<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-<span id="now-playing-title" style="font-size:0.85em; font-weight:600; color:var(--theme-accent);">Sedang Diputar</span>
-<button class="btn btn-outline" style="padding:2px 8px; font-size:0.75em;" onclick="closeInAppPlayer()">Tutup ✕</button>
-</div>
-<div style="position:relative; width:100%; padding-bottom:56.25%; height:0;">
-<iframe id="youtube-iframe-player" src="" style="position:absolute; top:0; left:0; width:100%; height:100%; border-radius:12px; border:none;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-</div>
-</div>
-​<!-- YouTube Search Bar -->
-<div style="margin-bottom: 20px;">
-<p style="font-size: 0.85em; color: var(--text-muted); margin-bottom: 8px;">Cari lagu atau putar langsung di web:</p>
-<div style="display: flex; gap: 8px;">
-<input type="text" id="yt-search-input" placeholder="Judul lagu / artis..." style="margin-bottom: 0 !important;">
-<button class="btn" style="width: auto; padding: 0 16px;" onclick="searchAndPlayYouTube()">Cari & Putar</button>
-</div>
-</div>
-<div id="yt-search-results" style="margin-bottom: 20px;"></div>
-​<div style="display: flex; flex-direction: column; gap: 10px;">
+<h2 class="section-title">🎵 Pemutar Musik</h2>
+<div style="display: flex; flex-direction: column; gap: 10px;">
 <div class="history-item glass-panel">
 <div class="history-info"><h3>DJ TikTok Viral 2024 (Audio)</h3></div>
 <button class="btn" id="btn-play-1" onclick="playSelectedTrack('DJ TEMANKU SEMUA PADA JAHAT TANTE __ DJ TANTE CULIK AKU DONG VIRAL TIKTOK TERBARU 2024.mp3', 1)">Putar ▶</button>
 </div>
-<div class="history-item glass-panel">
-<div class="history-info"><h3>Negoro Angin (Video YouTube Langsung)</h3></div>
-<button class="btn" onclick="playDirectYouTube('https://www.youtube.com/embed/dQw4w9WgXcQ', 'Negoro Angin / Musik Pilihan')">Putar Langsung di Web ▶</button>
 </div>
-</div>
-<button class="btn btn-outline" style="width: 100%; margin-top:20px;" onclick="toggleMusicPlayback()" id="main-music-toggle">⏸ Jeda Musik</button>
 </main>
 ​<!-- 4. HISTORY -->
 <main id="view-history" class="view card glass-panel">
