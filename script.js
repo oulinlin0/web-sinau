@@ -170,15 +170,19 @@ function toggleFolder(folderId, headerElement) {
     headerElement.querySelector('.chevron').classList.toggle('active'); 
 }  
 
-// --- MUSIC PLAYER LOGIC (PUTAR / JEDA TOGGLE DIRECTLY) ---  
+// --- MUSIC PLAYER LOGIC (MULTI-TRACK WITH INDIVIDUAL TOGGLE) ---  
 let isMusicPlaying = false; 
+let currentTrackIndex = null;
 const bgMusic = document.getElementById('bg-music');  
 
 if (bgMusic) {
     bgMusic.onended = () => {
         isMusicPlaying = false;
-        const btn = document.getElementById('btn-play-1');
-        if (btn) btn.innerHTML = "Putar ▶";
+        if (currentTrackIndex !== null) {
+            const btn = document.getElementById(`btn-play-${currentTrackIndex}`);
+            if (btn) btn.innerHTML = "Putar ▶";
+        }
+        currentTrackIndex = null;
     };
 }
 
@@ -186,20 +190,31 @@ function playSelectedTrack(src, index) {
     const btn = document.getElementById(`btn-play-${index}`);
     const audioSource = document.getElementById('audio-source');
 
-    if (isMusicPlaying) {
+    // jika lagu yang sama sedang diputar -> jeda
+    if (isMusicPlaying && currentTrackIndex === index) {
         bgMusic.pause();
         isMusicPlaying = false;
         if (btn) btn.innerHTML = "Putar ▶";
-    } else {
-        if (audioSource && (!audioSource.getAttribute('src') || audioSource.getAttribute('src') !== src)) {
-            audioSource.src = src; 
-            bgMusic.load();  
-        }
-        bgMusic.play().then(() => { 
-            isMusicPlaying = true; 
-            if (btn) btn.innerHTML = "Jeda ⏸"; 
-        }).catch(e => console.log("Audio play error:", e));  
+        return;
     }
+
+    // jika lagu lain sedang diputar -> reset tombol lagu sebelumnya
+    if (currentTrackIndex !== null && currentTrackIndex !== index) {
+        const prevBtn = document.getElementById(`btn-play-${currentTrackIndex}`);
+        if (prevBtn) prevBtn.innerHTML = "Putar ▶";
+    }
+
+    // ganti audio source dan putar lagu baru
+    if (audioSource && (audioSource.getAttribute('src') !== src)) {
+        audioSource.src = src; 
+        bgMusic.load();  
+    }
+
+    bgMusic.play().then(() => { 
+        isMusicPlaying = true; 
+        currentTrackIndex = index;
+        if (btn) btn.innerHTML = "Jeda ⏸"; 
+    }).catch(e => console.log("Audio play error:", e));  
 }
 
 // --- REAL-TIME PRIVATE & GROUP CHAT SYSTEM ---  
