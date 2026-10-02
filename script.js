@@ -102,7 +102,7 @@ function switchTab(index, viewId, iconSymbol = '<i class="fa-solid fa-house"></i
     if (viewId === 'view-chat') {  
         loadChatUsersList();  
         if (!chatListInterval) {
-            chatListInterval = setInterval(loadChatUsersList, 2000);
+            chatListInterval = setInterval(loadChatUsersList, 1500);
         }
     }  
 }  
@@ -170,69 +170,30 @@ function toggleFolder(folderId, headerElement) {
     headerElement.querySelector('.chevron').classList.toggle('active'); 
 }  
 
-// --- MUSIC & YOUTUBE IN-APP PLAYER ---  
+// --- MUSIC PLAYER LOGIC (PLAY & PAUSE TOGGLE) ---  
 let isMusicPlaying = false; 
 const bgMusic = document.getElementById('bg-music');  
+
 function playSelectedTrack(src, index) {  
-    document.getElementById('audio-source').src = src; bgMusic.load();  
-    bgMusic.play().then(() => { 
-        isMusicPlaying = true; 
-        document.getElementById('main-music-toggle').innerText = "⏸ Jeda Musik"; 
-        const btn = document.getElementById(`btn-play-${index}`);
-        if(btn) btn.innerText = "Sedang Diputar 🎶"; 
-    }).catch(e=>console.log(e));  
-}  
-function toggleMusicPlayback() { 
-    if (isMusicPlaying) { bgMusic.pause(); isMusicPlaying = false; document.getElementById('main-music-toggle').innerText = "▶ Putar"; } 
-    else { bgMusic.play(); isMusicPlaying = true; document.getElementById('main-music-toggle').innerText = "⏸ Jeda"; } 
-}  
+    const btn = document.getElementById(`btn-play-${index}`);
+    const audioSource = document.getElementById('audio-source');
 
-function playDirectYouTube(embedUrl, titleText) {
-    const container = document.getElementById('inapp-player-container');
-    const iframe = document.getElementById('youtube-iframe-player');
-    const titleEl = document.getElementById('now-playing-title');
-
-    if (isMusicPlaying) {
-        bgMusic.pause();
-        isMusicPlaying = false;
-        document.getElementById('main-music-toggle').innerText = "▶ Putar";
+    if (!bgMusic.paused) {
+        if (audioSource.src.includes(src)) {
+            bgMusic.pause();
+            isMusicPlaying = false;
+            btn.innerHTML = "Putar ▶";
+            return;
+        }
     }
 
-    iframe.src = embedUrl + "?autoplay=1";
-    titleEl.innerText = "🎵 Sedang Diputar: " + titleText;
-    container.style.display = 'block';
-}
-
-function closeInAppPlayer() {
-    const container = document.getElementById('inapp-player-container');
-    const iframe = document.getElementById('youtube-iframe-player');
-    iframe.src = "";
-    container.style.display = 'none';
-}
-
-function searchAndPlayYouTube() {
-    const query = document.getElementById('yt-search-input').value.trim();
-    if(!query) { alert("Masukkan judul lagu atau artis!"); return; }
-    
-    const resultsContainer = document.getElementById('yt-search-results');
-    const encodedQ = encodeURIComponent(query);
-    
-    resultsContainer.innerHTML = `
-        <div class="history-item glass-panel" style="display:flex; flex-direction:column; gap:12px; align-items:stretch; border:1px solid var(--theme-accent);">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <b>🎵 Hasil Pencarian: ${query}</b>
-                <span style="font-size:0.75em; color:var(--theme-accent); font-weight:600;">YouTube In-App</span>
-            </div>
-            <p style="font-size:0.82em; color:rgba(255,255,255,0.75); line-height:1.4;">
-                Pilih opsi di bawah untuk memutar lagu langsung di dalam aplikasi web atau melalui YouTube resmi:
-            </p>
-            <div style="display:flex; gap:8px;">
-                <a href="https://www.youtube.com/results?search_query=${encodedQ}" target="_blank" class="btn btn-outline" style="flex:1; text-align:center; font-size:0.85em; padding:10px; text-decoration:none;">
-                    ▶ Buka YouTube
-                </a>
-            </div>
-        </div>
-    `;
+    audioSource.src = src; 
+    bgMusic.load();  
+    bgMusic.play().then(() => { 
+        isMusicPlaying = true; 
+        document.querySelectorAll('[id^="btn-play-"]').forEach(b => b.innerHTML = "Putar ▶");
+        btn.innerHTML = "Jeda ⏸"; 
+    }).catch(e=>console.log(e));  
 }
 
 // --- REAL-TIME PRIVATE & GROUP CHAT SYSTEM ---  
@@ -789,7 +750,7 @@ const psts_bing_questions = [
     { q: "(Teks 1) On what day and date did the flood happen?", o: ["Sunday, Sept 13", "Monday, Sept 14", "Tuesday, Sept 15", "Friday, Sept 14"], c: 1, passage: readingTexts.teks1, exp: "Tertulis dengan jelas 'Monday, Sept 14'." },  
     { q: "(Teks 1) What time did the flood start?", o: ["12.00 PM", "02.00 AM", "04.00 AM", "08.00 PM"], c: 1, passage: readingTexts.teks1, exp: "Tertulis 'It started at 02.00 AM'." },  
     { q: "(Teks 1) How many refugees fled from the flood?", o: ["100 people", "200 people", "500 people", "1000 people"], c: 2, passage: readingTexts.teks1, exp: "Informasi rinci menyebutkan '500 refugees'." },  
-    { q: "(Teks 1) What was the highest height of the flood water?", o: ["1 meter", "1.5 meters", "2 meters", "3 meters"], c: 2, passage: readingTexts.teks1, exp: "Teks menyebutkan 'Water reached 2 meters'." },  
+    { q: "(Teks 1) What was the maximum height of the flood water?", o: ["1 meter", "1.5 meters", "2 meters", "3 meters"], c: 2, passage: readingTexts.teks1, exp: "Teks menyebutkan 'Water reached 2 meters'." },  
     { q: "(Teks 1) The Mayor stated, 'We are sending boats.' Who is the source of this statement?", o: ["The reporter", "The Mayor", "The victim", "The President"], c: 1, passage: readingTexts.teks1, exp: "Pernyataan (quote) diberikan oleh The Mayor (Wali Kota)." },  
     { q: "(Teks 1) How many casualties were there?", o: ["None", "3 people", "13 people", "30 people"], c: 1, passage: readingTexts.teks1, exp: "Casualties dalam konteks bencana merujuk pada korban jiwa (3 orang)." },  
       
@@ -877,7 +838,7 @@ const tkj_vsat_qs = [
 const mplb_sop_qs = [  
     { q: "Dalam SOP Front Office, sikap melayani tamu dengan ramah, cepat, dan tanggap sering disebut sebagai penerapan prinsip...", o: ["Pelayanan Prima (Service Excellence)", "Manajemen Konflik", "Arsip Dinamis", "Administrasi Keuangan"], c: 0, exp: "Pelayanan prima (Service Excellence) adalah standar tertinggi dalam melayani tamu/pelanggan." },  
     { q: "Langkah pertama yang harus dilakukan resepsionis (Front Office) ketika tamu memasuki area lobi kantor adalah...", o: ["Meminta identitas KTP", "Memberikan salam (Greeting) dengan senyum", "Menyuruh tamu langsung duduk", "Menelepon atasan"], c: 1, exp: "Memberikan salam dengan ramah adalah prosedur paling awal (SOP) di Front Office." },  
-    { q: "Saat menerima telepon keluhan dari tamu, tindakan yang paling tepat sesuai SOP adalah...", o: ["Menutup telepon secara sepihak", "Mendengarkan dengan empati, mencatat, dan menenangkan tamu", "Meminta tamu untuk datang langsung", "Menyalahkan departemen lain"], c: 1, exp: "Dalam pelayanan, keluhan harus didengarkan dengan empati dan dicatat sebelum diberikan solusi." },  
+    { q: "Saat menerima telepon keluhan dari tamu, tindakan yang paling tepat sesuai SOP adalah...", o: ["Menutup telepon secara sepihak", "Mendengarkan dengan empati, mencatat, dan menenangkan tamu", "Meminta tamu untuk datang langsung", "Menyalahkan departemen lain"], c: 1, exp: "In pelayanan, keluhan harus didengarkan dengan empati dan dicatat sebelum diberikan solusi." },  
     { q: "Standar grooming (penampilan) bagi seorang petugas Front Office umumnya meliputi, kecuali...", o: ["Pakaian seragam rapi dan disetrika", "Rambut tertata rapi atau menggunakan hijab yang sesuai standar", "Menggunakan perhiasan mencolok berlebihan", "Memakai tanda pengenal (name tag)"], c: 2, exp: "Perhiasan berlebihan tidak sesuai dengan standar penampilan profesional di perkantoran/perhotelan." },  
     { q: "Jika tamu tidak memiliki janji temu dengan pimpinan yang sedang rapat, resepsionis sebaiknya...", o: ["Mempersilakan tamu masuk menerobos rapat", "Meminta tamu menunggu di luar tanpa penjelasan", "Menjelaskan dengan sopan bahwa pimpinan sedang rapat dan meminta tamu mengisi buku tamu/meninggalkan pesan", "Menyuruh tamu pulang dengan nada kasar"], c: 2, exp: "Penyampaian informasi yang jelas dan sopan serta menawarkan alternatif (meninggalkan pesan) adalah SOP yang benar." }  
 ];  
@@ -943,9 +904,9 @@ async function saveScoreToHistory() {
     let timeString = new Date().toLocaleString('id-ID', {day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute:'2-digit'});  
     const dataBaru = { nama: currentUser, modul: document.getElementById('quiz-title').innerText, skor: finalCalculatedScore, waktu: timeString, detailJawaban: userSessionAnswers };  
     try {  
-        let btn = document.querySelector('#view-result .btn'); btn.innerText = "Menyimpan...isi"; btn.disabled = true;  
+        let btn = document.querySelector('#view-result .btn'); btn.innerText = "Menyimpan..."; btn.disabled = true;  
         await fetch(FIREBASE_SKOR_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dataBaru) });  
         alert("Skor berhasil disimpan ke akun online-mu!"); loadHistoryView(); switchTab(0, 'view-dashboard', '<i class=\'fa-solid fa-house\'></i>');  
         btn.innerText = "💾 Simpan & Kembali"; btn.disabled = false;  
     } catch (error) { alert("Gagal menyimpan data."); }  
-}
+            }
