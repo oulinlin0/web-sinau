@@ -34,45 +34,20 @@
         >
     </audio>
 
-        <!-- LOGIN SCREEN -->
+    <!-- LOGIN SCREEN -->
     <div id="view-auth">
         <!-- Backsound Menu Login -->
-        <audio id="login-audio" autoplay loop>
+        <audio id="login-audio" loop>
             <source src="wii-shop.mp3" type="audio/mpeg">
         </audio>
 
-                <div class="auth-card glass-panel" id="auth-box">
+        <div class="auth-card glass-panel" id="auth-box">
             <h2 id="auth-title">Masuk Akun</h2>
 
-            <input
-                type="text"
-                id="auth-user"
-                class="auth-input"
-                placeholder="Username unik kamu..."
-            >
-
-            <input
-                type="password"
-                id="auth-pass"
-                class="auth-input"
-                placeholder="Password rahasia..."
-            >
-
-            <button
-                class="auth-btn"
-                id="auth-main-btn"
-                onclick="handleAuth()"
-            >
-                Masuk
+            <!-- Tombol Manual untuk Memulai Musik (Mengatasi Blokir Autoplay HP) -->
+            <button class="btn btn-outline" id="play-login-audio-btn" style="margin-bottom: 15px; width: 100%; font-size: 0.85em;" onclick="toggleLoginAudio()">
+                🎵 Ketuk untuk Putar Musik Backsound
             </button>
-
-            <div class="auth-switch" id="auth-switch-text">
-                Belum punya akun?
-                <span onclick="switchAuthMode('register')">Daftar</span>
-            </div>
-        </div>
-
-
 
             <input
                 type="text"
@@ -144,8 +119,8 @@
         </div>
     </div>
 
-        <!-- TOP HEADER -->
-    <div class="top-header glass-panel" id="top-header">
+    <!-- TOP HEADER -->
+    <div class="top-header" id="top-header">
         
         <!-- Judul dipindah ke kiri -->
         <h1 style="margin: 0; font-size: 1.4em; font-weight: 700;">📚 sinau</h1>
@@ -175,7 +150,6 @@
         </div>
 
     </div>
-
 
     <div class="container">
 
@@ -372,7 +346,7 @@
                 </div>
             </div>
 
-                        <!-- LATIHAN TKA -->
+            <!-- LATIHAN TKA -->
             <div class="folder">
                 <div class="folder-header glass-panel"
                      onclick="toggleFolder('folder-tka', this)">
@@ -385,7 +359,6 @@
 
                     <span class="chevron">▼</span>
                 </div>
-
 
                 <div class="folder-content" id="folder-tka">
 
@@ -480,8 +453,7 @@
                 </div>
             </div>
 
-        </main> <!-- Penutup <main> untuk dashboard dipindah ke sini -->
-      
+        </main>
 
         <!-- 2A. DAFTAR CHAT UTAMA -->
         <main
@@ -518,7 +490,7 @@
             <div
                 class="chat-active-users"
                 id="active-users-list"
-              style="display: none;"
+                style="display: none;"
             >
                 <p
                     style="
@@ -567,7 +539,7 @@
                 <button
                     class="btn btn-outline"
                     style="padding: 5px 12px; margin-right: 15px;"
-                    onclick="switchTab(1, 'view-chat', '<i class=\'fa-solid fa-message\'></i>')"
+                    onclick="switchTab(1, 'view-chat')"
                 >
                     ⬅
                 </button>
@@ -615,13 +587,12 @@
                 </div>
 
                 <div class="chat-input-area">
-
-<input
-    type="text"
-    id="private-input-field"
-    class="chat-input"
-    placeholder="Ketik pesan..."
->
+                    <input
+                        type="text"
+                        id="private-input-field"
+                        class="chat-input"
+                        placeholder="Ketik pesan..."
+                    >
 
                     <button
                         class="btn"
@@ -630,7 +601,6 @@
                     >
                         🚀
                     </button>
-
                 </div>
             </div>
         </main>
@@ -650,48 +620,39 @@
                     gap: 10px;
                 "
             >
-<!-- LAGU 1 -->
+                <!-- LAGU 1 -->
                 <div class="history-item glass-panel">
-
                     <div class="history-info">
                         <h3>DJ TikTok Viral 2024</h3>
-                      <p>DJ Tante Culik Aku Dong Viral TikTok 2024</p>
+                        <p>DJ Tante Culik Aku Dong Viral TikTok 2024</p>
                     </div>
 
                     <button
-    class="btn"
-    id="btn-play-1"
-    onclick="playSelectedTrack(
-        'DJ TEMANKU SEMUA PADA JAHAT TANTE __ DJ TANTE CULIK AKU DONG VIRAL TIKTOK TERBARU 2024.mp3',
-        1
-    )"
->
-    Putar ▶
-</button>
+                        class="btn"
+                        id="btn-play-1"
+                        onclick="playSelectedTrack('DJ TEMANKU SEMUA PADA JAHAT TANTE __ DJ TANTE CULIK AKU DONG VIRAL TIKTOK TERBARU 2024.mp3', 1)"
+                    >
+                        Putar ▶
+                    </button>
                 </div>
               
-<!-- Lagu 2 -->
-                  <div class="history-item glass-panel">
+                <!-- Lagu 2 -->
+                <div class="history-item glass-panel">
                     <div class="history-info">
-                      <h3>DJ Helikopter - Bukannya Ku Tak Cinta</h3>
-                      <p>Tiktok Remix Slow Viral Maman Fvndy</p>
+                        <h3>DJ Helikopter - Bukannya Ku Tak Cinta</h3>
+                        <p>Tiktok Remix Slow Viral Maman Fvndy</p>
                     </div>
 
-                      <button
+                    <button
                         class="btn"
                         id="btn-play-2"
-                        onclick="playSelectedTrack(
-                        'DJ HELIKOPTER TURUN KE PADANG X ANAK KAMPUNG SLOW VIRAL TIKTOK FULL SONG MAMAN FVNDY 2026.mp3',
-                          2
-                          )"
-                        >
+                        onclick="playSelectedTrack('DJ HELIKOPTER TURUN KE PADANG X ANAK KAMPUNG SLOW VIRAL TIKTOK FULL SONG MAMAN FVNDY 2026.mp3', 2)"
+                    >
                         Putar ▶
-                      </button>
-                  </div>
-                  
+                    </button>
                 </div>
-
             </div>
+        </main>
 
         <!-- 4. HISTORY -->
         <main
@@ -702,7 +663,7 @@
 
             <div id="main-history-log">
                 <p
-                    style= "
+                    style="
                         text-align: center;
                         color: rgba(255,255,255,0.5);
                     "
@@ -746,7 +707,6 @@
                     margin-bottom: 25px;
                 "
             >
-
                 <h4 style="margin-bottom:5px;">
                     🎨 Tampilan Tema
                 </h4>
@@ -769,7 +729,6 @@
                         margin-top: 15px;
                     "
                 >
-
                     <button
                         id="themeToggleBtn"
                         class="btn btn-outline"
@@ -780,7 +739,6 @@
                     >
                         ☀️ Beralih ke Mode Terang
                     </button>
-
                 </div>
             </div>
 
@@ -791,7 +749,6 @@
                     gap: 12px;
                 "
             >
-
                 <a
                     href="https://github.com/oulinlin0"
                     target="_blank"
@@ -814,7 +771,6 @@
                 >
                     🚪 Keluar Akun
                 </button>
-
             </div>
         </main>
 
@@ -823,13 +779,11 @@
             id="view-quiz"
             class="view"
         >
-
             <div class="quiz-header">
-
                 <button
                     class="btn btn-outline"
                     style="padding: 5px 12px;"
-                    onclick="switchTab(0, 'view-dashboard', '<i class=\'fa-solid fa-house\'></i>')"
+                    onclick="switchTab(0, 'view-dashboard')"
                 >
                     ⬅ Batal
                 </button>
@@ -844,7 +798,6 @@
                 <span id="question-tracker">
                     0/0
                 </span>
-
             </div>
 
             <div class="progress-bar">
@@ -855,7 +808,6 @@
             </div>
 
             <div class="question-area">
-
                 <div
                     id="reading-text"
                     class="reading-box glass-panel"
@@ -872,18 +824,14 @@
                     id="options-container"
                     class="options"
                 ></div>
-
             </div>
 
             <div
                 id="feedback-box"
                 class="feedback-box glass-panel"
             >
-
                 <h4>💡 Pembahasan:</h4>
-
                 <p id="feedback-text"></p>
-
             </div>
 
             <div
@@ -894,16 +842,13 @@
                     display:none;
                 "
             >
-
                 <button
                     class="btn"
                     onclick="nextQuestion()"
                 >
                     Lanjut ➡
                 </button>
-
             </div>
-
         </main>
 
         <!-- 7. RESULT -->
@@ -915,7 +860,6 @@
                 padding: 40px 15px;
             "
         >
-
             <h2>Selesai! 🎉</h2>
 
             <div
@@ -956,13 +900,9 @@
             >
                 💾 Simpan & Kembali
             </button>
-
         </main>
 
     </div>
-
-    <!-- BOTTOM NAVIGATION -->
-    
 
     <!-- Menghubungkan File JavaScript Eksternal -->
     <script src="script.js"></script>
