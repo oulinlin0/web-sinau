@@ -150,6 +150,15 @@ async function handleAuth() {
         }  
         
         currentUser = u; localStorage.setItem('sinau_active_user', currentUser);  
+
+        // --- TAMBAHKAN KODE INI DI SINI ---
+        const loginAudio = document.getElementById('login-audio');
+        if (loginAudio) {
+            loginAudio.pause();
+            loginAudio.currentTime = 0;
+        }
+        // ---------------------------------
+
         document.getElementById('view-auth').style.display = 'none';  
         document.getElementById('profile-name-display').innerText = currentUser;  
         switchTab(0, 'view-dashboard', '<i class=\'fa-solid fa-house\'></i>');  
@@ -159,6 +168,7 @@ async function handleAuth() {
         btn.innerText = isRegisterMode ? "Daftar & Masuk" : "Masuk"; btn.disabled = false; 
     }  
 }  
+
 
 function logoutUser() { 
     if(confirm("Keluar?")) { localStorage.removeItem('sinau_active_user'); location.reload(); } 
