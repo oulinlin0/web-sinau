@@ -34,10 +34,45 @@
         >
     </audio>
 
-    <!-- LOGIN SCREEN -->
+        <!-- LOGIN SCREEN -->
     <div id="view-auth">
-        <div class="auth-card glass-panel" id="auth-box">
+        <!-- Backsound Menu Login -->
+        <audio id="login-audio" autoplay loop>
+            <source src="wii-shop.mp3" type="audio/mpeg">
+        </audio>
+
+                <div class="auth-card glass-panel" id="auth-box">
             <h2 id="auth-title">Masuk Akun</h2>
+
+            <input
+                type="text"
+                id="auth-user"
+                class="auth-input"
+                placeholder="Username unik kamu..."
+            >
+
+            <input
+                type="password"
+                id="auth-pass"
+                class="auth-input"
+                placeholder="Password rahasia..."
+            >
+
+            <button
+                class="auth-btn"
+                id="auth-main-btn"
+                onclick="handleAuth()"
+            >
+                Masuk
+            </button>
+
+            <div class="auth-switch" id="auth-switch-text">
+                Belum punya akun?
+                <span onclick="switchAuthMode('register')">Daftar</span>
+            </div>
+        </div>
+
+
 
             <input
                 type="text"
