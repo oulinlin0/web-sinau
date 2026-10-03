@@ -45,6 +45,8 @@
         <!-- 1. HOME -->  
         <main id="view-dashboard" class="view card glass-panel">  
             <h2 class="section-title">Kategori Modul Belajar</h2>  
+            
+            <!-- FOLDER UTAMA 1: UMUM -->
             <div class="folder">  
                 <div class="folder-header glass-panel" onclick="toggleFolder('folder-umum', this)">  
                     <span>📚 Mata Pelajaran Umum</span><span class="chevron">▼</span>  
@@ -56,22 +58,34 @@
                 </div>  
             </div>  
 
+            <!-- FOLDER UTAMA 2: KEJURUAN (BERISI TKJ & MPLB) -->
             <div class="folder">  
-                <div class="folder-header glass-panel" onclick="toggleFolder('folder-mplb', this)">  
-                    <span>🏢 Jurusan MPLB</span><span class="chevron">▼</span>  
+                <div class="folder-header glass-panel" onclick="toggleFolder('folder-kejuruan', this)">  
+                    <span>🛠️ Mata Pelajaran Kejuruan</span><span class="chevron">▼</span>  
                 </div>  
-                <div class="folder-content" id="folder-mplb">  
-                    <div class="history-item glass-panel"><div class="history-info"><h3>SOP Pelayanan Prima</h3><p>Prosedur standar</p></div><button class="btn" onclick="startStudySession('mplb_sop')">Mulai</button></div>  
-                </div>  
-            </div>  
+                <div class="folder-content" id="folder-kejuruan">  
+                    
+                    <!-- SUB-FOLDER A: MPLB -->
+                    <div class="folder sub-folder">
+                        <div class="folder-header glass-panel" onclick="toggleFolder('folder-mplb', this)">  
+                            <span>🏢 Jurusan MPLB</span><span class="chevron">▼</span>  
+                        </div>  
+                        <div class="folder-content" id="folder-mplb">  
+                            <div class="history-item glass-panel"><div class="history-info"><h3>SOP Pelayanan Prima</h3><p>Prosedur standar</p></div><button class="btn" onclick="startStudySession('mplb_sop')">Mulai</button></div>  
+                        </div>  
+                    </div>
 
-            <div class="folder">  
-                <div class="folder-header glass-panel" onclick="toggleFolder('folder-tkj', this)">  
-                    <span>💻 Jurusan TKJ</span><span class="chevron">▼</span>  
-                </div>  
-                <div class="folder-content" id="folder-tkj">  
-                    <div class="history-item glass-panel"><div class="history-info"><h3>Config IP, DHCP, VLAN</h3><p>Administrasi Jaringan</p></div><button class="btn" onclick="startStudySession('tkj_jaringan')">Mulai</button></div>  
-                    <div class="history-item glass-panel"><div class="history-info"><h3>Sistem VSAT</h3><p>Transmisi satelit</p></div><button class="btn" onclick="startStudySession('tkj_vsat')">Mulai</button></div>  
+                    <!-- SUB-FOLDER B: TKJ -->
+                    <div class="folder sub-folder">
+                        <div class="folder-header glass-panel" onclick="toggleFolder('folder-tkj', this)">  
+                            <span>💻 Jurusan TKJ</span><span class="chevron">▼</span>  
+                        </div>  
+                        <div class="folder-content" id="folder-tkj">  
+                            <div class="history-item glass-panel"><div class="history-info"><h3>Config IP, DHCP, VLAN</h3><p>Administrasi Jaringan</p></div><button class="btn" onclick="startStudySession('tkj_jaringan')">Mulai</button></div>  
+                            <div class="history-item glass-panel"><div class="history-info"><h3>Sistem VSAT</h3><p>Transmisi satelit</p></div><button class="btn" onclick="startStudySession('tkj_vsat')">Mulai</button></div>  
+                        </div>  
+                    </div>
+
                 </div>  
             </div>  
         </main>  
