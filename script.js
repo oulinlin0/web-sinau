@@ -1167,3 +1167,19 @@ window.addEventListener('touchmove', (e) => {
         if (header) header.classList.add('hidden');
     }
 }, { passive: true });
+
+// --- FUNGSI TOMBOL MANUAL BACKSOUND LOGIN ---
+function toggleLoginAudio() {
+    const loginAudio = document.getElementById('login-audio');
+    const btn = document.getElementById('play-login-audio-btn');
+    if (loginAudio) {
+        if (loginAudio.paused) {
+            loginAudio.play().then(() => {
+                if (btn) btn.innerHTML = "⏸ Jeda Musik Backsound";
+            }).catch(e => console.log("Gagal memutar audio:", e));
+        } else {
+            loginAudio.pause();
+            if (btn) btn.innerHTML = "🎵 Ketuk untuk Putar Musik Backsound";
+        }
+    }
+}
