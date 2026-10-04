@@ -151,12 +151,25 @@ async function handleAuth() {
         
         currentUser = u; localStorage.setItem('sinau_active_user', currentUser);  
 
-        // --- TAMBAHKAN KODE INI DI SINI ---
-        const loginAudio = document.getElementById('login-audio');
-        if (loginAudio) {
-            loginAudio.pause();
-            loginAudio.currentTime = 0;
-        }
+        // --- MATIKAN MUSIK LOGIN & MULAI MUSIK UTAMA ---
+const loginAudio = document.getElementById('login-audio');
+
+if (loginAudio) {
+    loginAudio.pause();
+    loginAudio.currentTime = 0;
+}
+
+// Mulai musik utama setelah berhasil login
+if (bgMusic) {
+    bgMusic.volume = 0.35;
+
+    bgMusic.play().then(() => {
+        isMusicPlaying = true;
+    }).catch(error => {
+        console.log("Musik utama belum bisa diputar:", error);
+    });
+}
+// -----------------------------------------------
         // ---------------------------------
 
         document.getElementById('view-auth').style.display = 'none';  
@@ -1212,22 +1225,3 @@ window.addEventListener('touchmove', (e) => {
     }
 }, { passive: true });
 
-// BACKGROUND MUSIC SETELAH LOGIN
-document.addEventListener("DOMContentLoaded", () => {
-    const bgMusic = document.getElementById("backgroundMusic");
-
-    if (!bgMusic) return;
-
-    bgMusic.loop = true;
-    bgMusic.volume = 0.35;
-
-    const loginButton = document.querySelector("#login-screen .btn");
-
-    if (loginButton) {
-        loginButton.addEventListener("click", () => {
-            setTimeout(() => {
-                bgMusic.play().catch(() => {});
-            }, 300);
-        });
-    }
-});
