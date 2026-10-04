@@ -1245,3 +1245,17 @@ window.addEventListener('touchmove', (e) => {
     }
 }, { passive: true });
 
+document.addEventListener("DOMContentLoaded", () => {
+    const bgMusic = document.getElementById("bg-music");
+
+    if (bgMusic) {
+        bgMusic.volume = 0.35;
+
+        bgMusic.play().then(() => {
+            isMusicPlaying = true;
+            console.log("🎵 Musik otomatis menyala");
+        }).catch(() => {
+            console.log("⚠️ Autoplay diblokir browser");
+        });
+    }
+});
