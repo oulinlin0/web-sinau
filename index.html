@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>sinau bang - Liquid Glass UI</title>
+    <title>sinau</title>
 
     <!-- Google Fonts -->
     <link
@@ -38,7 +38,9 @@
     <div id="view-auth">
         <!-- Backsound Menu Login -->
         <audio id="login-audio" loop>
-            <source src="wii-shop.mp3" type="audio/mpeg">
+            <source 
+              src="Wii Shop Channel - Background Music (HD).mp3" 
+              type="audio/mpeg">
         </audio>
 
         <div class="auth-card glass-panel" id="auth-box">
@@ -248,6 +250,36 @@
                                 <button
                                     class="btn"
                                     onclick="startStudySession('psts_jawa')"
+                                >
+                                    Mulai
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                    <!-- BAHASA JEPANG -->
+                    <div class="folder sub-folder">
+                        <div
+                            class="folder-header glass-panel"
+                            onclick="toggleFolder('folder-jepang', this)"
+                        >
+                            <span>🇯🇵 Bahasa Jepang</span>
+                            <span class="chevron">▼</span>
+                        </div>
+
+                        <div class="folder-content" id="folder-jepang">
+
+                            <div class="history-item glass-panel">
+                                <div class="history-info">
+                                    <h3>PSTS BHS JEPANG XII</h3>
+                                    <p>40 Soal: Bahasa Jepang</p>
+                                </div>
+
+                                <button
+                                    class="btn"
+                                    onclick="startStudySession('psts_jepang')"
                                 >
                                     Mulai
                                 </button>
