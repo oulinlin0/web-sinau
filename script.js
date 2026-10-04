@@ -128,6 +128,26 @@ function switchAuthMode(mode) {
     document.getElementById('auth-main-btn').innerText = isRegisterMode ? "Daftar & Masuk" : "Masuk";  
 }  
 
+function startLoginAndMusic() {
+    // Ambil musik utama
+    const bgMusic = document.getElementById("bg-music");
+
+    // Coba putar LANGSUNG saat tombol Masuk ditekan
+    if (bgMusic) {
+        bgMusic.volume = 0.35;
+
+        bgMusic.play().then(() => {
+            isMusicPlaying = true;
+            console.log("🎵 Musik utama mulai diputar");
+        }).catch((error) => {
+            console.log("Musik diblokir browser:", error);
+        });
+    }
+
+    // Lanjutkan proses login yang sudah ada
+    handleAuth();
+}
+
 async function handleAuth() {  
     const u = document.getElementById('auth-user').value.trim(); 
     const p = document.getElementById('auth-pass').value.trim();  
