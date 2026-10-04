@@ -954,6 +954,49 @@ const psts_jawa_questions = [
     { q: "Sandiwara radio iku jinis sandiwara sing mung bisa dirasakake lumantar...", o: ["Pandeleng (mata)", "Pangrungu (kuping)", "Pangrasa (kulit)", "Pangambu (irung)"], c: 1, exp: "Sandiwara radio mung arupa swara (audio), mula mung bisa dirungokake (pangrungu)." }  
 ];  
 
+const psts_jepang_questions = [
+    { q: "Kata yang dipakai untuk menyebut ibu sendiri kepada orang lain adalah ...", o: ["おかあさん [okaasan]", "はは [haha]", "おばあさん [obaasan]", "おばさん [obasan]"], c: 1, exp: "はは [haha] digunakan untuk menyebut ibu sendiri kepada orang lain." },
+    { q: "おにいさん [oniisan] artinya ...", o: ["kakak perempuan", "adik laki-laki", "paman", "kakak laki-laki"], c: 3, exp: "おにいさん [oniisan] berarti kakak laki-laki." },
+    { q: "Kata yang dipakai untuk menyebut kakak perempuan sendiri adalah ...", o: ["あね [ane]", "おねえさん [oneesan]", "いもうと [imouto]", "おばさん [obasan]"], c: 0, exp: "あね [ane] digunakan untuk menyebut kakak perempuan sendiri." },
+    { q: "いもうと [imouto] artinya ...", o: ["adik laki-laki", "kakak perempuan", "adik perempuan", "sepupu"], c: 2, exp: "いもうと [imouto] berarti adik perempuan." },
+    { q: "Kata yang tepat untuk menyebut kakek orang lain adalah ...", o: ["そふ [sofu]", "おじさん [ojisan]", "おとうさん [otousan]", "おじいさん [ojiisan]"], c: 3, exp: "おじいさん [ojiisan] digunakan untuk menyebut kakek orang lain." },
+    { q: "いとこ [itoko] artinya ...", o: ["saudara kandung", "sepupu", "paman", "cucu"], c: 1, exp: "いとこ [itoko] berarti sepupu." },
+    { q: "Orang tua (ayah dan ibu) sendiri disebut ...", o: ["りょうしん [ryoushin]", "きょうだい [kyoudai]", "こども [kodomo]", "かぞく [kazoku]"], c: 0, exp: "りょうしん [ryoushin] berarti orang tua." },
+    { q: "Kata yang dipakai untuk menyebut anggota keluarga sendiri adalah ... (Pilih lebih dari satu jawaban yang benar!)", o: ["ちち [chichi]", "おとうさん [otousan]", "はは [haha]", "おかあさん [okaasan]"], c: [0, 2], exp: "ちち [chichi] dan はは [haha] digunakan untuk menyebut ayah dan ibu sendiri kepada orang lain." },
+    { q: "Berdasarkan teks わたしの かぞくは ごにんです。ちちと ははと あにと いもうとと わたしです。 berapa orang anggota keluarga penulis?", o: ["3 orang", "4 orang", "5 orang", "6 orang"], c: 2, exp: "ごにん [gonin] berarti 5 orang." },
+    { q: "Selain ayah, ibu, dan penulis, anggota keluarga penulis adalah ...", o: ["kakak laki-laki dan adik perempuan", "kakak perempuan dan adik laki-laki", "kakek dan nenek", "paman dan bibi"], c: 0, exp: "あに [ani] berarti kakak laki-laki dan いもうと [imouto] berarti adik perempuan." },
+    { q: "Angka 20 dibaca ...", o: ["じゅうに [juu ni]", "にひゃく [nihyaku]", "さんじゅう [sanjuu]", "にじゅう [nijuu]"], c: 3, exp: "20 dalam bahasa Jepang adalah にじゅう [nijuu]." },
+    { q: "Angka 300 dibaca ...", o: ["さんひゃく [sanhyaku]", "さんびゃく [sanbyaku]", "さんぜん [sanzen]", "さんじゅう [sanjuu]"], c: 1, exp: "300 dibaca さんびゃく [sanbyaku]." },
+    { q: "Angka 600 dibaca ...", o: ["ろくひゃく [rokuhyaku]", "ろっびゃく [robbyaku]", "ろっぴゃく [roppyaku]", "ろくびゃく [rokubyaku]"], c: 2, exp: "600 dibaca ろっぴゃく [roppyaku]." },
+    { q: "Angka 3.000 dibaca ...", o: ["さんぜん [sanzen]", "さんせん [sansen]", "さんびゃく [sanbyaku]", "さんまん [sanman]"], c: 0, exp: "3.000 dibaca さんぜん [sanzen]." },
+    { q: "Angka 8.000 dibaca ...", o: ["はちぜん [hachizen]", "はっぜん [hazzen]", "はちびゃく [hachibyaku]", "はっせん [hassen]"], c: 3, exp: "8.000 dibaca はっせん [hassen]." },
+    { q: "Angka 2.500 dibaca ...", o: ["にひゃく ごせん [nihyaku gosen]", "にせん ごひゃく [nisen gohyaku]", "にせん ごじゅう [nisen gojuu]", "ごせん にひゃく [gosen nihyaku]"], c: 1, exp: "2.500 dibaca にせん ごひゃく [nisen gohyaku]." },
+    { q: "Angka 10.000 dibaca ...", o: ["せん [sen]", "ひゃく [hyaku]", "いちまん [ichiman]", "じゅうまん [juuman]"], c: 2, exp: "10.000 dibaca いちまん [ichiman]." },
+    { q: "Pasangan angka dan cara bacanya yang benar adalah ... (Pilih lebih dari satu jawaban yang benar!)", o: ["4 = よん [yon]", "9 = きゅう [kyuu]", "5 = はち [hachi]", "7 = ろく [roku]"], c: [0, 1], exp: "4 = よん [yon] dan 9 = きゅう [kyuu] benar." },
+    { q: "げつようび [getsuyoubi] adalah hari ...", o: ["Senin", "Selasa", "Rabu", "Kamis"], c: 0, exp: "げつようび [getsuyoubi] berarti Senin." },
+    { q: "Hari Rabu dalam bahasa Jepang adalah ...", o: ["もくようび [mokuyoubi]", "かようび [kayoubi]", "きんようび [kinyoubi]", "すいようび [suiyoubi]"], c: 3, exp: "Rabu dalam bahasa Jepang adalah すいようび [suiyoubi]." },
+    { q: "Hari setelah もくようび [mokuyoubi] (Kamis) adalah ...", o: ["すいようび [suiyoubi]", "きんようび [kinyoubi]", "どようび [doyoubi]", "かようび [kayoubi]"], c: 1, exp: "Setelah Kamis adalah Jumat, yaitu きんようび [kinyoubi]." },
+    { q: "Kalimat tanya なんようびですか [nanyoubi desu ka] artinya ...", o: ["tanggal berapa?", "bulan apa?", "hari apa?", "jam berapa?"], c: 2, exp: "なんようびですか [nanyoubi desu ka] berarti hari apa?" },
+    { q: "ろくがつ [rokugatsu] adalah bulan ...", o: ["Januari", "Juli", "Agustus", "Juni"], c: 3, exp: "ろくがつ [rokugatsu] berarti Juni." },
+    { q: "Bulan Desember dalam bahasa Jepang adalah ...", o: ["じゅうにがつ [juunigatsu]", "じゅういちがつ [juuichigatsu]", "じゅうがつ [juugatsu]", "にがつ [nigatsu]"], c: 0, exp: "Desember adalah じゅうにがつ [juunigatsu]." },
+    { q: "Bulan April dibaca ...", o: ["よんがつ [yongatsu]", "しがつ [shigatsu]", "よがつ [yogatsu]", "しちがつ [shichigatsu]"], c: 1, exp: "April dibaca しがつ [shigatsu]." },
+    { q: "Pasangan bulan dan cara bacanya yang benar adalah ... (Pilih lebih dari satu jawaban yang benar!)", o: ["Juli = しちがつ [shichigatsu]", "September = きゅうがつ [kyuugatsu]", "April = よんがつ [yongatsu]", "November = じゅういちがつ [juuichigatsu]"], c: [0, 3], exp: "Juli = しちがつ [shichigatsu] dan November = じゅういちがつ [juuichigatsu] benar." },
+    { q: "Tanggal 1 dalam bahasa Jepang dibaca ...", o: ["いちにち [ichinichi]", "ひとつ [hitotsu]", "ついたち [tsuitachi]", "はつか [hatsuka]"], c: 2, exp: "Tanggal 1 dibaca ついたち [tsuitachi]." },
+    { q: "ふつか [futsuka] adalah tanggal ...", o: ["2", "3", "12", "20"], c: 0, exp: "ふつか [futsuka] berarti tanggal 2." },
+    { q: "Tanggal 20 dibaca ...", o: ["にじゅうにち [nijuunichi]", "にじゅうか [nijuuka]", "ふたじゅうか [futajuuka]", "はつか [hatsuka]"], c: 3, exp: "Tanggal 20 memiliki bacaan khusus, yaitu はつか [hatsuka]." },
+    { q: "Tanggal 24 dibaca ...", o: ["にじゅうよんにち [nijuuyonnichi]", "にじゅうよっか [nijuuyokka]", "にじゅうしにち [nijuushinichi]", "にじゅうよにち [nijuuyonichi]"], c: 1, exp: "Tanggal 24 dibaca にじゅうよっか [nijuuyokka]." },
+    { q: "Tanggal 10 dibaca ...", o: ["ここのか [kokonoka]", "ようか [youka]", "とおか [tooka]", "じゅういちにち [juuichinichi]"], c: 2, exp: "Tanggal 10 dibaca とおか [tooka]." },
+    { q: "Lawan kata うえ [ue] (atas) adalah ...", o: ["した [shita]", "みぎ [migi]", "まえ [mae]", "ひだり [hidari]"], c: 0, exp: "うえ [ue] berarti atas, sedangkan lawannya adalah した [shita] yang berarti bawah." },
+    { q: "みぎ [migi] artinya ...", o: ["kiri", "depan", "belakang", "kanan"], c: 3, exp: "みぎ [migi] berarti kanan." },
+    { q: "Lawan kata まえ [mae] (depan) adalah ...", o: ["うえ [ue]", "うしろ [ushiro]", "ひだり [hidari]", "みぎ [migi]"], c: 1, exp: "まえ [mae] berarti depan, sedangkan うしろ [ushiro] berarti belakang." },
+    { q: "Arah mata angin “timur” dalam bahasa Jepang adalah ...", o: ["にし [nishi]", "きた [kita]", "ひがし [higashi]", "みなみ [minami]"], c: 2, exp: "ひがし [higashi] berarti timur." },
+    { q: "Pasangan arah mata angin dan artinya yang benar adalah ... (Pilih lebih dari satu jawaban yang benar!)", o: ["きた [kita] = utara", "にし [nishi] = timur", "みなみ [minami] = selatan", "ひだり [hidari] = kanan"], c: [0, 2], exp: "きた [kita] = utara dan みなみ [minami] = selatan benar." },
+    { q: "Warna merah dalam bahasa Jepang adalah ...", o: ["あお [ao]", "きいろ [kiiro]", "みどり [midori]", "あか [aka]"], c: 3, exp: "あか [aka] berarti merah." },
+    { q: "きいろ [kiiro] adalah warna ...", o: ["kuning", "cokelat", "hijau", "putih"], c: 0, exp: "きいろ [kiiro] berarti kuning." },
+    { q: "Lawan warna しろ [shiro] (putih) adalah ...", o: ["あか [aka]", "くろ [kuro]", "きいろ [kiiro]", "みどり [midori]"], c: 1, exp: "しろ [shiro] berarti putih, sedangkan くろ [kuro] berarti hitam." },
+    { q: "Bendera Indonesia berwarna ...", o: ["あおと しろ [ao to shiro]", "あかと くろ [aka to kuro]", "あかと しろ [aka to shiro]", "きいろと みどり [kiiro to midori]"], c: 2, exp: "Bendera Indonesia berwarna あかと しろ [aka to shiro], yaitu merah dan putih." }
+];
+
 const tkj_jaringan_qs = [  
     { q: "Protokol yang berfungsi memberikan IP address secara otomatis kepada komputer client dalam sebuah jaringan adalah...", o: ["DNS", "FTP", "DHCP", "HTTP"], c: 2, exp: "DHCP (Dynamic Host Configuration Protocol) bertugas membagikan IP secara otomatis ke client." },  
     { q: "Keuntungan utama menggunakan VLAN (Virtual Local Area Network) pada switch manageable adalah...", o: ["Menambah kecepatan bandwidth internet", "Membagi satu fisik jaringan menjadi beberapa jaringan logik yang terpisah", "Menggantikan fungsi router sepenuhnya", "Merubah alamat MAC menjadi IP"], c: 1, exp: "VLAN memisahkan broadcast domain secara logik meskipun berada dalam satu switch fisik." },  
@@ -1054,7 +1097,8 @@ const tka_tkj_questions = [
 const db = {  
     'psts_indo': { title: "PSTS BHS INDO XII", q: psts_indo_questions },  
     'psts_bing': { title: "PSTS BING XII", q: psts_bing_questions },  
-    'psts_jawa': { title: "PSTS BHS JAWA XII", q: psts_jawa_questions },  
+    'psts_jawa': { title: "PSTS BHS JAWA XII", q: psts_jawa_questions },
+    'psts_jepang': { title: "PSTS BHS JEPANG XII", q: psts_jepang_questions },
     'tkj_jaringan': { title: "Config IP, DHCP & VLAN", q: tkj_jaringan_qs },  
     'tkj_vsat': { title: "Topologi & Sistem VSAT", q: tkj_vsat_qs },  
     'mplb_sop': { title: "SOP Pelayanan Prima", q: mplb_sop_qs },
@@ -1168,18 +1212,22 @@ window.addEventListener('touchmove', (e) => {
     }
 }, { passive: true });
 
-// --- FUNGSI TOMBOL MANUAL BACKSOUND LOGIN ---
-function toggleLoginAudio() {
-    const loginAudio = document.getElementById('login-audio');
-    const btn = document.getElementById('play-login-audio-btn');
-    if (loginAudio) {
-        if (loginAudio.paused) {
-            loginAudio.play().then(() => {
-                if (btn) btn.innerHTML = "⏸ Jeda Musik Backsound";
-            }).catch(e => console.log("Gagal memutar audio:", e));
-        } else {
-            loginAudio.pause();
-            if (btn) btn.innerHTML = "🎵 Ketuk untuk Putar Musik Backsound";
-        }
+// BACKGROUND MUSIC SETELAH LOGIN
+document.addEventListener("DOMContentLoaded", () => {
+    const bgMusic = document.getElementById("backgroundMusic");
+
+    if (!bgMusic) return;
+
+    bgMusic.loop = true;
+    bgMusic.volume = 0.35;
+
+    const loginButton = document.querySelector("#login-screen .btn");
+
+    if (loginButton) {
+        loginButton.addEventListener("click", () => {
+            setTimeout(() => {
+                bgMusic.play().catch(() => {});
+            }, 300);
+        });
     }
-}
+});
