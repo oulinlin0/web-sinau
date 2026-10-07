@@ -987,6 +987,49 @@ const psts_jawa_questions = [
     { q: "Sandiwara radio iku jinis sandiwara sing mung bisa dirasakake lumantar...", o: ["Pandeleng (mata)", "Pangrungu (kuping)", "Pangrasa (kulit)", "Pangambu (irung)"], c: 1, exp: "Sandiwara radio mung arupa swara (audio), mula mung bisa dirungokake (pangrungu)." }  
 ];  
 
+const psts_jepang_qs = [
+    { q: "Kata yang dipakai untuk menyebut ibu sendiri kepada orang lain adalah ...", o: ["おかあさん [okaasan]", "はは [haha]", "おばあさん [obaasan]", "おばさん [obasan]"], c: 1, exp: "はは [haha] digunakan untuk menyebut ibu sendiri kepada orang lain." },
+    { q: "おにいさん [oniisan] artinya ...", o: ["kakak perempuan", "adik laki-laki", "paman", "kakak laki-laki"], c: 3, exp: "おにいさん [oniisan] berarti kakak laki-laki." },
+    { q: "Kata yang dipakai untuk menyebut kakak perempuan sendiri adalah ...", o: ["あね [ane]", "おねえさん [oneesan]", "いもうと [imouto]", "おばさん [obasan]"], c: 0, exp: "あね [ane] digunakan untuk menyebut kakak perempuan sendiri." },
+    { q: "いもうと [imouto] artinya ...", o: ["adik laki-laki", "kakak perempuan", "adik perempuan", "sepupu"], c: 2, exp: "いもうと [imouto] berarti adik perempuan." },
+    { q: "Kata yang tepat untuk menyebut kakek orang lain adalah ...", o: ["そふ [sofu]", "おじさん [ojisan]", "おとうさん [otousan]", "おじいさん [ojiisan]"], c: 3, exp: "おじいさん [ojiisan] digunakan untuk menyebut kakek orang lain." },
+    { q: "いとこ [itoko] artinya ...", o: ["saudara kandung", "sepupu", "paman", "cucu"], c: 1, exp: "いとこ [itoko] berarti sepupu." },
+    { q: "Orang tua (ayah dan ibu) sendiri disebut ...", o: ["りょうしん [ryoushin]", "きょうだい [kyoudai]", "こども [kodomo]", "かぞく [kazoku]"], c: 0, exp: "りょうしん [ryoushin] berarti orang tua." },
+    { q: "Kata yang dipakai untuk menyebut anggota keluarga sendiri adalah ... (Pilih lebih dari satu jawaban yang benar!)", o: ["ちち [chichi]", "おとうさん [otousan]", "はは [haha]", "おかあさん [okaasan]"], c: [0, 2], exp: "ちち [chichi] dan はは [haha] digunakan untuk menyebut ayah dan ibu sendiri kepada orang lain." },
+    { q: "Berdasarkan teks わたしの かぞくは ごにんです。ちちと ははと あにと いもうとと わたしです。 berapa orang anggota keluarga penulis?", o: ["3 orang", "4 orang", "5 orang", "6 orang"], c: 2, exp: "ごにん [gonin] berarti 5 orang." },
+    { q: "Selain ayah, ibu, dan penulis, anggota keluarga penulis adalah ...", o: ["kakak laki-laki dan adik perempuan", "kakak perempuan dan adik laki-laki", "kakek dan nenek", "paman dan bibi"], c: 0, exp: "あに [ani] berarti kakak laki-laki dan いもうと [imouto] berarti adik perempuan." },
+    { q: "Angka 20 dibaca ...", o: ["じゅうに [juu ni]", "にひゃく [nihyaku]", "さんじゅう [sanjuu]", "にじゅう [nijuu]"], c: 3, exp: "20 dalam bahasa Jepang adalah にじゅう [nijuu]." },
+    { q: "Angka 300 dibaca ...", o: ["さんひゃく [sanhyaku]", "さんびゃく [sanbyaku]", "さんぜん [sanzen]", "さんじゅう [sanjuu]"], c: 1, exp: "300 dibaca さんびゃく [sanbyaku]." },
+    { q: "Angka 600 dibaca ...", o: ["ろくひゃく [rokuhyaku]", "ろっびゃく [robbyaku]", "ろっぴゃく [roppyaku]", "ろくびゃく [rokubyaku]"], c: 2, exp: "600 dibaca ろっぴゃく [roppyaku]." },
+    { q: "Angka 3.000 dibaca ...", o: ["さんぜん [sanzen]", "さんせん [sansen]", "さんびゃく [sanbyaku]", "さんまん [sanman]"], c: 0, exp: "3.000 dibaca さんぜん [sanzen]." },
+    { q: "Angka 8.000 dibaca ...", o: ["はちぜん [hachizen]", "はっぜん [hazzen]", "はちびゃく [hachibyaku]", "はっせん [hassen]"], c: 3, exp: "8.000 dibaca はっせん [hassen]." },
+    { q: "Angka 2.500 dibaca ...", o: ["にひゃく ごせん [nihyaku gosen]", "にせん ごひゃく [nisen gohyaku]", "にせん ごじゅう [nisen gojuu]", "ごせん にひゃく [gosen nihyaku]"], c: 1, exp: "2.500 dibaca にせん ごひゃく [nisen gohyaku]." },
+    { q: "Angka 10.000 dibaca ...", o: ["せん [sen]", "ひゃく [hyaku]", "いちまん [ichiman]", "じゅうまん [juuman]"], c: 2, exp: "10.000 dibaca いちまん [ichiman]." },
+    { q: "Pasangan angka dan cara bacanya yang benar adalah ... (Pilih lebih dari satu jawaban yang benar!)", o: ["4 = よん [yon]", "9 = きゅう [kyuu]", "5 = はち [hachi]", "7 = ろく [roku]"], c: [0, 1], exp: "4 = よん [yon] dan 9 = きゅう [kyuu] benar." },
+    { q: "げつようび [getsuyoubi] adalah hari ...", o: ["Senin", "Selasa", "Rabu", "Kamis"], c: 0, exp: "げつようび [getsuyoubi] berarti Senin." },
+    { q: "Hari Rabu dalam bahasa Jepang adalah ...", o: ["もくようび [mokuyoubi]", "かようび [kayoubi]", "きんようび [kinyoubi]", "すいようび [suiyoubi]"], c: 3, exp: "Rabu dalam bahasa Jepang adalah すいようび [suiyoubi]." },
+    { q: "Hari setelah もくようび [mokuyoubi] (Kamis) adalah ...", o: ["すいようび [suiyoubi]", "きんようび [kinyoubi]", "どようび [doyoubi]", "かようび [kayoubi]"], c: 1, exp: "Setelah Kamis adalah Jumat, yaitu きんようび [kinyoubi]." },
+    { q: "Kalimat tanya なんようびですか [nanyoubi desu ka] artinya ...", o: ["tanggal berapa?", "bulan apa?", "hari apa?", "jam berapa?"], c: 2, exp: "なんようびですか [nanyoubi desu ka] berarti hari apa?" },
+    { q: "ろくがつ [rokugatsu] adalah bulan ...", o: ["Januari", "Juli", "Agustus", "Juni"], c: 3, exp: "ろくがつ [rokugatsu] berarti Juni." },
+    { q: "Bulan Desember dalam bahasa Jepang adalah ...", o: ["じゅうにがつ [juunigatsu]", "じゅういちがつ [juuichigatsu]", "じゅうがつ [juugatsu]", "にがつ [nigatsu]"], c: 0, exp: "Desember adalah じゅうにがつ [juunigatsu]." },
+    { q: "Bulan April dibaca ...", o: ["よんがつ [yongatsu]", "しがつ [shigatsu]", "よがつ [yogatsu]", "しちがつ [shichigatsu]"], c: 1, exp: "April dibaca しがつ [shigatsu]." },
+    { q: "Pasangan bulan dan cara bacanya yang benar adalah ... (Pilih lebih dari satu jawaban yang benar!)", o: ["Juli = しちがつ [shichigatsu]", "September = きゅうがつ [kyuugatsu]", "April = よんがつ [yongatsu]", "November = じゅういちがつ [juuichigatsu]"], c: [0, 3], exp: "Juli = しちがつ [shichigatsu] dan November = じゅういちがつ [juuichigatsu] benar." },
+    { q: "Tanggal 1 dalam bahasa Jepang dibaca ...", o: ["いちにち [ichinichi]", "ひとつ [hitotsu]", "ついたち [tsuitachi]", "はつか [hatsuka]"], c: 2, exp: "Tanggal 1 dibaca ついたち [tsuitachi]." },
+    { q: "ふつか [futsuka] adalah tanggal ...", o: ["2", "3", "12", "20"], c: 0, exp: "ふつか [futsuka] berarti tanggal 2." },
+    { q: "Tanggal 20 dibaca ...", o: ["にじゅうにち [nijuunichi]", "にじゅうか [nijuuka]", "ふたじゅうか [futajuuka]", "はつか [hatsuka]"], c: 3, exp: "Tanggal 20 memiliki bacaan khusus, yaitu はつか [hatsuka]." },
+    { q: "Tanggal 24 dibaca ...", o: ["にじゅうよんにち [nijuuyonnichi]", "にじゅうよっか [nijuuyokka]", "にじゅうしにち [nijuushinichi]", "にじゅうよにち [nijuuyonichi]"], c: 1, exp: "Tanggal 24 dibaca にじゅうよっか [nijuuyokka]." },
+    { q: "Tanggal 10 dibaca ...", o: ["ここのか [kokonoka]", "ようか [youka]", "とおか [tooka]", "じゅういちにち [juuichinichi]"], c: 2, exp: "Tanggal 10 dibaca とおか [tooka]." },
+    { q: "Lawan kata うえ [ue] (atas) adalah ...", o: ["した [shita]", "みぎ [migi]", "まえ [mae]", "ひだり [hidari]"], c: 0, exp: "うえ [ue] berarti atas, sedangkan lawannya adalah した [shita] yang berarti bawah." },
+    { q: "みぎ [migi] artinya ...", o: ["kiri", "depan", "belakang", "kanan"], c: 3, exp: "みぎ [migi] berarti kanan." },
+    { q: "Lawan kata まえ [mae] (depan) adalah ...", o: ["うえ [ue]", "うしろ [ushiro]", "ひだり [hidari]", "みぎ [migi]"], c: 1, exp: "まえ [mae] berarti depan, sedangkan うしろ [ushiro] berarti belakang." },
+    { q: "Arah mata angin “timur” dalam bahasa Jepang adalah ...", o: ["にし [nishi]", "きた [kita]", "ひがし [higashi]", "みなみ [minami]"], c: 2, exp: "ひがし [higashi] berarti timur." },
+    { q: "Pasangan arah mata angin dan artinya yang benar adalah ... (Pilih lebih dari satu jawaban yang benar!)", o: ["きた [kita] = utara", "にし [nishi] = timur", "みなみ [minami] = selatan", "ひだり [hidari] = kanan"], c: [0, 2], exp: "きた [kita] = utara dan みなみ [minami] = selatan benar." },
+    { q: "Warna merah dalam bahasa Jepang adalah ...", o: ["あお [ao]", "きいろ [kiiro]", "みどり [midori]", "あか [aka]"], c: 3, exp: "あか [aka] berarti merah." },
+    { q: "きいろ [kiiro] adalah warna ...", o: ["kuning", "cokelat", "hijau", "putih"], c: 0, exp: "きいろ [kiiro] berarti kuning." },
+    { q: "Lawan warna しろ [shiro] (putih) adalah ...", o: ["あか [aka]", "くろ [kuro]", "きいろ [kiiro]", "みどり [midori]"], c: 1, exp: "しろ [shiro] berarti putih, sedangkan くろ [kuro] berarti hitam." },
+    { q: "Bendera Indonesia berwarna ...", o: ["あおと しろ [ao to shiro]", "あかと くろ [aka to kuro]", "あかと しろ [aka to shiro]", "きいろと みどり [kiiro to midori]"], c: 2, exp: "Bendera Indonesia berwarna あかと しろ [aka to shiro], yaitu merah dan putih." }
+];
+
 const psts_ppkn_qs = [
     { q: "Mengamalkan sila pertama Pancasila dalam kehidupan sehari-hari dapat dilakukan dengan berbagai cara. Salah satu contohnya adalah....", o: ["memaksakan teman untuk mengikuti agama yang kita anut", "mengganggu teman yang sedang beribadah", "menyumbangkan makanan ke panti asuhan", "menolak berdiskusi dengan teman yang berbeda agama", "menghormati pemeluk agama lain dengan tidak mengganggu saat mereka beribadah"], c: 4, exp: "Sila pertama menekankan toleransi beragama. Menghormati pemeluk agama lain dan tidak mengganggu ibadah mereka adalah pengamalan nyata sila pertama." },
     { q: "Sila pertama Pancasila Ketuhanan Yang Maha Esa, mengajarkan untuk....", o: ["menghormati hak asasi manusia.", "mempercayai adanya Tuhan Yang Maha Esa", "menjaga persatuan indonesia", "mengedepankan hikmat kebijaksanaan", "menegakkan keadilan sosial"], c: 1, exp: "Sila pertama (Ketuhanan Yang Maha Esa) mengajarkan untuk mempercayai dan bertakwa kepada Tuhan Yang Maha Esa sesuai agama masing-masing." },
@@ -1030,48 +1073,39 @@ const psts_ppkn_qs = [
     { q: "Pancasila sebagai paradigma pembangunan, maksudnya adalah....", o: ["masyarakat Indonesia yang maju dan dapat bersaing dengan negara lain", "menciptakan kondisi masyarakat Indonesia sesuai dengan kepribadiannya", "ukuran keberhasilan pembangunan adalah penyerapan teknologi", "yang kita bangun adalah masyarakat yang sesuai dengan kepribadian Indonesia", "pembangunan yang mampu menyerap tenaga kerja dan teknologi tinggi"], c: 3, exp: "Pancasila sebagai paradigma pembangunan berarti pembangunan diarahkan untuk membangun masyarakat yang sesuai dengan kepribadian Indonesia." }
 ];
 
-const psts_jepang_questions = [
-    { q: "Kata yang dipakai untuk menyebut ibu sendiri kepada orang lain adalah ...", o: ["おかあさん [okaasan]", "はは [haha]", "おばあさん [obaasan]", "おばさん [obasan]"], c: 1, exp: "はは [haha] digunakan untuk menyebut ibu sendiri kepada orang lain." },
-    { q: "おにいさん [oniisan] artinya ...", o: ["kakak perempuan", "adik laki-laki", "paman", "kakak laki-laki"], c: 3, exp: "おにいさん [oniisan] berarti kakak laki-laki." },
-    { q: "Kata yang dipakai untuk menyebut kakak perempuan sendiri adalah ...", o: ["あね [ane]", "おねえさん [oneesan]", "いもうと [imouto]", "おばさん [obasan]"], c: 0, exp: "あね [ane] digunakan untuk menyebut kakak perempuan sendiri." },
-    { q: "いもうと [imouto] artinya ...", o: ["adik laki-laki", "kakak perempuan", "adik perempuan", "sepupu"], c: 2, exp: "いもうと [imouto] berarti adik perempuan." },
-    { q: "Kata yang tepat untuk menyebut kakek orang lain adalah ...", o: ["そふ [sofu]", "おじさん [ojisan]", "おとうさん [otousan]", "おじいさん [ojiisan]"], c: 3, exp: "おじいさん [ojiisan] digunakan untuk menyebut kakek orang lain." },
-    { q: "いとこ [itoko] artinya ...", o: ["saudara kandung", "sepupu", "paman", "cucu"], c: 1, exp: "いとこ [itoko] berarti sepupu." },
-    { q: "Orang tua (ayah dan ibu) sendiri disebut ...", o: ["りょうしん [ryoushin]", "きょうだい [kyoudai]", "こども [kodomo]", "かぞく [kazoku]"], c: 0, exp: "りょうしん [ryoushin] berarti orang tua." },
-    { q: "Kata yang dipakai untuk menyebut anggota keluarga sendiri adalah ... (Pilih lebih dari satu jawaban yang benar!)", o: ["ちち [chichi]", "おとうさん [otousan]", "はは [haha]", "おかあさん [okaasan]"], c: [0, 2], exp: "ちち [chichi] dan はは [haha] digunakan untuk menyebut ayah dan ibu sendiri kepada orang lain." },
-    { q: "Berdasarkan teks わたしの かぞくは ごにんです。ちちと ははと あにと いもうとと わたしです。 berapa orang anggota keluarga penulis?", o: ["3 orang", "4 orang", "5 orang", "6 orang"], c: 2, exp: "ごにん [gonin] berarti 5 orang." },
-    { q: "Selain ayah, ibu, dan penulis, anggota keluarga penulis adalah ...", o: ["kakak laki-laki dan adik perempuan", "kakak perempuan dan adik laki-laki", "kakek dan nenek", "paman dan bibi"], c: 0, exp: "あに [ani] berarti kakak laki-laki dan いもうと [imouto] berarti adik perempuan." },
-    { q: "Angka 20 dibaca ...", o: ["じゅうに [juu ni]", "にひゃく [nihyaku]", "さんじゅう [sanjuu]", "にじゅう [nijuu]"], c: 3, exp: "20 dalam bahasa Jepang adalah にじゅう [nijuu]." },
-    { q: "Angka 300 dibaca ...", o: ["さんひゃく [sanhyaku]", "さんびゃく [sanbyaku]", "さんぜん [sanzen]", "さんじゅう [sanjuu]"], c: 1, exp: "300 dibaca さんびゃく [sanbyaku]." },
-    { q: "Angka 600 dibaca ...", o: ["ろくひゃく [rokuhyaku]", "ろっびゃく [robbyaku]", "ろっぴゃく [roppyaku]", "ろくびゃく [rokubyaku]"], c: 2, exp: "600 dibaca ろっぴゃく [roppyaku]." },
-    { q: "Angka 3.000 dibaca ...", o: ["さんぜん [sanzen]", "さんせん [sansen]", "さんびゃく [sanbyaku]", "さんまん [sanman]"], c: 0, exp: "3.000 dibaca さんぜん [sanzen]." },
-    { q: "Angka 8.000 dibaca ...", o: ["はちぜん [hachizen]", "はっぜん [hazzen]", "はちびゃく [hachibyaku]", "はっせん [hassen]"], c: 3, exp: "8.000 dibaca はっせん [hassen]." },
-    { q: "Angka 2.500 dibaca ...", o: ["にひゃく ごせん [nihyaku gosen]", "にせん ごひゃく [nisen gohyaku]", "にせん ごじゅう [nisen gojuu]", "ごせん にひゃく [gosen nihyaku]"], c: 1, exp: "2.500 dibaca にせん ごひゃく [nisen gohyaku]." },
-    { q: "Angka 10.000 dibaca ...", o: ["せん [sen]", "ひゃく [hyaku]", "いちまん [ichiman]", "じゅうまん [juuman]"], c: 2, exp: "10.000 dibaca いちまん [ichiman]." },
-    { q: "Pasangan angka dan cara bacanya yang benar adalah ... (Pilih lebih dari satu jawaban yang benar!)", o: ["4 = よん [yon]", "9 = きゅう [kyuu]", "5 = はち [hachi]", "7 = ろく [roku]"], c: [0, 1], exp: "4 = よん [yon] dan 9 = きゅう [kyuu] benar." },
-    { q: "げつようび [getsuyoubi] adalah hari ...", o: ["Senin", "Selasa", "Rabu", "Kamis"], c: 0, exp: "げつようび [getsuyoubi] berarti Senin." },
-    { q: "Hari Rabu dalam bahasa Jepang adalah ...", o: ["もくようび [mokuyoubi]", "かようび [kayoubi]", "きんようび [kinyoubi]", "すいようび [suiyoubi]"], c: 3, exp: "Rabu dalam bahasa Jepang adalah すいようび [suiyoubi]." },
-    { q: "Hari setelah もくようび [mokuyoubi] (Kamis) adalah ...", o: ["すいようび [suiyoubi]", "きんようび [kinyoubi]", "どようび [doyoubi]", "かようび [kayoubi]"], c: 1, exp: "Setelah Kamis adalah Jumat, yaitu きんようび [kinyoubi]." },
-    { q: "Kalimat tanya なんようびですか [nanyoubi desu ka] artinya ...", o: ["tanggal berapa?", "bulan apa?", "hari apa?", "jam berapa?"], c: 2, exp: "なんようびですか [nanyoubi desu ka] berarti hari apa?" },
-    { q: "ろくがつ [rokugatsu] adalah bulan ...", o: ["Januari", "Juli", "Agustus", "Juni"], c: 3, exp: "ろくがつ [rokugatsu] berarti Juni." },
-    { q: "Bulan Desember dalam bahasa Jepang adalah ...", o: ["じゅうにがつ [juunigatsu]", "じゅういちがつ [juuichigatsu]", "じゅうがつ [juugatsu]", "にがつ [nigatsu]"], c: 0, exp: "Desember adalah じゅうにがつ [juunigatsu]." },
-    { q: "Bulan April dibaca ...", o: ["よんがつ [yongatsu]", "しがつ [shigatsu]", "よがつ [yogatsu]", "しちがつ [shichigatsu]"], c: 1, exp: "April dibaca しがつ [shigatsu]." },
-    { q: "Pasangan bulan dan cara bacanya yang benar adalah ... (Pilih lebih dari satu jawaban yang benar!)", o: ["Juli = しちがつ [shichigatsu]", "September = きゅうがつ [kyuugatsu]", "April = よんがつ [yongatsu]", "November = じゅういちがつ [juuichigatsu]"], c: [0, 3], exp: "Juli = しちがつ [shichigatsu] dan November = じゅういちがつ [juuichigatsu] benar." },
-    { q: "Tanggal 1 dalam bahasa Jepang dibaca ...", o: ["いちにち [ichinichi]", "ひとつ [hitotsu]", "ついたち [tsuitachi]", "はつか [hatsuka]"], c: 2, exp: "Tanggal 1 dibaca ついたち [tsuitachi]." },
-    { q: "ふつか [futsuka] adalah tanggal ...", o: ["2", "3", "12", "20"], c: 0, exp: "ふつか [futsuka] berarti tanggal 2." },
-    { q: "Tanggal 20 dibaca ...", o: ["にじゅうにち [nijuunichi]", "にじゅうか [nijuuka]", "ふたじゅうか [futajuuka]", "はつか [hatsuka]"], c: 3, exp: "Tanggal 20 memiliki bacaan khusus, yaitu はつか [hatsuka]." },
-    { q: "Tanggal 24 dibaca ...", o: ["にじゅうよんにち [nijuuyonnichi]", "にじゅうよっか [nijuuyokka]", "にじゅうしにち [nijuushinichi]", "にじゅうよにち [nijuuyonichi]"], c: 1, exp: "Tanggal 24 dibaca にじゅうよっか [nijuuyokka]." },
-    { q: "Tanggal 10 dibaca ...", o: ["ここのか [kokonoka]", "ようか [youka]", "とおか [tooka]", "じゅういちにち [juuichinichi]"], c: 2, exp: "Tanggal 10 dibaca とおか [tooka]." },
-    { q: "Lawan kata うえ [ue] (atas) adalah ...", o: ["した [shita]", "みぎ [migi]", "まえ [mae]", "ひだり [hidari]"], c: 0, exp: "うえ [ue] berarti atas, sedangkan lawannya adalah した [shita] yang berarti bawah." },
-    { q: "みぎ [migi] artinya ...", o: ["kiri", "depan", "belakang", "kanan"], c: 3, exp: "みぎ [migi] berarti kanan." },
-    { q: "Lawan kata まえ [mae] (depan) adalah ...", o: ["うえ [ue]", "うしろ [ushiro]", "ひだり [hidari]", "みぎ [migi]"], c: 1, exp: "まえ [mae] berarti depan, sedangkan うしろ [ushiro] berarti belakang." },
-    { q: "Arah mata angin “timur” dalam bahasa Jepang adalah ...", o: ["にし [nishi]", "きた [kita]", "ひがし [higashi]", "みなみ [minami]"], c: 2, exp: "ひがし [higashi] berarti timur." },
-    { q: "Pasangan arah mata angin dan artinya yang benar adalah ... (Pilih lebih dari satu jawaban yang benar!)", o: ["きた [kita] = utara", "にし [nishi] = timur", "みなみ [minami] = selatan", "ひだり [hidari] = kanan"], c: [0, 2], exp: "きた [kita] = utara dan みなみ [minami] = selatan benar." },
-    { q: "Warna merah dalam bahasa Jepang adalah ...", o: ["あお [ao]", "きいろ [kiiro]", "みどり [midori]", "あか [aka]"], c: 3, exp: "あか [aka] berarti merah." },
-    { q: "きいろ [kiiro] adalah warna ...", o: ["kuning", "cokelat", "hijau", "putih"], c: 0, exp: "きいろ [kiiro] berarti kuning." },
-    { q: "Lawan warna しろ [shiro] (putih) adalah ...", o: ["あか [aka]", "くろ [kuro]", "きいろ [kiiro]", "みどり [midori]"], c: 1, exp: "しろ [shiro] berarti putih, sedangkan くろ [kuro] berarti hitam." },
-    { q: "Bendera Indonesia berwarna ...", o: ["あおと しろ [ao to shiro]", "あかと くろ [aka to kuro]", "あかと しろ [aka to shiro]", "きいろと みどり [kiiro to midori]"], c: 2, exp: "Bendera Indonesia berwarna あかと しろ [aka to shiro], yaitu merah dan putih." }
+const psts_aij_qs = [
+    { q: "Layanan pemberian Internet Protocol secara otomatis kepada komputer client yang memintanya disebut....", o: ["DHCP", "DNS", "NAT", "Proxy", "Gateway"], c: 0, exp: "DHCP (Dynamic Host Configuration Protocol) adalah layanan yang memberikan alamat IP secara otomatis kepada client yang memintanya." },
+    { q: "Device yang terhubung pada suatu jaringan dan meminta no IP disebut....", o: ["DHCP Server", "DHCP Relay", "DHCP Client", "DNS Server", "Gateway"], c: 2, exp: "Perangkat yang meminta alamat IP ke DHCP server disebut DHCP client." },
+    { q: "Tata cara atau peraturan yang disepakati secara internasional agar sebuah komputer bisa berkomunikasi dengan komputer lain disebut.....", o: ["Topologi jaringan", "Protokol", "Gateway", "Subnetting", "Bandwidth"], c: 1, exp: "Protokol adalah aturan yang disepakati agar perangkat dapat saling berkomunikasi, misalnya TCP/IP." },
+    { q: "Terdapat IP address 192.168.50.67 /28, IP Broadcast yang paling benar adalah....", o: ["192.168.50.64", "192.168.50.65", "192.168.50.78", "192.168.50.79", "192.168.50.80"], c: 3, exp: "Prefix /28 punya blok 16 alamat. IP .67 berada di blok 64–79, jadi network .64 dan broadcast .79." },
+    { q: "Gateway pada jaringan internet dapat berfungsi layaknya....", o: ["penerjemah nama domain menjadi IP", "pemberi alamat IP otomatis", "penyimpan file bersama", "penguat sinyal wireless", "pintu gerbang yang menghubungkan jaringan lokal dengan jaringan lain"], c: 4, exp: "Gateway adalah pintu keluar-masuk yang menghubungkan jaringan lokal dengan jaringan lain, misalnya internet." },
+    { q: "Yang dimaksud dengan personal firewall adalah….", o: ["perangkat keras yang melindungi seluruh jaringan kantor", "perangkat lunak firewall yang dipasang pada satu komputer untuk melindungi komputer tersebut", "program untuk mempercepat koneksi internet", "alat untuk membagi alamat IP", "program untuk menyimpan data cadangan"], c: 1, exp: "Personal firewall berjalan sebagai perangkat lunak di satu komputer dan menyaring lalu lintas masuk dan keluar komputer itu saja." },
+    { q: "Terdapat IP address 192.168.70.92 /29, berikut rentang IP Host yang bisa digunakan oleh perangkat di jaringan tersebut adalah....", o: ["192.168.70.88 – 192.168.70.95", "192.168.70.89 – 192.168.70.94", "192.168.70.90 – 192.168.70.96", "192.168.70.89 – 192.168.70.95", "192.168.70.88 – 192.168.70.94"], c: 1, exp: "Prefix /29 punya blok 8 alamat. IP .92 berada di blok 88–95: network .88, broadcast .95, sehingga host yang bisa dipakai .89 sampai .94." },
+    { q: "Lalu lintas paket data dari komputer client menuju ke internet pada jaringan yang menggunakan MikroTik termasuk paket dengan kategori chain....", o: ["input", "output", "forward", "srcnat", "prerouting"], c: 2, exp: "Paket yang hanya melewati router (dari client ke internet) masuk chain forward. Input untuk paket menuju router, output untuk paket dari router." },
+    { q: "Untuk memblokir/mematikan koneksi internet pada jam-jam tertentu sesuai dengan kebutuhan kita dapat membuat rule firewall berdasarkan....", o: ["Protocol", "Src. Address", "Time", "Port", "Interface"], c: 2, exp: "Pada tab Extra rule firewall MikroTik terdapat parameter Time untuk membatasi rule pada jam dan hari tertentu." },
+    { q: "Sistem yang memungkinkan nama suatu host pada jaringan internet ditranslasikan menjadi sebuah alamat IP address disebut....", o: ["DNS", "DHCP", "NAT", "FTP", "HTTP"], c: 0, exp: "DNS (Domain Name System) menerjemahkan nama domain menjadi alamat IP." },
+    { q: "Metode yang dapat mengizinkan beberapa host yang tidak memiliki IP public atau tidak mempunyai blok di jaringan eksternal sehingga dapat terkoneksi dengan jaringan internet adalah....", o: ["VLAN", "Routing static", "Bridge", "NAT", "Proxy"], c: 3, exp: "NAT (Network Address Translation) menerjemahkan IP privat menjadi IP publik sehingga banyak host dapat mengakses internet." },
+    { q: "Berikut tool yang digunakan untuk menampilkan konfigurasi IP address pada CMD adalah....", o: ["ping", "tracert", "nslookup", "netstat", "ipconfig"], c: 4, exp: "Perintah ipconfig di CMD menampilkan konfigurasi IP address, subnet mask, dan gateway komputer." },
+    { q: "Ada berapa protocol dalam OSI layer....", o: ["4", "7", "5", "6", "8"], c: 1, exp: "Model OSI memiliki 7 lapisan: Physical, Data Link, Network, Transport, Session, Presentation, Application." },
+    { q: "Berikut ini beberapa tools yang masuk di dalam kategori untuk troubleshooting masalah koneksi adalah....", o: ["ping, traceroute, dan nslookup", "Notepad, Paint, dan Excel", "Photoshop, Word, dan Winbox", "kabel, konektor, dan crimping tool", "antivirus, firewall, dan proxy"], c: 0, exp: "Ping, traceroute, dan nslookup dipakai untuk menguji konektivitas, menelusuri jalur paket, dan memeriksa DNS." },
+    { q: "Ketika kita mereset konfigurasi MikroTik, routerboard akan direboot secara otomatis. Setelah proses reboot selesai IP address pada ether 1 adalah....", o: ["192.168.1.1", "192.168.0.1", "192.168.88.1", "10.0.0.1", "172.16.0.1"], c: 2, exp: "Setelah reset ke konfigurasi default, MikroTik memakai IP 192.168.88.1/24 pada ether1." },
+    { q: "Parameter apakah pada konfigurasi NAT yang memiliki fungsi untuk menambahkan informasi address list secara dynamic adalah....", o: ["Chain", "Protocol", "Out. Interface", "Action: add-src-to-address-list / add-dst-to-address-list", "To Addresses"], c: 3, exp: "Pada tab Action rule NAT, opsi add-src/dst-to-address-list menambahkan alamat ke address list secara dinamis." },
+    { q: "Pada halaman menu login Winbox ketika kita akan login ke MikroTik, parameter apa saja yang hendak dipakai untuk login....", o: ["Chain, Action, dan Protocol", "Src. Address, Dst. Address, dan Port", "Interface, Address, dan Gateway", "Name, Type, dan Comment", "Connect To (IP/MAC address), Login, dan Password"], c: 4, exp: "Login Winbox memerlukan Connect To (IP atau MAC address router), Login (username), dan Password." },
+    { q: "Subnet mask yang digunakan pada IP kelas B adalah....", o: ["255.0.0.0", "255.255.0.0", "255.255.255.0", "255.255.255.128", "255.255.255.255"], c: 1, exp: "IP kelas B memakai subnet mask default 255.255.0.0 (/16)." },
+    { q: "Sebuah program tambahan yang berfungsi sebagai alat untuk mempermudah penggunaan PC adalah….", o: ["sistem operasi", "program aplikasi", "program utilitas", "driver", "firmware"], c: 2, exp: "Program utilitas (utility) adalah perangkat lunak tambahan untuk membantu pemeliharaan dan penggunaan komputer, misalnya antivirus dan disk cleanup." },
+    { q: "Suatu sistem yang berfungsi membatasi akses antar dua jaringan, antara jaringan lokal dan public/internet adalah....", o: ["firewall", "router", "switch", "hub", "repeater"], c: 0, exp: "Firewall menyaring dan membatasi lalu lintas antara jaringan lokal dan jaringan publik berdasarkan aturan." },
+    { q: "Metode yang dapat memudahkan pengguna komputer sehingga dapat terhubung ke internet adalah….", o: ["pengaturan IP statis secara manual", "DHCP", "MAC address filtering", "port forwarding", "subnetting"], c: 1, exp: "Dengan DHCP, pengguna tidak perlu mengatur IP secara manual: alamat IP, gateway, dan DNS diberikan otomatis." },
+    { q: "User default MikroTik adalah….", o: ["root", "user", "admin", "administrator", "mikrotik"], c: 2, exp: "User default MikroTik adalah admin dengan password kosong." },
+    { q: "Perintah untuk menambahkan IP address di MikroTik adalah….", o: ["/ip route add gateway=192.168.1.1", "/ip dhcp-server add name=dhcp1", "/interface print", "/system reset-configuration", "/ip address add address=192.168.1.1/24 interface=ether1"], c: 4, exp: "Perintah /ip address add digunakan untuk menambahkan IP address pada sebuah interface." },
+    { q: "Agar IP client didapat secara otomatis maka kita harus mengaktifkan....", o: ["DHCP Client", "DHCP Server", "DNS Cache", "NAT", "Firewall"], c: 1, exp: "DHCP server pada router yang membagikan IP otomatis kepada client." },
+    { q: "Pada MikroTik menu untuk tes koneksi ke internet atau ke website tertentu, berada pada menu....", o: ["Tools > Ping", "Files", "System > Reboot", "IP > Firewall", "Queues"], c: 0, exp: "Menu Tools > Ping dipakai untuk menguji koneksi ke alamat IP atau domain tertentu." },
+    { q: "Untuk mengetahui host terhubung dengan menggunakan perintah....", o: ["ipconfig", "ping", "cls", "dir", "exit"], c: 1, exp: "Perintah ping mengirim paket ICMP untuk mengecek apakah host dapat dijangkau." },
+    { q: "Menu untuk menambahkan list domain website tertentu pada firewall, guna memblokir situs yang dituju pada MikroTik adalah....", o: ["Mangle", "NAT", "Filter Rules", "Address List", "Connections"], c: 3, exp: "Domain situs yang akan diblokir ditambahkan pada IP > Firewall > Address List, lalu dipakai oleh rule filter." },
+    { q: "Perintah di MikroTik yang digunakan untuk menambahkan aturan firewall untuk memblokir web adalah....", o: ["/ip address add address=192.168.1.1/24 interface=ether1", "/ip firewall filter add chain=forward dst-address-list=blokir action=drop", "/ip dns set servers=8.8.8.8", "/ip route add gateway=192.168.1.1", "/system identity set name=router"], c: 1, exp: "Rule filter dengan chain=forward, dst-address-list berisi domain terblokir, dan action=drop akan memblokir akses ke situs tersebut." },
+    { q: "Langkah pertama yang harus dilakukan saat ingin memblokir situs web di MikroTik adalah....", o: ["membuat rule NAT masquerade", "mereset konfigurasi router", "menambahkan domain situs yang akan diblokir ke Address List", "menghapus semua rule firewall", "mengganti password user admin"], c: 2, exp: "Daftar domain situs dibuat dulu di Address List, kemudian dibuat rule filter yang menggunakan daftar tersebut." },
+    { q: "Bagaimana cara memeriksa apakah aturan firewall dalam blokir situs sudah berfungsi dengan benar...", o: ["mereset router", "mengganti password router", "mematikan DHCP server", "menghapus seluruh rule firewall", "mengakses situs yang diblokir dari komputer client dan memastikan situs tidak dapat dibuka"], c: 4, exp: "Pengujian dilakukan dengan membuka situs yang diblokir dari client; jika tidak bisa dibuka (dan counter rule bertambah), rule berfungsi." }
 ];
+
 
 const tkj_jaringan_qs = [  
     { q: "Protokol yang berfungsi memberikan IP address secara otomatis kepada komputer client dalam sebuah jaringan adalah...", o: ["DNS", "FTP", "DHCP", "HTTP"], c: 2, exp: "DHCP (Dynamic Host Configuration Protocol) bertugas membagikan IP secara otomatis ke client." },  
@@ -1174,11 +1208,13 @@ const db = {
     'psts_indo': { title: "PSTS BHS INDO XII", q: psts_indo_questions },  
     'psts_bing': { title: "PSTS BING XII", q: psts_bing_questions },  
     'psts_jawa': { title: "PSTS BHS JAWA XII", q: psts_jawa_questions },
+    'psts_jepang': { title: "PSTS BHS JEPANG XII", q: psts_jepang_qs },
     'psts_ppkn': { title: "PSTS PPKn XII", q: psts_ppkn_qs },
-    'psts_jepang': { title: "PSTS BHS JEPANG XII", q: psts_jepang_questions },
+    'psts_aij': { title: "PSTS AIJ XII", q: psts_aij_qs },
     'tkj_jaringan': { title: "Config IP, DHCP & VLAN", q: tkj_jaringan_qs },  
     'tkj_vsat': { title: "Topologi & Sistem VSAT", q: tkj_vsat_qs },  
     'mplb_sop': { title: "SOP Pelayanan Prima", q: mplb_sop_qs },
+  
 
     /* DATA TKA BARU */
     'tka_indo': { title: "Latihan TKA Bahasa Indonesia", q: tka_indo_questions },
@@ -1289,17 +1325,3 @@ window.addEventListener('touchmove', (e) => {
     }
 }, { passive: true });
 
-document.addEventListener("DOMContentLoaded", () => {
-    const bgMusic = document.getElementById("bg-music");
-
-    if (bgMusic) {
-        bgMusic.volume = 0.35;
-
-        bgMusic.play().then(() => {
-            isMusicPlaying = true;
-            console.log("🎵 Musik otomatis menyala");
-        }).catch(() => {
-            console.log("⚠️ Autoplay diblokir browser");
-        });
-    }
-});
